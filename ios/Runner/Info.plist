@@ -19,7 +19,7 @@
     <key>REVERSED_CLIENT_ID</key>
     <string>com.googleusercontent.apps.526848120057-4pcsheifnmgt6uhkjamsh74f89odlhac</string>
 
-    <!-- Required for Google Sign-In -->
+    <!-- Google Sign-In -->
     <key>CFBundleURLTypes</key>
     <array>
         <dict>
@@ -92,11 +92,10 @@
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
     <string>Location is used to provide nearby services</string>
 
-    <!-- Background Modes -->
+    <!-- Background Modes (SAFE) -->
     <key>UIBackgroundModes</key>
     <array>
         <string>fetch</string>
-        <string>processing</string>
     </array>
 
     <!-- UI -->
