@@ -1,0 +1,89 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+    id "com.google.gms.google-services"
+}
+
+// ── Load key.properties ───────────────────────────────────────────────────────
+def keystorePropertiesFile = rootProject.file("key.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+android {
+    namespace "com.provider.khadamat"
+    compileSdkVersion 36
+    ndkVersion "27.0.12077973"
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_9
+        targetCompatibility = JavaVersion.VERSION_1_9
+        coreLibraryDesugaringEnabled true
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_9
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    // ── Signing configs ───────────────────────────────────────────────────────
+    signingConfigs {
+        debug {
+            // default debug keystore — no changes needed
+        }
+        release {
+            keyAlias       keystoreProperties['keyAlias']
+            keyPassword    keystoreProperties['keyPassword']
+            storeFile      keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword  keystoreProperties['storePassword']
+        }
+    }
+
+    defaultConfig {
+        applicationId "com.provider.khadamat"
+        minSdkVersion 24
+        targetSdkVersion 36
+        multiDexEnabled true
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                    'proguard-rules.pro'
+        }
+    }
+}
+
+flutter {
+    source '../..'
+}
+
+subprojects {
+    project.configurations.all {
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.group == 'com.android.support'
+                    && !details.requested.name.contains('multidex')) {
+                details.useVersion "27.1.1"
+            }
+            if (details.requested.group == 'androidx.core' &&
+                    !details.requested.name.contains('androidx')) {
+                details.useVersion "1.0.1"
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation "androidx.activity:activity:1.9.0"
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+}
