@@ -49,6 +49,7 @@ android {
         applicationId "com.provider.khadamat"
         minSdkVersion 24
         targetSdkVersion 36
+        compileSdkVersion 36
 
         // ✅ IMPORTANT: Use Flutter values
         versionCode flutter.versionCode.toInteger()
