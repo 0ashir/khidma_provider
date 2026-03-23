@@ -1,127 +1,125 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-  <dict>
+<dict>
+
+    <!-- Firebase / Google Config -->
     <key>ANDROID_CLIENT_ID</key>
-    <string>Enter your ANDROID_CLIENT_ID</string>
-    <key>SKAdNetworkItems</key>
-    <array></array>
+    <string>526848120057-9656bjp8n0k53ad8mtm6m3d89qr7u2ln.apps.googleusercontent.com</string>
+
     <key>API_KEY</key>
-    <string>Enter your API_KEY</string>
-    <key>BGTaskSchedulerPermittedIdentifiers</key>
-    <array>
-      <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-    </array>
-    <key>CADisableMinimumFrameDurationOnPhone</key>
-    <true/>
-    <key>CFBundleDevelopmentRegion</key>
-    <string>$(DEVELOPMENT_LANGUAGE)</string>
-    <key>CFBundleDisplayName</key>
-    <string>Khidma Provider</string>
-    <key>CFBundleExecutable</key>
-    <string>$(EXECUTABLE_NAME)</string>
-    <key>CFBundleIdentifier</key>
-    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-    <key>CFBundleInfoDictionaryVersion</key>
-    <string>6.0</string>
-    <key>CFBundleName</key>
-    <string>Khidma Provider</string>
-    <key>CFBundlePackageType</key>
-    <string>APPL</string>
-    <key>CFBundleShortVersionString</key>
-    <string>$(FLUTTER_BUILD_NAME)</string>
-    <key>CFBundleSignature</key>
-    <string>????</string>
+    <string>AIzaSyCYl_fGjuDX-rMHwNyncbTkUPyfyqq7htY</string>
+
+    <key>GCM_SENDER_ID</key>
+    <string>526848120057</string>
+
+    <key>GOOGLE_APP_ID</key>
+    <string>1:526848120057:ios:6283f602c1c024ac1ebe28</string>
+
+    <key>REVERSED_CLIENT_ID</key>
+    <string>com.googleusercontent.apps.526848120057-4pcsheifnmgt6uhkjamsh74f89odlhac</string>
+
+    <!-- Required for Google Sign-In -->
     <key>CFBundleURLTypes</key>
     <array>
-      <dict>
-        <key>CFBundleTypeRole</key>
-        <string>Editor</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          <string>Enter your CFBundleURLSchemes</string>
-        </array>
-      </dict>
-      <dict>
-        <key>CFBundleTypeRole</key>
-        <string>Editor</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          <string>Enter your CFBundleURLSchemes</string>
-        </array>
-      </dict>
-      <dict>
-        <key>CFBundleTypeRole</key>
-        <string>Editor</string>
-        <key>CFBundleURLName</key>
-        <string>Bundle ID</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          <string>com.webiots.fixitProvider</string>
-        </array>
-      </dict>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>com.googleusercontent.apps.526848120057-4pcsheifnmgt6uhkjamsh74f89odlhac</string>
+            </array>
+        </dict>
     </array>
+
+    <!-- App Config -->
+    <key>CFBundleDisplayName</key>
+    <string>Khidma Provider</string>
+
+    <key>CFBundleIdentifier</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+
+    <key>CFBundleName</key>
+    <string>Khidma Provider</string>
+
+    <key>CFBundleShortVersionString</key>
+    <string>$(FLUTTER_BUILD_NAME)</string>
+
     <key>CFBundleVersion</key>
     <string>$(FLUTTER_BUILD_NUMBER)</string>
-    <key>FirebaseAppDelegateProxyEnabled</key>
-    <false/>
-    <key>GCM_SENDER_ID</key>
-    <key>GCM_SENDER_ID</key>
-    <string>enter your</string>
-    <key>GOOGLE_APP_ID</key>
-    <string>Enter your GOOGLE_APP_ID</string>
-    <key>GoogleUtilitiesAppDelegateProxyEnabled</key>
-    <false/>
-    <key>LSApplicationQueriesSchemes</key>
-    <array>
-      <string>sms</string>
-      <string>tel</string>
-    </array>
+
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+
+    <key>CFBundleDevelopmentRegion</key>
+    <string>$(DEVELOPMENT_LANGUAGE)</string>
+
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+
+    <key>CFBundleSignature</key>
+    <string>????</string>
+
+    <!-- iOS Settings -->
     <key>LSRequiresIPhoneOS</key>
     <true/>
-    <key>NSAppleMusicUsageDescription</key>
-    <string>This app requires access to Apple Music</string>
-    <key>NSCameraUsageDescription</key>
-    <string>We need access to your camera to allow you to upload a profile picture and trip photos</string>
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>We need access to your location to provide route recommendations</string>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>We need access to your location to provide route recommendations</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>This app needs microphone access for communication features</string>
-    <key>NSPhotoLibraryAddUsageDescription</key>
-    <string>We need access to save photos to your gallery</string>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>We need access to your photo library to upload images</string>
-    <key>REVERSED_CLIENT_ID</key>
-    <string>Enter your REVERSED_CLIENT_ID</string>
+
     <key>UIApplicationSupportsIndirectInputEvents</key>
     <true/>
-    <key>UIBackgroundModes</key>
-    <array>
-      <string>fetch</string>
-      <string>processing</string>
-      <string>voip</string>
-      <string>audio</string>
-    </array>
-    <key>UILaunchStoryboardName</key>
-    <string>LaunchScreen</string>
-    <key>UIMainStoryboardFile</key>
-    <string>Main</string>
-    <key>UISupportedInterfaceOrientations</key>
-    <array>
-      <string>UIInterfaceOrientationPortrait</string>
-      <string>UIInterfaceOrientationLandscapeLeft</string>
-      <string>UIInterfaceOrientationLandscapeRight</string>
-    </array>
-    <key>UISupportedInterfaceOrientations~ipad</key>
-    <array>
-      <string>UIInterfaceOrientationPortrait</string>
-      <string>UIInterfaceOrientationPortraitUpsideDown</string>
-      <string>UIInterfaceOrientationLandscapeLeft</string>
-      <string>UIInterfaceOrientationLandscapeRight</string>
-    </array>
+
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
-  </dict>
+
+    <!-- Permissions -->
+    <key>NSCameraUsageDescription</key>
+    <string>We need camera access to upload service images</string>
+
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>We need access to your photo library to upload images</string>
+
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>We need access to save images</string>
+
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This app needs microphone access for communication</string>
+
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Location is used to provide nearby services</string>
+
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Location is used to provide nearby services</string>
+
+    <!-- Background Modes -->
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>fetch</string>
+        <string>processing</string>
+    </array>
+
+    <!-- UI -->
+    <key>UILaunchStoryboardName</key>
+    <string>LaunchScreen</string>
+
+    <key>UIMainStoryboardFile</key>
+    <string>Main</string>
+
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
+
+    <key>UISupportedInterfaceOrientations~ipad</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationPortraitUpsideDown</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
+
+</dict>
 </plist>

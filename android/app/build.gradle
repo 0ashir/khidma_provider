@@ -31,16 +31,17 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
-    // ── Signing configs ───────────────────────────────────────────────────────
     signingConfigs {
         debug {
-            // default debug keystore — no changes needed
         }
+
         release {
-            keyAlias       keystoreProperties['keyAlias']
-            keyPassword    keystoreProperties['keyPassword']
-            storeFile      keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-            storePassword  keystoreProperties['storePassword']
+            if (keystorePropertiesFile.exists()) {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+            }
         }
     }
 
@@ -48,6 +49,11 @@ android {
         applicationId "com.provider.khadamat"
         minSdkVersion 24
         targetSdkVersion 36
+
+        // ✅ IMPORTANT: Use Flutter values
+        versionCode flutter.versionCode.toInteger()
+        versionName flutter.versionName
+
         multiDexEnabled true
     }
 
@@ -56,7 +62,12 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            signingConfig signingConfigs.release
+            if (keystorePropertiesFile.exists()) {
+                signingConfig signingConfigs.release
+            } else {
+                signingConfig signingConfigs.debug
+            }
+
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
                     'proguard-rules.pro'
@@ -66,21 +77,6 @@ android {
 
 flutter {
     source '../..'
-}
-
-subprojects {
-    project.configurations.all {
-        resolutionStrategy.eachDependency { details ->
-            if (details.requested.group == 'com.android.support'
-                    && !details.requested.name.contains('multidex')) {
-                details.useVersion "27.1.1"
-            }
-            if (details.requested.group == 'androidx.core' &&
-                    !details.requested.name.contains('androidx')) {
-                details.useVersion "1.0.1"
-            }
-        }
-    }
 }
 
 dependencies {
