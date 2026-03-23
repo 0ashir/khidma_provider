@@ -60,14 +60,14 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCYl_fGjuDX-rMHwNyncbTkUPyfyqq7htY',
-    appId: '1:526848120057:ios:2a10cbe0174ecea81ebe28',
+    appId: '1:526848120057:ios:6283f602c1c024ac1ebe28',
     messagingSenderId: '526848120057',
     projectId: 'khidma-plus-52001',
     databaseURL: 'https://khidma-plus-52001-default-rtdb.firebaseio.com',
     storageBucket: 'khidma-plus-52001.firebasestorage.app',
     androidClientId: '526848120057-9656bjp8n0k53ad8mtm6m3d89qr7u2ln.apps.googleusercontent.com',
-    iosClientId: '526848120057-89cra88uc8nd3nqbrrojc4hkm3f31i34.apps.googleusercontent.com',
-    iosBundleId: 'com.provider.khadamat',
+    iosClientId: '526848120057-4pcsheifnmgt6uhkjamsh74f89odlhac.apps.googleusercontent.com',
+    iosBundleId: 'com.khidmaplus.provider',
   );
 
 }
