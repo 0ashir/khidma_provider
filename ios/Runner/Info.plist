@@ -91,6 +91,8 @@
 
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
     <string>Location is used to provide nearby services</string>
+    <key>NSAppleMusicUsageDescription</key>
+<string>This app may access media-related features to support content sharing and functionality.</string>
 
     <!-- Background Modes (SAFE) -->
     <key>UIBackgroundModes</key>
