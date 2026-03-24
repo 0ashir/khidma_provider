@@ -43,7 +43,7 @@ void main() async {
   try {
     if (Platform.isAndroid) {
       await Firebase.initializeApp(
-        name: 'Fixit',
+        name: 'Khidma Provider',
         options: const FirebaseOptions(
            apiKey: 'AIzaSyDNbeNlSQb8NyHK-z-JlVQWicssGnzyJms',
     appId: '1:526848120057:android:e2b0eb76acb9bd701ebe28',
@@ -51,18 +51,22 @@ void main() async {
     projectId: 'khidma-plus-52001',
     databaseURL: 'https://khidma-plus-52001-default-rtdb.firebaseio.com',
     storageBucket: 'khidma-plus-52001.firebasestorage.app',
+          
         ),
       );
     } else {
       await Firebase.initializeApp(
-        name: 'Fixit',
+        name: 'Khidma Provider',
         options: const FirebaseOptions(
-          apiKey: "Enter your iOS API key here",
-          projectId: "Enter your Firebase project ID here",
-          messagingSenderId: "Enter your messaging sender ID here",
-          appId: "Enter your iOS app ID here",
-          storageBucket:
-              "Enter your storage bucket here (example: your-project-id.appspot.com)",
+      apiKey: 'AIzaSyCYl_fGjuDX-rMHwNyncbTkUPyfyqq7htY',
+    appId: '1:526848120057:ios:6283f602c1c024ac1ebe28',
+    messagingSenderId: '526848120057',
+    projectId: 'khidma-plus-52001',
+    databaseURL: 'https://khidma-plus-52001-default-rtdb.firebaseio.com',
+    storageBucket: 'khidma-plus-52001.firebasestorage.app',
+    androidClientId: '526848120057-9656bjp8n0k53ad8mtm6m3d89qr7u2ln.apps.googleusercontent.com',
+    iosClientId: '526848120057-4pcsheifnmgt6uhkjamsh74f89odlhac.apps.googleusercontent.com',
+    iosBundleId: 'com.khidmaplus.provider',
         ),
       );
     }
@@ -579,13 +583,12 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // make sure you call `initializeApp` before using other Firebase services.
   await Firebase.initializeApp(
     options: const FirebaseOptions(
-      apiKey: 'AIzaSyDNbeNlSQb8NyHK-z-JlVQWicssGnzyJms',
+    apiKey: 'AIzaSyDNbeNlSQb8NyHK-z-JlVQWicssGnzyJms',
     appId: '1:526848120057:android:e2b0eb76acb9bd701ebe28',
     messagingSenderId: '526848120057',
     projectId: 'khidma-plus-52001',
     databaseURL: 'https://khidma-plus-52001-default-rtdb.firebaseio.com',
     storageBucket: 'khidma-plus-52001.firebasestorage.app',
-     
     ),
   );
   AndroidNotificationChannel channel = AndroidNotificationChannel(
