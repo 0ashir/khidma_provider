@@ -29,82 +29,143 @@ import 'common/languages/app_language.dart';
 import 'common/theme/app_theme.dart';
 import 'config.dart';
 
+// ─── Global error log collected during startup ────────────────────────────────
+// Every caught error is appended here. The app reads this list to show a
+// non-fatal banner so the user can still use the app even when something fails.
+final List<String> startupErrors = [];
+
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  // Catch Flutter framework errors and surface them on-screen instead of
+  // crashing silently.
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    startupErrors.add('Flutter error: ${details.exceptionAsString()}');
+    debugPrint('🔴 Flutter error: ${details.exceptionAsString()}');
+  };
 
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
+  // Catch all errors thrown outside the Flutter framework (async isolates etc.)
+  // and keep the app alive.
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
 
-  // FIX #3: Removed duplicate onBackgroundMessage call from here.
-  // It is now registered only once, after Firebase is initialized below.
-
-  await initializeAppSettings();
-
-  try {
-    if (Platform.isAndroid) {
-      await Firebase.initializeApp(
-        name: 'Khidma Provider',
-        options: const FirebaseOptions(
-          apiKey: 'AIzaSyDNbeNlSQb8NyHK-z-JlVQWicssGnzyJms',
-          appId: '1:526848120057:android:e2b0eb76acb9bd701ebe28',
-          messagingSenderId: '526848120057',
-          projectId: 'khidma-plus-52001',
-          databaseURL: 'https://khidma-plus-52001-default-rtdb.firebaseio.com',
-          storageBucket: 'khidma-plus-52001.firebasestorage.app',
-        ),
-      );
-    } else {
-      await Firebase.initializeApp(
-        name: 'Khidma Provider',
-        options: const FirebaseOptions(
-          apiKey: 'AIzaSyCYl_fGjuDX-rMHwNyncbTkUPyfyqq7htY',
-          appId: '1:526848120057:ios:6283f602c1c024ac1ebe28',
-          messagingSenderId: '526848120057',
-          projectId: 'khidma-plus-52001',
-          databaseURL: 'https://khidma-plus-52001-default-rtdb.firebaseio.com',
-          storageBucket: 'khidma-plus-52001.firebasestorage.app',
-          androidClientId: '526848120057-9656bjp8n0k53ad8mtm6m3d89qr7u2ln.apps.googleusercontent.com',
-          iosClientId: '526848120057-4pcsheifnmgt6uhkjamsh74f89odlhac.apps.googleusercontent.com',
-          iosBundleId: 'com.khidmaplus.provider',
-        ),
-      );
+    // ── Orientation ───────────────────────────────────────────────────────────
+    try {
+      await SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    } catch (e) {
+      startupErrors.add('Orientation lock failed: $e');
+      debugPrint('⚠️ Orientation lock failed: $e');
     }
 
-    // FIX #3: Register background handler once, after Firebase is initialized.
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    // ── App settings (custom initialiser) ─────────────────────────────────────
+    try {
+      await initializeAppSettings();
+    } catch (e) {
+      startupErrors.add('initializeAppSettings failed: $e');
+      debugPrint('⚠️ initializeAppSettings failed: $e');
+      // Non-fatal — continue booting.
+    }
 
-    // FIX #5: setupFCMToken() moved inside the try block so Firebase is
-    // guaranteed to be initialized before FirebaseMessaging.instance is used.
-    setupFCMToken();
-  } catch (e) {
-    debugPrint("Firebase initialization failed: $e");
-  }
+    // ── Firebase ──────────────────────────────────────────────────────────────
+    bool firebaseInitialized = false;
+    try {
+      // Guard against hot-restart re-initialisation.
+      final existingApp =
+          Firebase.apps.where((a) => a.name == 'Khidma Provider').toList();
 
-  cameras = await availableCameras();
+      if (existingApp.isEmpty) {
+        if (Platform.isAndroid) {
+          await Firebase.initializeApp(
+            name: 'Khidma Provider',
+            options: const FirebaseOptions(
+              apiKey: 'AIzaSyDNbeNlSQb8NyHK-z-JlVQWicssGnzyJms',
+              appId: '1:526848120057:android:e2b0eb76acb9bd701ebe28',
+              messagingSenderId: '526848120057',
+              projectId: 'khidma-plus-52001',
+              databaseURL:
+                  'https://khidma-plus-52001-default-rtdb.firebaseio.com',
+              storageBucket: 'khidma-plus-52001.firebasestorage.app',
+            ),
+          );
+        } else {
+          await Firebase.initializeApp(
+            name: 'Khidma Provider',
+            options: const FirebaseOptions(
+              apiKey: 'AIzaSyCYl_fGjuDX-rMHwNyncbTkUPyfyqq7htY',
+              appId: '1:526848120057:ios:6283f602c1c024ac1ebe28',
+              messagingSenderId: '526848120057',
+              projectId: 'khidma-plus-52001',
+              databaseURL:
+                  'https://khidma-plus-52001-default-rtdb.firebaseio.com',
+              storageBucket: 'khidma-plus-52001.firebasestorage.app',
+              androidClientId:
+                  '526848120057-9656bjp8n0k53ad8mtm6m3d89qr7u2ln.apps.googleusercontent.com',
+              iosClientId:
+                  '526848120057-4pcsheifnmgt6uhkjamsh74f89odlhac.apps.googleusercontent.com',
+              iosBundleId: 'com.khidmaplus.provider',
+            ),
+          );
+        }
+      }
 
-  runApp(const MyApp());
-}
+      firebaseInitialized = true;
+      debugPrint('✅ Firebase initialized');
+    } catch (e) {
+      startupErrors.add('Firebase init failed: $e');
+      debugPrint('🔴 Firebase init failed: $e');
+      // App continues — push notifications simply won't work.
+    }
 
-void setupFCMToken() async {
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
+    // ── FCM background handler & token (only when Firebase is up) ─────────────
+    if (firebaseInitialized) {
+      try {
+        FirebaseMessaging.onBackgroundMessage(
+            _firebaseMessagingBackgroundHandler);
+      } catch (e) {
+        startupErrors.add('FCM background handler registration failed: $e');
+        debugPrint('⚠️ FCM background handler registration failed: $e');
+      }
 
-  // Get the current token
-  String? token = await messaging.getToken();
-  debugPrint("✅ Initial FCM Token: $token");
+      try {
+        await setupFCMToken();
+      } catch (e) {
+        startupErrors.add('FCM token setup failed: $e');
+        debugPrint('⚠️ FCM token setup failed: $e');
+      }
+    }
 
-  // Handle token refresh
-  FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
-    debugPrint("🔄 Token refreshed: $newToken");
-    // Save this token locally if needed
+    // ── Cameras ───────────────────────────────────────────────────────────────
+    try {
+      cameras = await availableCameras();
+    } catch (e) {
+      startupErrors.add('Camera init failed: $e');
+      debugPrint('⚠️ Camera init failed: $e');
+      cameras = []; // Fallback — app works without camera access.
+    }
+
+    runApp(const MyApp());
+  }, (error, stack) {
+    // Last-resort handler for unhandled async errors — app stays alive.
+    startupErrors.add('Unhandled async error: $error');
+    debugPrint('🔴 Unhandled async error: $error\n$stack');
   });
 }
 
-// Auto-consume must be true on iOS.
-// To try without auto-consume on another platform, change `true` to `false` here.
-final bool _kAutoConsume = Platform.isIOS || true;
+// ─── FCM token helper ─────────────────────────────────────────────────────────
+Future<void> setupFCMToken() async {
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  String? token = await messaging.getToken();
+  debugPrint('✅ Initial FCM Token: $token');
 
+  FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
+    debugPrint('🔄 Token refreshed: $newToken');
+  });
+}
+
+// ─── IAP constants ────────────────────────────────────────────────────────────
+final bool _kAutoConsume = Platform.isIOS || true;
 const String _kConsumableId = 'consumable';
 const String _kUpgradeId = 'upgrade';
 const String _kSilverSubscriptionId = 'subscription_silver';
@@ -116,6 +177,7 @@ const List<String> _kProductIds = <String>[
   _kGoldSubscriptionId,
 ];
 
+// ─── Root widget ──────────────────────────────────────────────────────────────
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -124,25 +186,30 @@ class MyApp extends StatelessWidget {
     return FutureBuilder(
       future: SharedPreferences.getInstance(),
       builder: (context, AsyncSnapshot<SharedPreferences> snapData) {
+        // SharedPreferences itself failed — show a bare error screen.
+        if (snapData.hasError) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: _StartupErrorScreen(
+              errors: ['SharedPreferences failed: ${snapData.error}'],
+            ),
+          );
+        }
+
         if (snapData.hasData) {
-          // snapData.data!.remove("selectedLocale");
           return MultiProvider(
             providers: [
               ChangeNotifierProvider(
-                create: (_) => ThemeService(snapData.data!, context),
-              ),
+                  create: (_) => ThemeService(snapData.data!, context)),
               ChangeNotifierProvider(create: (_) => SplashProvider()),
               ChangeNotifierProvider(
-                create: (_) => LanguageProvider(snapData.data!, context),
-              ),
+                  create: (_) => LanguageProvider(snapData.data!, context)),
               ChangeNotifierProvider(
-                create: (_) => CurrencyProvider(snapData.data!),
-              ),
+                  create: (_) => CurrencyProvider(snapData.data!)),
               ChangeNotifierProvider(create: (_) => LoginAsProvider()),
               ChangeNotifierProvider(create: (_) => LoadingProvider()),
               ChangeNotifierProvider(
-                create: (_) => LoginAsServicemanProvider(),
-              ),
+                  create: (_) => LoginAsServicemanProvider()),
               ChangeNotifierProvider(create: (_) => ForgetPasswordProvider()),
               ChangeNotifierProvider(create: (_) => VerifyOtpProvider()),
               ChangeNotifierProvider(create: (_) => AdsProvider()),
@@ -166,14 +233,12 @@ class MyApp extends StatelessWidget {
               ChangeNotifierProvider(create: (_) => ServicemanListProvider()),
               ChangeNotifierProvider(create: (_) => AddServicemenProvider()),
               ChangeNotifierProvider(
-                create: (_) => LatestBLogDetailsProvider(),
-              ),
+                  create: (_) => LatestBLogDetailsProvider()),
               ChangeNotifierProvider(create: (_) => ProfileProvider()),
               ChangeNotifierProvider(create: (_) => ChangePasswordProvider()),
               ChangeNotifierProvider(create: (_) => CompanyDetailProvider()),
               ChangeNotifierProvider(
-                create: (_) => AppSettingProvider(snapData.data!),
-              ),
+                  create: (_) => AppSettingProvider(snapData.data!)),
               ChangeNotifierProvider(create: (_) => ProfileDetailProvider()),
               ChangeNotifierProvider(create: (_) => BankDetailProvider()),
               ChangeNotifierProvider(create: (_) => TimeSlotProvider()),
@@ -187,36 +252,37 @@ class MyApp extends StatelessWidget {
               ChangeNotifierProvider(create: (_) => PlanDetailsProvider()),
               ChangeNotifierProvider(create: (_) => CheckoutWebViewProvider()),
               ChangeNotifierProvider(create: (_) => ReferralProvider()),
-              ChangeNotifierProvider(create: (_) => SubscriptionPlanProvider()),
+              ChangeNotifierProvider(
+                  create: (_) => SubscriptionPlanProvider()),
               ChangeNotifierProvider(create: (_) => WalletProvider()),
               ChangeNotifierProvider(create: (_) => BookingProvider()),
               ChangeNotifierProvider(create: (_) => NoInternetProvider()),
               ChangeNotifierProvider(create: (_) => PendingBookingProvider()),
               ChangeNotifierProvider(create: (_) => AcceptedBookingProvider()),
               ChangeNotifierProvider(
-                create: (_) => BookingServicemenListProvider(),
-              ),
+                  create: (_) => BookingServicemenListProvider()),
               ChangeNotifierProvider(create: (_) => ChatProvider()),
               ChangeNotifierProvider(create: (_) => ChatWithStaffProvider()),
               ChangeNotifierProvider(create: (_) => AssignBookingProvider()),
               ChangeNotifierProvider(
-                create: (_) => PendingApprovalBookingProvider(),
-              ),
+                  create: (_) => PendingApprovalBookingProvider()),
               ChangeNotifierProvider(create: (_) => OngoingBookingProvider()),
               ChangeNotifierProvider(create: (_) => AddExtraChargesProvider()),
               ChangeNotifierProvider(create: (_) => HoldBookingProvider()),
-              ChangeNotifierProvider(create: (_) => CompletedBookingProvider()),
+              ChangeNotifierProvider(
+                  create: (_) => CompletedBookingProvider()),
               ChangeNotifierProvider(create: (_) => AddServiceProofProvider()),
-              ChangeNotifierProvider(create: (_) => CancelledBookingProvider()),
+              ChangeNotifierProvider(
+                  create: (_) => CancelledBookingProvider()),
               ChangeNotifierProvider(create: (_) => ChatHistoryProvider()),
               ChangeNotifierProvider(create: (_) => DeleteDialogProvider()),
               ChangeNotifierProvider(create: (_) => LocationListProvider()),
-              ChangeNotifierProvider(create: (_) => ServicemenDetailProvider()),
+              ChangeNotifierProvider(
+                  create: (_) => ServicemenDetailProvider()),
               ChangeNotifierProvider(create: (_) => NewLocationProvider()),
               ChangeNotifierProvider(create: (_) => IdVerificationProvider()),
               ChangeNotifierProvider(
-                create: (_) => CommissionHistoryProvider(),
-              ),
+                  create: (_) => CommissionHistoryProvider()),
               ChangeNotifierProvider(create: (_) => SearchProvider()),
               ChangeNotifierProvider(create: (_) => ViewLocationProvider()),
               ChangeNotifierProvider(create: (_) => CommonApiProvider()),
@@ -226,29 +292,29 @@ class MyApp extends StatelessWidget {
               ChangeNotifierProvider(create: (_) => OfferChatProvider()),
               // ChangeNotifierProvider(create: (_) => VideoCallProvider()),
               ChangeNotifierProvider(
-                create: (_) => HomeAddNewServiceProvider(),
-              ),
+                  create: (_) => HomeAddNewServiceProvider()),
               ChangeNotifierProvider(
-                create: (_) => JobRequestDetailsProvider(),
-              ),
+                  create: (_) => JobRequestDetailsProvider()),
               ChangeNotifierProvider(create: (_) => JobRequestListProvider()),
             ],
             child: const RouteToPage(),
           );
-        } else {
-          return MaterialApp(
-            theme: AppTheme.fromType(ThemeType.light).themeData,
-            darkTheme: AppTheme.fromType(ThemeType.dark).themeData,
-            themeMode: ThemeMode.light,
-            debugShowCheckedModeBanner: false,
-            home: const SplashLayout(),
-          );
         }
+
+        // Still loading SharedPreferences — show splash.
+        return MaterialApp(
+          theme: AppTheme.fromType(ThemeType.light).themeData,
+          darkTheme: AppTheme.fromType(ThemeType.dark).themeData,
+          themeMode: ThemeMode.light,
+          debugShowCheckedModeBanner: false,
+          home: const SplashLayout(),
+        );
       },
     );
   }
 }
 
+// ─── Main page shell ──────────────────────────────────────────────────────────
 class RouteToPage extends StatefulWidget {
   const RouteToPage({super.key});
 
@@ -265,21 +331,18 @@ class _RouteToPageState extends State<RouteToPage> {
   bool _isLoading = true;
   String _subscriptionStatus = 'Not Subscribed';
 
-  // Match these with your App Store Connect product IDs
-  static const Set<String> _subscriptionIds = {'one_month_sub', 'one_year_sub'};
+  static const Set<String> _subscriptionIds = {
+    'one_month_sub',
+    'one_year_sub',
+  };
 
   @override
   void initState() {
     super.initState();
+    _safeInitializeIAP();
+    if (Platform.isAndroid) _safeCheckForUpdate();
+    _safeInitNotifications();
 
-    // Initialize IAP first
-    _initializeIAP();
-
-    // Other initializations
-    if (Platform.isAndroid) {
-      checkForUpdate(context);
-    }
-    CustomNotificationController().initNotification(context);
     // TEMPORARY: Auto-open IAP Debug after 2 seconds
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
@@ -291,106 +354,117 @@ class _RouteToPageState extends State<RouteToPage> {
     });
   }
 
-  Future<void> checkForUpdate(context) async {
-    try {
-      AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
+  // ── Safe wrappers — a failure in one section never crashes the widget ────────
 
-      if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
-        if (updateInfo.immediateUpdateAllowed) {
-          // Perform an immediate update (forced update)
-          await InAppUpdate.performImmediateUpdate();
-        } else if (updateInfo.flexibleUpdateAllowed) {
-          // Perform a flexible update (allows user to continue using the app)
-          await InAppUpdate.startFlexibleUpdate();
-          await InAppUpdate.completeFlexibleUpdate();
-        }
-      }
+  void _safeInitNotifications() {
+    try {
+      CustomNotificationController().initNotification(context);
     } catch (e) {
-      print("Error checking for update: $e");
+      startupErrors.add('Notification init failed: $e');
+      debugPrint('⚠️ Notification init failed: $e');
+    }
+  }
+
+  Future<void> _safeCheckForUpdate() async {
+    try {
+      await _checkForUpdate();
+    } catch (e) {
+      startupErrors.add('Update check failed: $e');
+      debugPrint('⚠️ Update check failed: $e');
+    }
+  }
+
+  Future<void> _safeInitializeIAP() async {
+    try {
+      await _initializeIAP();
+    } catch (e) {
+      startupErrors.add('IAP init failed: $e');
+      debugPrint('⚠️ IAP init failed: $e');
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _checkForUpdate() async {
+    AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
+    if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
+      if (updateInfo.immediateUpdateAllowed) {
+        await InAppUpdate.performImmediateUpdate();
+      } else if (updateInfo.flexibleUpdateAllowed) {
+        await InAppUpdate.startFlexibleUpdate();
+        await InAppUpdate.completeFlexibleUpdate();
+      }
     }
   }
 
   Future<void> _initializeIAP() async {
-    // For iOS: Enable pending purchase handling
     if (Platform.isIOS) {
-      final InAppPurchaseStoreKitPlatformAddition iosPlatformAddition = _iap
-          .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
-      await iosPlatformAddition.setDelegate(ExamplePaymentQueueDelegate());
+      try {
+        final InAppPurchaseStoreKitPlatformAddition iosPlatformAddition =
+            _iap.getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+        await iosPlatformAddition.setDelegate(ExamplePaymentQueueDelegate());
+      } catch (e) {
+        startupErrors.add('StoreKit delegate setup failed: $e');
+        debugPrint('⚠️ StoreKit delegate setup failed: $e');
+      }
     }
 
-    // Check if IAP is available
-    final bool available = await _iap.isAvailable();
+    bool available = false;
+    try {
+      available = await _iap.isAvailable();
+    } catch (e) {
+      startupErrors.add('IAP availability check failed: $e');
+      debugPrint('⚠️ IAP availability check failed: $e');
+    }
 
     if (!mounted) return;
-
-    setState(() {
-      _isAvailable = available;
-    });
+    setState(() => _isAvailable = available);
 
     if (!available) {
-      setState(() {
-        _isLoading = false;
-      });
-      debugPrint('❌ In-App Purchase is not available on this device');
+      if (mounted) setState(() => _isLoading = false);
+      debugPrint('❌ In-App Purchase not available on this device');
       return;
     }
 
-    // Set up purchase stream listener
-    _subscription = _iap.purchaseStream.listen(
-      _listenToPurchaseUpdated,
-      onDone: () => _subscription.cancel(),
-      onError: (error) {
-        debugPrint('❌ Purchase stream error: $error');
-      },
-    );
+    try {
+      _subscription = _iap.purchaseStream.listen(
+        _listenToPurchaseUpdated,
+        onDone: () => _subscription.cancel(),
+        onError: (error) => debugPrint('❌ Purchase stream error: $error'),
+      );
+    } catch (e) {
+      startupErrors.add('Purchase stream subscription failed: $e');
+      debugPrint('⚠️ Purchase stream subscription failed: $e');
+    }
 
-    // Fetch product details
     await _loadProducts();
-
-    // Restore previous purchases (important for iOS subscriptions)
     await _restorePurchases();
   }
 
   Future<void> _loadProducts() async {
-    setState(() {
-      _isLoading = true;
-    });
-
+    if (mounted) setState(() => _isLoading = true);
     try {
-      final ProductDetailsResponse response = await _iap.queryProductDetails(
-        _subscriptionIds,
-      );
+      final ProductDetailsResponse response =
+          await _iap.queryProductDetails(_subscriptionIds);
 
       if (response.error != null) {
         debugPrint('❌ Error loading products: ${response.error}');
-        setState(() {
-          _isLoading = false;
-        });
-        return;
-      }
-
-      if (response.productDetails.isEmpty) {
-        debugPrint(
-          '⚠️ No products found. Check your product IDs and App Store Connect setup',
-        );
+      } else if (response.productDetails.isEmpty) {
+        debugPrint('⚠️ No products found.');
       } else {
         debugPrint('✅ Loaded ${response.productDetails.length} products');
-        for (var product in response.productDetails) {
-          debugPrint('  - ${product.id}: ${product.title} - ${product.price}');
+        for (var p in response.productDetails) {
+          debugPrint('  - ${p.id}: ${p.title} - ${p.price}');
         }
       }
 
       if (!mounted) return;
-
       setState(() {
         _products = response.productDetails;
         _isLoading = false;
       });
     } catch (e) {
       debugPrint('❌ Exception loading products: $e');
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -399,76 +473,55 @@ class _RouteToPageState extends State<RouteToPage> {
       await _iap.restorePurchases();
       debugPrint('✅ Restore purchases initiated');
     } catch (e) {
-      debugPrint('❌ Error restoring purchases: $e');
+      debugPrint('⚠️ Restore purchases failed: $e');
     }
   }
 
   void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
     for (var purchaseDetails in purchaseDetailsList) {
-      debugPrint(
-        '📱 Purchase status: ${purchaseDetails.status} for ${purchaseDetails.productID}',
-      );
+      try {
+        debugPrint(
+            '📱 Purchase status: ${purchaseDetails.status} for ${purchaseDetails.productID}');
 
-      switch (purchaseDetails.status) {
-        case PurchaseStatus.pending:
-          _showSnackBar('Purchase is pending...');
-          break;
+        switch (purchaseDetails.status) {
+          case PurchaseStatus.pending:
+            _showSnackBar('Purchase is pending...');
+            break;
+          case PurchaseStatus.purchased:
+          case PurchaseStatus.restored:
+            _handleSuccessfulPurchase(purchaseDetails);
+            break;
+          case PurchaseStatus.error:
+            _showSnackBar(
+                'Purchase failed: ${purchaseDetails.error?.message ?? "Unknown error"}');
+            if (!purchaseDetails.pendingCompletePurchase) {
+              _iap.completePurchase(purchaseDetails);
+            }
+            break;
+          case PurchaseStatus.canceled:
+            _showSnackBar('Purchase was canceled');
+            break;
+        }
 
-        case PurchaseStatus.purchased:
-        case PurchaseStatus.restored:
-          // Verify the purchase with your backend here
-          _handleSuccessfulPurchase(purchaseDetails);
-          break;
-
-        case PurchaseStatus.error:
-          _showSnackBar(
-            'Purchase failed: ${purchaseDetails.error?.message ?? "Unknown error"}',
-          );
-          if (!purchaseDetails.pendingCompletePurchase) {
-            _iap.completePurchase(purchaseDetails);
-          }
-          break;
-
-        case PurchaseStatus.canceled:
-          _showSnackBar('Purchase was canceled');
-          break;
-      }
-
-      // Always complete purchase for non-consumables
-      if (purchaseDetails.pendingCompletePurchase) {
-        _iap.completePurchase(purchaseDetails);
+        if (purchaseDetails.pendingCompletePurchase) {
+          _iap.completePurchase(purchaseDetails);
+        }
+      } catch (e) {
+        debugPrint('⚠️ Error processing purchase update: $e');
       }
     }
   }
 
   Future<void> _handleSuccessfulPurchase(
-    PurchaseDetails purchaseDetails,
-  ) async {
-    // TODO: Verify purchase with your backend server
-    // Send purchaseDetails.verificationData.serverVerificationData to your server
-    // and purchaseDetails.verificationData.localVerificationData for iOS receipt
-
+      PurchaseDetails purchaseDetails) async {
     try {
-      // Example: Send to your backend
-      // await yourApiService.verifyPurchase(
-      //   productId: purchaseDetails.productID,
-      //   purchaseToken: purchaseDetails.verificationData.serverVerificationData,
-      //   platform: Platform.isIOS ? 'ios' : 'android',
-      // );
-
       if (!mounted) return;
-
-      setState(() {
-        _subscriptionStatus = 'Subscribed to ${purchaseDetails.productID}';
-      });
-
+      setState(
+          () => _subscriptionStatus = 'Subscribed to ${purchaseDetails.productID}');
       _showSnackBar('Subscription successful! ✅');
-
-      // Complete the purchase
       if (purchaseDetails.pendingCompletePurchase) {
         await _iap.completePurchase(purchaseDetails);
       }
-
       debugPrint('✅ Purchase completed: ${purchaseDetails.productID}');
     } catch (e) {
       debugPrint('❌ Error handling purchase: $e');
@@ -481,13 +534,11 @@ class _RouteToPageState extends State<RouteToPage> {
       _showSnackBar('In-App Purchase is not available');
       return;
     }
-
-    final PurchaseParam purchaseParam = PurchaseParam(
-      productDetails: product,
-      applicationUserName: null, // Optional: your user ID for tracking
-    );
-
     try {
+      final PurchaseParam purchaseParam = PurchaseParam(
+        productDetails: product,
+        applicationUserName: null,
+      );
       await _iap.buyNonConsumable(purchaseParam: purchaseParam);
       debugPrint('🛒 Purchase initiated for: ${product.id}');
     } catch (e) {
@@ -505,16 +556,19 @@ class _RouteToPageState extends State<RouteToPage> {
 
   @override
   void dispose() {
-    if (Platform.isIOS) {
-      final InAppPurchaseStoreKitPlatformAddition iosPlatformAddition = _iap
-          .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
-      iosPlatformAddition.setDelegate(null);
-    }
-    _subscription.cancel();
+    try {
+      if (Platform.isIOS) {
+        final InAppPurchaseStoreKitPlatformAddition iosPlatformAddition = _iap
+            .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+        iosPlatformAddition.setDelegate(null);
+      }
+    } catch (_) {}
+    try {
+      _subscription.cancel();
+    } catch (_) {}
     super.dispose();
   }
 
-  // Rest of your build method...
   @override
   Widget build(BuildContext context) {
     return UpgradeAlert(
@@ -528,10 +582,8 @@ class _RouteToPageState extends State<RouteToPage> {
         builder: (context, theme, child) {
           return Consumer<LanguageProvider>(
             builder: (context, lang, child) {
-              final provider = Provider.of<LanguageProvider>(
-                context,
-                listen: true,
-              );
+              final provider =
+                  Provider.of<LanguageProvider>(context, listen: true);
 
               return MaterialApp(
                 title: 'Khidma Provider',
@@ -547,14 +599,28 @@ class _RouteToPageState extends State<RouteToPage> {
                   GlobalCupertinoLocalizations.delegate,
                 ],
                 themeMode: theme.theme,
-                initialRoute: "/",
+                initialRoute: '/',
                 routes: appRoute.route,
                 builder: (context, child) {
+                  // Overlay a collapsible error banner if any startup errors occurred.
+                  // The user can still use the app normally — the banner just
+                  // informs them (and you, during debugging) what went wrong.
+                  Widget page = child!;
+
+                  if (startupErrors.isNotEmpty) {
+                    page = Stack(
+                      children: [
+                        page,
+                        _StartupErrorBanner(errors: startupErrors),
+                      ],
+                    );
+                  }
+
                   return Directionality(
                     textDirection: lang.locale?.languageCode == 'ar'
                         ? TextDirection.rtl
                         : TextDirection.ltr,
-                    child: child!,
+                    child: page,
                   );
                 },
               );
@@ -566,71 +632,220 @@ class _RouteToPageState extends State<RouteToPage> {
   }
 }
 
-// iOS Payment Queue Delegate for handling transactions
+// ─── iOS StoreKit delegate ────────────────────────────────────────────────────
 class ExamplePaymentQueueDelegate implements SKPaymentQueueDelegateWrapper {
   @override
   bool shouldContinueTransaction(
     SKPaymentTransactionWrapper transaction,
     SKStorefrontWrapper storefront,
-  ) {
-    return true;
-  }
+  ) =>
+      true;
 
   @override
-  bool shouldShowPriceConsent() {
-    return false;
+  bool shouldShowPriceConsent() => false;
+}
+
+// ─── FCM background handler ───────────────────────────────────────────────────
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  try {
+    final existingApp =
+        Firebase.apps.where((a) => a.name == 'Khidma Provider').toList();
+
+    if (existingApp.isEmpty) {
+      if (Platform.isIOS) {
+        await Firebase.initializeApp(
+          name: 'Khidma Provider',
+          options: const FirebaseOptions(
+            apiKey: 'AIzaSyCYl_fGjuDX-rMHwNyncbTkUPyfyqq7htY',
+            appId: '1:526848120057:ios:6283f602c1c024ac1ebe28',
+            messagingSenderId: '526848120057',
+            projectId: 'khidma-plus-52001',
+            databaseURL:
+                'https://khidma-plus-52001-default-rtdb.firebaseio.com',
+            storageBucket: 'khidma-plus-52001.firebasestorage.app',
+            androidClientId:
+                '526848120057-9656bjp8n0k53ad8mtm6m3d89qr7u2ln.apps.googleusercontent.com',
+            iosClientId:
+                '526848120057-4pcsheifnmgt6uhkjamsh74f89odlhac.apps.googleusercontent.com',
+            iosBundleId: 'com.khidmaplus.provider',
+          ),
+        );
+      } else {
+        await Firebase.initializeApp(
+          name: 'Khidma Provider',
+          options: const FirebaseOptions(
+            apiKey: 'AIzaSyDNbeNlSQb8NyHK-z-JlVQWicssGnzyJms',
+            appId: '1:526848120057:android:e2b0eb76acb9bd701ebe28',
+            messagingSenderId: '526848120057',
+            projectId: 'khidma-plus-52001',
+            databaseURL:
+                'https://khidma-plus-52001-default-rtdb.firebaseio.com',
+            storageBucket: 'khidma-plus-52001.firebasestorage.app',
+          ),
+        );
+      }
+    }
+  } catch (e) {
+    // Cannot show UI in a background isolate — log and return gracefully.
+    debugPrint('🔴 Firebase init in background handler failed: $e');
+    return;
+  }
+
+  try {
+    AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'high_importance_channel',
+      'High Importance Notifications',
+      description: 'This channel is used for important notifications.',
+      playSound: true,
+      importance: Importance.high,
+      sound: (message.data['title'] != 'Incoming Audio Call...' ||
+              message.data['title'] != 'Incoming Video Call...')
+          ? null
+          : const RawResourceAndroidNotificationSound('callsound'),
+      showBadge: true,
+    );
+    log('background message received: $message');
+    showNotification(message);
+  } catch (e) {
+    debugPrint('⚠️ showNotification in background handler failed: $e');
   }
 }
 
+// ─── Startup error UI helpers ─────────────────────────────────────────────────
 
-@pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // FIX #4: Check if already initialized to avoid duplicate initialization,
-  // and use the correct platform-specific Firebase options.
-  if (Firebase.apps.isEmpty) {
-    if (Platform.isIOS) {
-      await Firebase.initializeApp(
-        name: 'Khidma Provider',
-        options: const FirebaseOptions(
-          apiKey: 'AIzaSyCYl_fGjuDX-rMHwNyncbTkUPyfyqq7htY',
-          appId: '1:526848120057:ios:6283f602c1c024ac1ebe28',
-          messagingSenderId: '526848120057',
-          projectId: 'khidma-plus-52001',
-          databaseURL: 'https://khidma-plus-52001-default-rtdb.firebaseio.com',
-          storageBucket: 'khidma-plus-52001.firebasestorage.app',
-          androidClientId: '526848120057-9656bjp8n0k53ad8mtm6m3d89qr7u2ln.apps.googleusercontent.com',
-          iosClientId: '526848120057-4pcsheifnmgt6uhkjamsh74f89odlhac.apps.googleusercontent.com',
-          iosBundleId: 'com.khidmaplus.provider',
+/// Full-screen error page — used when SharedPreferences itself fails and the
+/// normal app cannot be rendered at all.
+class _StartupErrorScreen extends StatelessWidget {
+  final List<String> errors;
+  const _StartupErrorScreen({required this.errors});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFF3F3),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(Icons.error_outline, color: Colors.red, size: 48),
+              const SizedBox(height: 16),
+              const Text(
+                'App failed to start',
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'The following errors occurred. '
+                'Please report them to support.',
+                style: TextStyle(fontSize: 14, color: Colors.black87),
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child: ListView.separated(
+                  itemCount: errors.length,
+                  separatorBuilder: (_, __) => const Divider(),
+                  itemBuilder: (_, i) => Text(
+                    '• ${errors[i]}',
+                    style:
+                        const TextStyle(fontSize: 12, color: Colors.black87),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-      );
-    } else {
-      await Firebase.initializeApp(
-        name: 'Khidma Provider',
-        options: const FirebaseOptions(
-          apiKey: 'AIzaSyDNbeNlSQb8NyHK-z-JlVQWicssGnzyJms',
-          appId: '1:526848120057:android:e2b0eb76acb9bd701ebe28',
-          messagingSenderId: '526848120057',
-          projectId: 'khidma-plus-52001',
-          databaseURL: 'https://khidma-plus-52001-default-rtdb.firebaseio.com',
-          storageBucket: 'khidma-plus-52001.firebasestorage.app',
-        ),
-      );
-    }
+      ),
+    );
   }
+}
 
-  AndroidNotificationChannel channel = AndroidNotificationChannel(
-    'high_importance_channel',
-    'High Importance Notifications',
-    description: 'This channel is used for important notifications.',
-    playSound: true,
-    importance: Importance.high,
-    sound:
-        (message.data['title'] != 'Incoming Audio Call...' ||
-            message.data['title'] != 'Incoming Video Call...')
-        ? null
-        : const RawResourceAndroidNotificationSound('callsound'),
-    showBadge: true,
-  );
-  log("jahsdjkashdajksdfna ${message}");
-  showNotification(message);
+/// Collapsible banner overlaid on top of the normal app when non-fatal startup
+/// errors occurred. Tap ▾ to expand the error list, ✕ to dismiss.
+class _StartupErrorBanner extends StatefulWidget {
+  final List<String> errors;
+  const _StartupErrorBanner({required this.errors});
+
+  @override
+  State<_StartupErrorBanner> createState() => _StartupErrorBannerState();
+}
+
+class _StartupErrorBannerState extends State<_StartupErrorBanner> {
+  bool _expanded = false;
+  bool _dismissed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    if (_dismissed) return const SizedBox.shrink();
+
+    return Positioned(
+      top: MediaQuery.of(context).padding.top + 8,
+      left: 12,
+      right: 12,
+      child: Material(
+        elevation: 6,
+        borderRadius: BorderRadius.circular(10),
+        color: const Color(0xFFFFEEEE),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.warning_amber_rounded,
+                      color: Colors.orange, size: 18),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      '${widget.errors.length} startup warning'
+                      '${widget.errors.length > 1 ? 's' : ''} '
+                      '(app is still running)',
+                      style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => setState(() => _expanded = !_expanded),
+                    child: Icon(
+                      _expanded
+                          ? Icons.keyboard_arrow_up
+                          : Icons.keyboard_arrow_down,
+                      size: 20,
+                      color: Colors.black54,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  GestureDetector(
+                    onTap: () => setState(() => _dismissed = true),
+                    child:
+                        const Icon(Icons.close, size: 18, color: Colors.black45),
+                  ),
+                ],
+              ),
+              if (_expanded) ...[
+                const SizedBox(height: 6),
+                ...widget.errors.map(
+                  (e) => Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Text('• $e',
+                        style: const TextStyle(
+                            fontSize: 11, color: Colors.black87)),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
