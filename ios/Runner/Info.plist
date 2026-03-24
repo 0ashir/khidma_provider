@@ -3,22 +3,6 @@
 <plist version="1.0">
 <dict>
 
-    <!-- Firebase / Google Config -->
-    <key>ANDROID_CLIENT_ID</key>
-    <string>526848120057-9656bjp8n0k53ad8mtm6m3d89qr7u2ln.apps.googleusercontent.com</string>
-
-    <key>API_KEY</key>
-    <string>AIzaSyCYl_fGjuDX-rMHwNyncbTkUPyfyqq7htY</string>
-
-    <key>GCM_SENDER_ID</key>
-    <string>526848120057</string>
-
-    <key>GOOGLE_APP_ID</key>
-    <string>1:526848120057:ios:6283f602c1c024ac1ebe28</string>
-
-    <key>REVERSED_CLIENT_ID</key>
-    <string>com.googleusercontent.apps.526848120057-4pcsheifnmgt6uhkjamsh74f89odlhac</string>
-
     <!-- Google Sign-In -->
     <key>CFBundleURLTypes</key>
     <array>
@@ -95,12 +79,11 @@
     <key>NSAppleMusicUsageDescription</key>
     <string>This app may access media-related features to support content sharing and functionality.</string>
 
-    <!-- FIX #1: Added missing notification permission key required by iOS -->
-    <key>NSUserNotificationUsageDescription</key>
+    <!-- Notifications -->
+    <key>NSUserNotificationsUsageDescription</key>
     <string>We use notifications to keep you updated on your bookings and requests.</string>
 
-    <!-- Background Modes -->
-    <!-- FIX #2: Added remote-notification required by Firebase FCM -->
+    <!-- Background Modes for Firebase FCM -->
     <key>UIBackgroundModes</key>
     <array>
         <string>fetch</string>
@@ -111,8 +94,7 @@
     <key>UILaunchStoryboardName</key>
     <string>LaunchScreen</string>
 
-    <key>UIMainStoryboardFile</key>
-    <string>Main</string>
+    <!-- Remove UIMainStoryboardFile if you're using pure Flutter -->
 
     <key>UISupportedInterfaceOrientations</key>
     <array>

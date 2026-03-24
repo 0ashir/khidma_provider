@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'package:fixit_provider/debug_helper.dart';
+import 'package:fixit_provider/firebase_options.dart';
 import 'package:fixit_provider/providers/app_pages_provider/ads_detail_provider.dart';
 import 'package:fixit_provider/providers/app_pages_provider/ads_provider.dart';
 import 'package:fixit_provider/providers/app_pages_provider/app_details_provider.dart';
@@ -59,54 +60,25 @@ void main() async {
       debugPrint('⚠️ Orientation lock failed: $e');
     }
 
-    // ── App settings (custom initialiser) ─────────────────────────────────────
     try {
       await initializeAppSettings();
     } catch (e) {
       startupErrors.add('initializeAppSettings failed: $e');
       debugPrint('⚠️ initializeAppSettings failed: $e');
-      // Non-fatal — continue booting.
     }
 
-    // ── Firebase ──────────────────────────────────────────────────────────────
     bool firebaseInitialized = false;
     try {
-      // Guard against hot-restart re-initialisation.
       final existingApp =
           Firebase.apps.where((a) => a.name == 'Khidma Provider').toList();
 
       if (existingApp.isEmpty) {
         if (Platform.isAndroid) {
           await Firebase.initializeApp(
-            name: 'Khidma Provider',
-            options: const FirebaseOptions(
-              apiKey: 'AIzaSyDNbeNlSQb8NyHK-z-JlVQWicssGnzyJms',
-              appId: '1:526848120057:android:e2b0eb76acb9bd701ebe28',
-              messagingSenderId: '526848120057',
-              projectId: 'khidma-plus-52001',
-              databaseURL:
-                  'https://khidma-plus-52001-default-rtdb.firebaseio.com',
-              storageBucket: 'khidma-plus-52001.firebasestorage.app',
-            ),
-          );
+              options: DefaultFirebaseOptions.currentPlatform);
         } else {
           await Firebase.initializeApp(
-            name: 'Khidma Provider',
-            options: const FirebaseOptions(
-              apiKey: 'AIzaSyCYl_fGjuDX-rMHwNyncbTkUPyfyqq7htY',
-              appId: '1:526848120057:ios:6283f602c1c024ac1ebe28',
-              messagingSenderId: '526848120057',
-              projectId: 'khidma-plus-52001',
-              databaseURL:
-                  'https://khidma-plus-52001-default-rtdb.firebaseio.com',
-              storageBucket: 'khidma-plus-52001.firebasestorage.app',
-              androidClientId:
-                  '526848120057-9656bjp8n0k53ad8mtm6m3d89qr7u2ln.apps.googleusercontent.com',
-              iosClientId:
-                  '526848120057-4pcsheifnmgt6uhkjamsh74f89odlhac.apps.googleusercontent.com',
-              iosBundleId: 'com.khidmaplus.provider',
-            ),
-          );
+              options: DefaultFirebaseOptions.currentPlatform);
         }
       }
 
@@ -252,8 +224,7 @@ class MyApp extends StatelessWidget {
               ChangeNotifierProvider(create: (_) => PlanDetailsProvider()),
               ChangeNotifierProvider(create: (_) => CheckoutWebViewProvider()),
               ChangeNotifierProvider(create: (_) => ReferralProvider()),
-              ChangeNotifierProvider(
-                  create: (_) => SubscriptionPlanProvider()),
+              ChangeNotifierProvider(create: (_) => SubscriptionPlanProvider()),
               ChangeNotifierProvider(create: (_) => WalletProvider()),
               ChangeNotifierProvider(create: (_) => BookingProvider()),
               ChangeNotifierProvider(create: (_) => NoInternetProvider()),
@@ -269,16 +240,13 @@ class MyApp extends StatelessWidget {
               ChangeNotifierProvider(create: (_) => OngoingBookingProvider()),
               ChangeNotifierProvider(create: (_) => AddExtraChargesProvider()),
               ChangeNotifierProvider(create: (_) => HoldBookingProvider()),
-              ChangeNotifierProvider(
-                  create: (_) => CompletedBookingProvider()),
+              ChangeNotifierProvider(create: (_) => CompletedBookingProvider()),
               ChangeNotifierProvider(create: (_) => AddServiceProofProvider()),
-              ChangeNotifierProvider(
-                  create: (_) => CancelledBookingProvider()),
+              ChangeNotifierProvider(create: (_) => CancelledBookingProvider()),
               ChangeNotifierProvider(create: (_) => ChatHistoryProvider()),
               ChangeNotifierProvider(create: (_) => DeleteDialogProvider()),
               ChangeNotifierProvider(create: (_) => LocationListProvider()),
-              ChangeNotifierProvider(
-                  create: (_) => ServicemenDetailProvider()),
+              ChangeNotifierProvider(create: (_) => ServicemenDetailProvider()),
               ChangeNotifierProvider(create: (_) => NewLocationProvider()),
               ChangeNotifierProvider(create: (_) => IdVerificationProvider()),
               ChangeNotifierProvider(
@@ -339,7 +307,7 @@ class _RouteToPageState extends State<RouteToPage> {
   @override
   void initState() {
     super.initState();
-    _safeInitializeIAP();
+    // _safeInitializeIAP();
     if (Platform.isAndroid) _safeCheckForUpdate();
     _safeInitNotifications();
 
@@ -516,8 +484,8 @@ class _RouteToPageState extends State<RouteToPage> {
       PurchaseDetails purchaseDetails) async {
     try {
       if (!mounted) return;
-      setState(
-          () => _subscriptionStatus = 'Subscribed to ${purchaseDetails.productID}');
+      setState(() =>
+          _subscriptionStatus = 'Subscribed to ${purchaseDetails.productID}');
       _showSnackBar('Subscription successful! ✅');
       if (purchaseDetails.pendingCompletePurchase) {
         await _iap.completePurchase(purchaseDetails);
@@ -558,8 +526,8 @@ class _RouteToPageState extends State<RouteToPage> {
   void dispose() {
     try {
       if (Platform.isIOS) {
-        final InAppPurchaseStoreKitPlatformAddition iosPlatformAddition = _iap
-            .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+        final InAppPurchaseStoreKitPlatformAddition iosPlatformAddition =
+            _iap.getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
         iosPlatformAddition.setDelegate(null);
       }
     } catch (_) {}
@@ -655,34 +623,11 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     if (existingApp.isEmpty) {
       if (Platform.isIOS) {
         await Firebase.initializeApp(
-          name: 'Khidma Provider',
-          options: const FirebaseOptions(
-            apiKey: 'AIzaSyCYl_fGjuDX-rMHwNyncbTkUPyfyqq7htY',
-            appId: '1:526848120057:ios:6283f602c1c024ac1ebe28',
-            messagingSenderId: '526848120057',
-            projectId: 'khidma-plus-52001',
-            databaseURL:
-                'https://khidma-plus-52001-default-rtdb.firebaseio.com',
-            storageBucket: 'khidma-plus-52001.firebasestorage.app',
-            androidClientId:
-                '526848120057-9656bjp8n0k53ad8mtm6m3d89qr7u2ln.apps.googleusercontent.com',
-            iosClientId:
-                '526848120057-4pcsheifnmgt6uhkjamsh74f89odlhac.apps.googleusercontent.com',
-            iosBundleId: 'com.khidmaplus.provider',
-          ),
+        options: DefaultFirebaseOptions.currentPlatform
         );
       } else {
-        await Firebase.initializeApp(
-          name: 'Khidma Provider',
-          options: const FirebaseOptions(
-            apiKey: 'AIzaSyDNbeNlSQb8NyHK-z-JlVQWicssGnzyJms',
-            appId: '1:526848120057:android:e2b0eb76acb9bd701ebe28',
-            messagingSenderId: '526848120057',
-            projectId: 'khidma-plus-52001',
-            databaseURL:
-                'https://khidma-plus-52001-default-rtdb.firebaseio.com',
-            storageBucket: 'khidma-plus-52001.firebasestorage.app',
-          ),
+       await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform
         );
       }
     }
@@ -752,8 +697,7 @@ class _StartupErrorScreen extends StatelessWidget {
                   separatorBuilder: (_, __) => const Divider(),
                   itemBuilder: (_, i) => Text(
                     '• ${errors[i]}',
-                    style:
-                        const TextStyle(fontSize: 12, color: Colors.black87),
+                    style: const TextStyle(fontSize: 12, color: Colors.black87),
                   ),
                 ),
               ),
@@ -826,8 +770,8 @@ class _StartupErrorBannerState extends State<_StartupErrorBanner> {
                   const SizedBox(width: 4),
                   GestureDetector(
                     onTap: () => setState(() => _dismissed = true),
-                    child:
-                        const Icon(Icons.close, size: 18, color: Colors.black45),
+                    child: const Icon(Icons.close,
+                        size: 18, color: Colors.black45),
                   ),
                 ],
               ),
