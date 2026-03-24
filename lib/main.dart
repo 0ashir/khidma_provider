@@ -45,12 +45,12 @@ void main() async {
       await Firebase.initializeApp(
         name: 'Fixit',
         options: const FirebaseOptions(
-          apiKey: "Enter your Android API key here",
-          projectId: "Enter your Firebase project ID here",
-          messagingSenderId: "Enter your messaging sender ID here",
-          appId: "Enter your Android app ID here",
-          storageBucket:
-              "Enter your storage bucket here (example: your-project-id.appspot.com)",
+           apiKey: 'AIzaSyDNbeNlSQb8NyHK-z-JlVQWicssGnzyJms',
+    appId: '1:526848120057:android:e2b0eb76acb9bd701ebe28',
+    messagingSenderId: '526848120057',
+    projectId: 'khidma-plus-52001',
+    databaseURL: 'https://khidma-plus-52001-default-rtdb.firebaseio.com',
+    storageBucket: 'khidma-plus-52001.firebasestorage.app',
         ),
       );
     } else {
@@ -524,7 +524,7 @@ class _RouteToPageState extends State<RouteToPage> {
               );
 
               return MaterialApp(
-                title: 'Fixit Provider',
+                title: 'Khidma Provider',
                 debugShowCheckedModeBanner: false,
                 theme: AppTheme.fromType(ThemeType.light).themeData,
                 darkTheme: AppTheme.fromType(ThemeType.dark).themeData,
@@ -579,10 +579,12 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // make sure you call `initializeApp` before using other Firebase services.
   await Firebase.initializeApp(
     options: const FirebaseOptions(
-      apiKey: "Enter your iOS API key here",
-      projectId: "Enter your Firebase project ID here",
-      messagingSenderId: "Enter your messaging sender ID here",
-      appId: "Enter your iOS app ID here",
+      apiKey: 'AIzaSyDNbeNlSQb8NyHK-z-JlVQWicssGnzyJms',
+    appId: '1:526848120057:android:e2b0eb76acb9bd701ebe28',
+    messagingSenderId: '526848120057',
+    projectId: 'khidma-plus-52001',
+    databaseURL: 'https://khidma-plus-52001-default-rtdb.firebaseio.com',
+    storageBucket: 'khidma-plus-52001.firebasestorage.app',
      
     ),
   );
