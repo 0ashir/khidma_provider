@@ -6,6 +6,7 @@ build/
 # Android
 android/.gradle/
 android/app/build/
+temp_auto_push.bat
 
 # iOS (if exists)
 ios/Pods/
@@ -13,4 +14,5 @@ ios/.symlinks/
 
 # Misc
 *.log
-*.lock
+*.lock.gitignore
+branch_structure.json
