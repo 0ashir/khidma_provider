@@ -91,13 +91,20 @@
 
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
     <string>Location is used to provide nearby services</string>
-    <key>NSAppleMusicUsageDescription</key>
-<string>This app may access media-related features to support content sharing and functionality.</string>
 
-    <!-- Background Modes (SAFE) -->
+    <key>NSAppleMusicUsageDescription</key>
+    <string>This app may access media-related features to support content sharing and functionality.</string>
+
+    <!-- FIX #1: Added missing notification permission key required by iOS -->
+    <key>NSUserNotificationUsageDescription</key>
+    <string>We use notifications to keep you updated on your bookings and requests.</string>
+
+    <!-- Background Modes -->
+    <!-- FIX #2: Added remote-notification required by Firebase FCM -->
     <key>UIBackgroundModes</key>
     <array>
         <string>fetch</string>
+        <string>remote-notification</string>
     </array>
 
     <!-- UI -->
@@ -121,6 +128,7 @@
         <string>UIInterfaceOrientationLandscapeLeft</string>
         <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
+
     <key>UIDeviceFamily</key>
     <array>
         <integer>1</integer>

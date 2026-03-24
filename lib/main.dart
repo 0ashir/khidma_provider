@@ -37,47 +37,53 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // FIX #3: Removed duplicate onBackgroundMessage call from here.
+  // It is now registered only once, after Firebase is initialized below.
+
   await initializeAppSettings();
-  // await _configureSDK();
+
   try {
     if (Platform.isAndroid) {
       await Firebase.initializeApp(
         name: 'Khidma Provider',
         options: const FirebaseOptions(
-           apiKey: 'AIzaSyDNbeNlSQb8NyHK-z-JlVQWicssGnzyJms',
-    appId: '1:526848120057:android:e2b0eb76acb9bd701ebe28',
-    messagingSenderId: '526848120057',
-    projectId: 'khidma-plus-52001',
-    databaseURL: 'https://khidma-plus-52001-default-rtdb.firebaseio.com',
-    storageBucket: 'khidma-plus-52001.firebasestorage.app',
-          
+          apiKey: 'AIzaSyDNbeNlSQb8NyHK-z-JlVQWicssGnzyJms',
+          appId: '1:526848120057:android:e2b0eb76acb9bd701ebe28',
+          messagingSenderId: '526848120057',
+          projectId: 'khidma-plus-52001',
+          databaseURL: 'https://khidma-plus-52001-default-rtdb.firebaseio.com',
+          storageBucket: 'khidma-plus-52001.firebasestorage.app',
         ),
       );
     } else {
       await Firebase.initializeApp(
         name: 'Khidma Provider',
         options: const FirebaseOptions(
-      apiKey: 'AIzaSyCYl_fGjuDX-rMHwNyncbTkUPyfyqq7htY',
-    appId: '1:526848120057:ios:6283f602c1c024ac1ebe28',
-    messagingSenderId: '526848120057',
-    projectId: 'khidma-plus-52001',
-    databaseURL: 'https://khidma-plus-52001-default-rtdb.firebaseio.com',
-    storageBucket: 'khidma-plus-52001.firebasestorage.app',
-    androidClientId: '526848120057-9656bjp8n0k53ad8mtm6m3d89qr7u2ln.apps.googleusercontent.com',
-    iosClientId: '526848120057-4pcsheifnmgt6uhkjamsh74f89odlhac.apps.googleusercontent.com',
-    iosBundleId: 'com.khidmaplus.provider',
+          apiKey: 'AIzaSyCYl_fGjuDX-rMHwNyncbTkUPyfyqq7htY',
+          appId: '1:526848120057:ios:6283f602c1c024ac1ebe28',
+          messagingSenderId: '526848120057',
+          projectId: 'khidma-plus-52001',
+          databaseURL: 'https://khidma-plus-52001-default-rtdb.firebaseio.com',
+          storageBucket: 'khidma-plus-52001.firebasestorage.app',
+          androidClientId: '526848120057-9656bjp8n0k53ad8mtm6m3d89qr7u2ln.apps.googleusercontent.com',
+          iosClientId: '526848120057-4pcsheifnmgt6uhkjamsh74f89odlhac.apps.googleusercontent.com',
+          iosBundleId: 'com.khidmaplus.provider',
         ),
       );
     }
+
+    // FIX #3: Register background handler once, after Firebase is initialized.
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+    // FIX #5: setupFCMToken() moved inside the try block so Firebase is
+    // guaranteed to be initialized before FirebaseMessaging.instance is used.
+    setupFCMToken();
   } catch (e) {
     debugPrint("Firebase initialization failed: $e");
   }
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   cameras = await availableCameras();
 
-  setupFCMToken();
   runApp(const MyApp());
 }
 
@@ -579,18 +585,39 @@ class ExamplePaymentQueueDelegate implements SKPaymentQueueDelegateWrapper {
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // If you're going to use other Firebase services in the background, such as Firestore,
-  // make sure you call `initializeApp` before using other Firebase services.
-  await Firebase.initializeApp(
-    options: const FirebaseOptions(
-    apiKey: 'AIzaSyDNbeNlSQb8NyHK-z-JlVQWicssGnzyJms',
-    appId: '1:526848120057:android:e2b0eb76acb9bd701ebe28',
-    messagingSenderId: '526848120057',
-    projectId: 'khidma-plus-52001',
-    databaseURL: 'https://khidma-plus-52001-default-rtdb.firebaseio.com',
-    storageBucket: 'khidma-plus-52001.firebasestorage.app',
-    ),
-  );
+  // FIX #4: Check if already initialized to avoid duplicate initialization,
+  // and use the correct platform-specific Firebase options.
+  if (Firebase.apps.isEmpty) {
+    if (Platform.isIOS) {
+      await Firebase.initializeApp(
+        name: 'Khidma Provider',
+        options: const FirebaseOptions(
+          apiKey: 'AIzaSyCYl_fGjuDX-rMHwNyncbTkUPyfyqq7htY',
+          appId: '1:526848120057:ios:6283f602c1c024ac1ebe28',
+          messagingSenderId: '526848120057',
+          projectId: 'khidma-plus-52001',
+          databaseURL: 'https://khidma-plus-52001-default-rtdb.firebaseio.com',
+          storageBucket: 'khidma-plus-52001.firebasestorage.app',
+          androidClientId: '526848120057-9656bjp8n0k53ad8mtm6m3d89qr7u2ln.apps.googleusercontent.com',
+          iosClientId: '526848120057-4pcsheifnmgt6uhkjamsh74f89odlhac.apps.googleusercontent.com',
+          iosBundleId: 'com.khidmaplus.provider',
+        ),
+      );
+    } else {
+      await Firebase.initializeApp(
+        name: 'Khidma Provider',
+        options: const FirebaseOptions(
+          apiKey: 'AIzaSyDNbeNlSQb8NyHK-z-JlVQWicssGnzyJms',
+          appId: '1:526848120057:android:e2b0eb76acb9bd701ebe28',
+          messagingSenderId: '526848120057',
+          projectId: 'khidma-plus-52001',
+          databaseURL: 'https://khidma-plus-52001-default-rtdb.firebaseio.com',
+          storageBucket: 'khidma-plus-52001.firebasestorage.app',
+        ),
+      );
+    }
+  }
+
   AndroidNotificationChannel channel = AndroidNotificationChannel(
     'high_importance_channel',
     'High Importance Notifications',
