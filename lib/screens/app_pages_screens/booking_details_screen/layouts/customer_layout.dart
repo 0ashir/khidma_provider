@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import '../../../../config.dart';
 
 class CustomerLayout extends StatelessWidget {
@@ -17,10 +15,10 @@ class CustomerLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log("message====${data}");
+    if (data == null) return const SizedBox.shrink();
     return SizedBox(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(language(context, title!),
+      Text(language(context, title ?? ''),
               style: appCss.dmDenseMedium12
                   .textColor(appColor(context).appTheme.lightText))
           .padding(horizontal: Insets.i15, top: Insets.i15),
@@ -41,7 +39,7 @@ class CustomerLayout extends StatelessWidget {
                   width: Sizes.s40,
                   isCircle: true),
           const HSpace(Sizes.s12),
-          Text(data!.name!,
+          Text(data!.name ?? '',
               style: appCss.dmDenseMedium14
                   .textColor(appColor(context).appTheme.darkText))
         ]),

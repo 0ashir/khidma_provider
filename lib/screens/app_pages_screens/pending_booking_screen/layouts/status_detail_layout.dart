@@ -16,6 +16,7 @@ class StatusDetailLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (data == null) return const SizedBox.shrink();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -212,6 +213,8 @@ class StatusDetailLayout extends StatelessWidget {
                 data: data!.consumer,
                 onTapChat: () {
                   final consumer = data!.consumer!;
+                  final chatProvider = Provider.of<ChatProvider>(context, listen: false);
+                  final chatHistoryProvider = Provider.of<ChatHistoryProvider>(context, listen: false);
                   route.pushNamed(context, routeName.chat, arg: {
                     "image": consumer.media != null && consumer.media!.isNotEmpty
                         ? consumer.media![0].originalUrl!
@@ -220,17 +223,15 @@ class StatusDetailLayout extends StatelessWidget {
                     "role": "user",
                     "userId": consumer.id.toString(),
                     "token": consumer.fcmToken,
-                    "phone": consumer.phone.toString(),
-                    "code": consumer.code.toString(),
-                    "chatId": Provider.of<ChatProvider>(context, listen: false)
-                        .buildChatId(
+                    "phone": consumer.phone?.toString() ?? "",
+                    "code": consumer.code?.toString() ?? "",
+                    "chatId": chatProvider.buildChatId(
                             bookingId: data!.id.toString(),
                             partnerId: consumer.id.toString()),
                     "bookingId": data!.id.toString(),
                     "bookingNumber": data!.bookingNumber
                   }).then((_) {
-                    Provider.of<ChatHistoryProvider>(context, listen: false)
-                        .onReady(context);
+                    chatHistoryProvider.onReady(context);
                   });
                 },
                 onTapPhone: data!.consumer!.phone != null

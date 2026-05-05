@@ -7,6 +7,12 @@ class CompletedBookingPaymentSummaryLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (bookingModel == null) return const SizedBox.shrink();
+
+    final paymentMethod = bookingModel!.paymentMethod ?? '';
+    final isCompleted = paymentMethod == "on_hand" ||
+        bookingModel!.bookingStatus?.slug == "completed";
+
     return Container(
         decoration: BoxDecoration(
             image: DecorationImage(
@@ -15,17 +21,14 @@ class CompletedBookingPaymentSummaryLayout extends StatelessWidget {
                     : eImageAssets.paymentSummary),
                 fit: BoxFit.fill)),
         child: Column(children: [
-          // BillRowCommon(title: translations!.paymentId, price: "#544"),
-          BillRowCommon(
-              title: translations!.methodType,
-              price: capitalizeFirstLetter(bookingModel!.paymentMethod!)),
-          VSpace(10),
+          if (paymentMethod.isNotEmpty)
+            BillRowCommon(
+                title: translations!.methodType,
+                price: capitalizeFirstLetter(paymentMethod)),
+          const VSpace(10),
           BillRowCommon(
                   title: translations!.status,
-                  price: bookingModel!.paymentMethod! == "on_hand" ||
-                          bookingModel!.bookingStatus!.slug == "completed"
-                      ? "Completed"
-                      : "Pending",
+                  price: isCompleted ? "Completed" : "Pending",
                   style: appCss.dmDenseMedium14
                       .textColor(appColor(context).appTheme.online))
               .padding(bottom: 10),

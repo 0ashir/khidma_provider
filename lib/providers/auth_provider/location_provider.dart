@@ -214,11 +214,11 @@ class LocationProvider with ChangeNotifier {
   //fetch location detail as per lat long
   getAddressFromLatLng(context) async {
     //log("MESS :$position");
+    final locationVal =
+        Provider.of<NewLocationProvider>(context, listen: false);
     await placemarkFromCoordinates(
             newLat ?? position!.latitude, newLog ?? position!.longitude)
         .then((List<Placemark> placeMarks) async {
-      final locationVal =
-          Provider.of<NewLocationProvider>(context, listen: false);
       place = placeMarks[0];
       markers = {};
       //log("place : ${placeMarks[0]}");
