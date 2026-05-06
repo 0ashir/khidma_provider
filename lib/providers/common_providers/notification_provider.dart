@@ -135,8 +135,14 @@ class CustomNotificationController {
 
       var initialzationSettingsAndroid =
           const AndroidInitializationSettings('@mipmap/ic_launcher');
+      const darwinInitializationSettings = DarwinInitializationSettings(
+        requestAlertPermission: true,
+        requestBadgePermission: true,
+        requestSoundPermission: true,
+      );
       var initializationSettings = InitializationSettings(
         android: initialzationSettingsAndroid,
+        iOS: darwinInitializationSettings,
       );
 
       flutterLocalNotificationsPlugin.initialize(initializationSettings);
@@ -168,7 +174,7 @@ class CustomNotificationController {
       //       android: AndroidNotificationDetails(
       //         'default_notification_channel_id',
       //         channel!.name,
-      //         channelDescription: channel!.description,
+      //         channelDescription: channel?.description ?? 'High Importance Notifications',
       //         icon: '@mipmap/ic_launcher',
       //         playSound: true,
       //         importance: Importance.max,
@@ -212,7 +218,7 @@ class CustomNotificationController {
         message.notification!.body,
         NotificationDetails(
           android: AndroidNotificationDetails(
-              channelDescription: channel!.description,
+              channelDescription: channel?.description ?? 'High Importance Notifications',
               'high_importance_channel',
               'High Importance Notifications',
               playSound: true,
@@ -235,7 +241,7 @@ class CustomNotificationController {
         message.notification!.body,
         NotificationDetails(
           android: AndroidNotificationDetails(
-              channelDescription: channel!.description,
+              channelDescription: channel?.description ?? 'High Importance Notifications',
               'high_importance_channel',
               'High Importance Notifications',
               playSound: true,
@@ -464,13 +470,13 @@ showNotification(RemoteMessage remote) async {
   print("---Show Notification ---- ${remote.notification?.title}");
   Map<String, dynamic> notificationData = remote.data;
 
-  String title = remote.notification!.title ?? "",
-      message = remote.notification?.body ?? "";
+  String title = remote.notification?.title ?? remote.data['title'] ?? "",
+      message = remote.notification?.body ?? remote.data['body'] ?? "";
 
   BigPictureStyleInformation? bigPictureStyleInformation;
 
   AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-      channelDescription: channel!.description,
+      channelDescription: channel?.description ?? 'High Importance Notifications',
       icon: "ic_notification",
       'high_importance_channel',
       'your other channel name',

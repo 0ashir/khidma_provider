@@ -574,15 +574,6 @@ class _RouteToPageState extends State<RouteToPage> {
                   // informs them (and you, during debugging) what went wrong.
                   Widget page = child!;
 
-                  if (startupErrors.isNotEmpty) {
-                    page = Stack(
-                      children: [
-                        page,
-                        _StartupErrorBanner(errors: startupErrors),
-                      ],
-                    );
-                  }
-
                   return Directionality(
                     textDirection: lang.locale?.languageCode == 'ar'
                         ? TextDirection.rtl
