@@ -100,6 +100,7 @@ dynamic en = {
   "enterDetails": "Enter Details",
   "enterDescription": "Enter Description",
   "description": "Description",
+  "customerInstructions": "Customer Instructions",
   "next": "Next",
   "fewMoreSteps": "Follow the steps to complete your registration",
   "fewMoreSteps1": "Complete the final steps to join us.",

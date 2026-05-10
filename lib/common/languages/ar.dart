@@ -97,6 +97,7 @@ final dynamic ar = {
   "enterDetails": "أدخل التفاصيل",
   "enterDescription": "أدخل الوصف",
   "description": "وصف",
+  "customerInstructions": "تعليمات العميل",
   "next": "التالي",
   "fewMoreSteps": "اتبع الخطوات لإكمال التسجيل الخاص بك",
   "fewMoreSteps1": "أكمل الخطوات النهائية للانضمام إلينا.",

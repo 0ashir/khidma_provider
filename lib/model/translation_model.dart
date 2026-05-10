@@ -98,6 +98,7 @@ class Translation {
   String? enterDetails;
   String? enterDescription;
   String? description;
+  String? customerInstructions;
   String? next;
   String? fewMoreSteps;
   String? fewMoreSteps1;
@@ -817,6 +818,7 @@ class Translation {
     this.enterDetails,
     this.enterDescription,
     this.description,
+    this.customerInstructions,
     this.next,
     this.fewMoreSteps,
     this.fewMoreSteps1,
@@ -1531,6 +1533,7 @@ class Translation {
     enterDetails = json['enterDetails'] ?? "";
     enterDescription = json['enterDescription'] ?? "";
     description = json['description'] ?? "";
+    customerInstructions = json['customerInstructions'] ?? "";
     next = json['next'] ?? "";
     fewMoreSteps = json['fewMoreSteps'] ?? "";
     fewMoreSteps1 = json['fewMoreSteps1'] ?? "";
@@ -2264,6 +2267,7 @@ class Translation {
     data['enterDetails'] = enterDetails;
     data['enterDescription'] = enterDescription;
     data['description'] = description;
+    data['customerInstructions'] = customerInstructions;
     data['next'] = next;
     data['fewMoreSteps'] = fewMoreSteps;
     data['fewMoreSteps1'] = fewMoreSteps1;
@@ -2985,6 +2989,7 @@ class Translation {
       enterDetails: "Enter Details",
       enterDescription: "Enter Description",
       description: "Description",
+      customerInstructions: "Customer Instructions",
       next: "Next",
       fewMoreSteps: "Follow the steps to complete your registration",
       fewMoreSteps1: "Complete the final steps to join us.",

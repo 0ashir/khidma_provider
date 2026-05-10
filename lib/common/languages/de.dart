@@ -101,6 +101,7 @@ final dynamic de = {
   "enterDetails": "Details eingeben",
   "enterDescription": "Beschreibung eingeben",
   "description": "Beschreibung",
+  "customerInstructions": "Kundenanweisungen",
   "next": "Weiter",
   "fewMoreSteps":
       "Folgen Sie den Schritten, um Ihre Registrierung abzuschließen",

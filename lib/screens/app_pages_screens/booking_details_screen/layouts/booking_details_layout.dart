@@ -106,7 +106,7 @@ class BookingDetailsLayout extends StatelessWidget {
           ]).boxBorderExtension(context,
               bColor: appColor(context).appTheme.stroke),
           if (data!.description != null)
-            Text(language(context, translations!.description),
+            Text(language(context, translations!.customerInstructions),
                     style: appCss.dmDenseRegular12
                         .textColor(appColor(context).appTheme.lightText))
                 .paddingOnly(top: Insets.i15, bottom: Insets.i5),
