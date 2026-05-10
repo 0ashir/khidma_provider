@@ -195,8 +195,52 @@ class StatusDetailLayout extends StatelessWidget {
                     },
                   ).padding(
                     horizontal: Insets.i10,
-                    bottom: Insets.i15,
+                    bottom: data!.description != null && data!.description!.isNotEmpty ? Insets.i10 : Insets.i15,
                   ),
+                if (data!.description != null && data!.description!.isNotEmpty) ...[
+                  const DottedLines(),
+                  const VSpace(Sizes.s10),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SvgPicture.asset(
+                        eSvgAssets.description,
+                        fit: BoxFit.scaleDown,
+                        colorFilter: ColorFilter.mode(
+                          appColor(context).appTheme.darkText,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      VerticalDivider(
+                        thickness: 1,
+                        indent: 2,
+                        endIndent: 20,
+                        width: 1,
+                        color: appColor(context).appTheme.stroke,
+                      ).paddingSymmetric(horizontal: Insets.i9),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              language(context, "Details"),
+                              style: appCss.dmDenseRegular12.textColor(
+                                appColor(context).appTheme.lightText,
+                              ),
+                            ),
+                            const VSpace(Sizes.s4),
+                            Text(
+                              data!.description!,
+                              style: appCss.dmDenseRegular12.textColor(
+                                appColor(context).appTheme.darkText,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ).padding(horizontal: Insets.i10, bottom: Insets.i15),
+                ],
                 // if (data!.bookingStatus != null &&
                 //     data!.address != null)
                 //   if (data!.bookingStatus!.slug != "cancel")

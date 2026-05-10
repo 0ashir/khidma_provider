@@ -140,6 +140,12 @@ class BookingLayout extends StatelessWidget {
                       : "",
               style: appCss.dmDenseMedium12
                   .textColor(appColor(context).appTheme.darkText)),
+          if (data!.description != null && data!.description!.isNotEmpty)
+            StatusRow(
+                title: translations!.description,
+                title2: data!.description!,
+                style: appCss.dmDenseMedium12
+                    .textColor(appColor(context).appTheme.darkText)),
           if (data!.bookingStatus != null)
             StatusRow(
                 title: translations!.payment,

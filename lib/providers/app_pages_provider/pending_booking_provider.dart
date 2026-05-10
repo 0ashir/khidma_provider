@@ -55,9 +55,11 @@ class PendingBookingProvider with ChangeNotifier {
           isLoading = false;
           notifyListeners();
           debugPrint("BOOKING DATA : ${value.data['data']}");
+          log("DESCRIPTION RAW : ${value.data['data']['description']}");
           bookingModel = BookingModel.fromJson(value.data["data"]);
 
           log("BOOKING DATA Is CALLING:${bookingModel!.toJson()}");
+          log("DESCRIPTION PARSED : ${bookingModel!.description}");
           notifyListeners();
         } else {
           isLoading = false;

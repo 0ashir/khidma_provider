@@ -7,9 +7,9 @@ class CurrencyProvider with ChangeNotifier {
   double currencyVal = 1.0;
 
   CurrencyProvider(this.sharedPreferences) {
-    dynamic prefData = jsonDecode(sharedPreferences
-        .getString('currency')
-        .toString()); /* selectedCurrency */
+    dynamic prefData = jsonDecode(
+      sharedPreferences.getString('currency').toString(),
+    ); /* selectedCurrency */
     currency = prefData;
     print("object: ${currency}");
     setVal();
@@ -26,12 +26,14 @@ class CurrencyProvider with ChangeNotifier {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (currency != null) {
         priceSymbol = currency!.symbol!;
-        currencyVal = double.parse(appArray.currencyList[0]["USD"].toString())
-            .roundToDouble();
+        currencyVal = double.parse(
+          appArray.currencyList[0]["USD"].toString(),
+        ).roundToDouble();
       }
       notifyListeners(); // Now safe to call after the build phase
     });
   }
+
   /*setVal() {
     priceSymbol = currency['symbol'].toString();
 
