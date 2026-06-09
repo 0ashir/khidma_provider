@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:fixit_provider/model/translation_model.dart';
 import 'package:fixit_provider/services/api_methods.dart';
 import 'package:fixit_provider/services/api_service.dart';
@@ -21,6 +19,7 @@ export '../common/assets/index.dart';
 export '../providers/index.dart';
 export '../common/extension/text_style_extensions.dart';
 export '../widgets/common_state.dart';
+export '../widgets/translated_text.dart';
 export '../common/extension/spacing.dart';
 export '../common/theme/app_css.dart';
 export '../common/extension/widget_extension.dart';
@@ -75,19 +74,20 @@ extension NotificationTypeExtension on NotificationType {
 }
 
 Future<void> createBookingNotification(NotificationType type) async {
-  log("Calling API for type: ${type.value}");
-  try {
-    final response = await apiServices
-        .getApi("${api.notification}?type=${type.value}", [], isToken: true);
-
-    if (response.isSuccess!) {
-      log("Notification success: ${response.message}");
-    } else {
-      log("Notification failed");
-    }
-  } catch (e) {
-    log("Error in notification: $e");
-  }
+  // TODO: re-enable once SMTP / email is configured on the server.
+  // The notification endpoint triggers an email which currently times out,
+  // causing SMTP errors in every status-change flow.
+  // Uncomment the block below when email is working:
+  //
+  // try {
+  //   final response = await apiServices
+  //       .getApi("${api.notification}?type=${type.value}", [], isToken: true);
+  //   if (response.isSuccess!) {
+  //     log("Notification success: ${response.message}");
+  //   }
+  // } catch (e) {
+  //   log("Error in notification: $e");
+  // }
 }
 
 ThemeService appColor(context) {

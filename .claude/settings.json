@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls /c/FlutterWork/ 2>/dev/null; ls /c/ 2>/dev/null | head -20)",
+      "Read(//c//**)"
+    ],
+    "additionalDirectories": [
+      "c:\\FlutterWork\\fixit_backend\\app\\Listeners",
+      "c:\\FlutterWork\\fixit_backend\\app\\Http\\Controllers\\API",
+      "C:\\FlutterWork\\fixit_user\\lib\\widgets",
+      "C:\\FlutterWork\\fixit_user\\lib\\helper",
+      "C:\\FlutterWork\\fixit_user\\lib"
+    ]
+  }
+}

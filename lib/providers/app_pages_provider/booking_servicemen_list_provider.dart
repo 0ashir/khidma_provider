@@ -125,52 +125,28 @@ class BookingServicemenListProvider with ChangeNotifier {
   //assign serviceman
   onAssignBooking(context) {
     log("messagedfh :$selectService");
-    if (required == 1) {
-      log("required::$required");
-      if (selectedIndex != null) {
-        log("required::$required");
-        log("selectedIndex::$selectedIndex");
-
-        showDialog(
-            context: context,
-            builder: (BuildContext context1) {
-              return AssignSingleServiceman(selectService: selectService);
-            });
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            duration: Duration(milliseconds: 500),
-            content: Text("Please select $required servicemen",
-                style: appCss.dmDenseMedium14
-                    .textColor(appColor(context).appTheme.whiteColor)),
-            backgroundColor: appColor(context).appTheme.red,
-            behavior: SnackBarBehavior.floating));
-      }
+    if (selectService.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          duration: const Duration(milliseconds: 500),
+          content: Text("Please select at least one serviceman",
+              style: appCss.dmDenseMedium14
+                  .textColor(appColor(context).appTheme.whiteColor)),
+          backgroundColor: appColor(context).appTheme.red,
+          behavior: SnackBarBehavior.floating));
+      return;
+    }
+    if (selectService.length == 1) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context1) {
+            return AssignSingleServiceman(selectService: selectService);
+          });
     } else {
-      if (selectService.isNotEmpty) {
-        if (required == selectService.length) {
-          showDialog(
-              context: context,
-              builder: (BuildContext context1) {
-                return AssignMultipleServiceman(selectService: selectService);
-              });
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              duration: Duration(milliseconds: 500),
-              content: Text("Please select $required  servicemen",
-                  style: appCss.dmDenseMedium14
-                      .textColor(appColor(context).appTheme.whiteColor)),
-              backgroundColor: appColor(context).appTheme.red,
-              behavior: SnackBarBehavior.floating));
-        }
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            duration: Duration(milliseconds: 500),
-            content: Text("Please select $required  servicemen",
-                style: appCss.dmDenseMedium14
-                    .textColor(appColor(context).appTheme.whiteColor)),
-            backgroundColor: appColor(context).appTheme.red,
-            behavior: SnackBarBehavior.floating));
-      }
+      showDialog(
+          context: context,
+          builder: (BuildContext context1) {
+            return AssignMultipleServiceman(selectService: selectService);
+          });
     }
   }
 
@@ -188,29 +164,30 @@ class BookingServicemenListProvider with ChangeNotifier {
       String rate = "";
       rate = selectedRates.join(', ');
 
+      const onlineFilter = "&is_online=1";
       String apiUrl = "";
       if (selectedRates.isNotEmpty) {
         log("rate: $rate");
-        apiUrl = "${api.serviceman}?provider_id=${userModel!.id}&rating=$rate";
+        apiUrl = "${api.serviceman}?provider_id=${userModel!.id}&rating=$rate$onlineFilter";
       } else if (searchCtrl.text.isNotEmpty) {
         apiUrl =
-            "${api.serviceman}?provider_id=${userModel!.id}&search=${searchCtrl.text}";
+            "${api.serviceman}?provider_id=${userModel!.id}&search=${searchCtrl.text}$onlineFilter";
       } else if (yearValue != null) {
         apiUrl =
-            "${api.serviceman}?provider_id=${userModel!.id}&experience=${yearValue == "highestExperience" ? "high" : "low"}";
+            "${api.serviceman}?provider_id=${userModel!.id}&experience=${yearValue == "highestExperience" ? "high" : "low"}$onlineFilter";
       } else if (yearValue != null && selectedRates.isNotEmpty) {
         apiUrl =
-            "${api.serviceman}?provider_id=${userModel!.id}&experience=${yearValue == "highestExperience" ? "high" : "low"}&rating=$rate";
+            "${api.serviceman}?provider_id=${userModel!.id}&experience=${yearValue == "highestExperience" ? "high" : "low"}&rating=$rate$onlineFilter";
       } else if (yearValue != null && searchCtrl.text.isNotEmpty) {
         apiUrl =
-            "${api.serviceman}?provider_id=${userModel!.id}&experience=${yearValue == "highestExperience" ? "high" : "low"}&search=${searchCtrl.text}";
+            "${api.serviceman}?provider_id=${userModel!.id}&experience=${yearValue == "highestExperience" ? "high" : "low"}&search=${searchCtrl.text}$onlineFilter";
       } else if (yearValue != null &&
           searchCtrl.text.isNotEmpty &&
           selectedRates.isNotEmpty) {
         apiUrl =
-            "${api.serviceman}?provider_id=${userModel!.id}&experience=${yearValue == "highestExperience" ? "high" : "low"}&search=${searchCtrl.text}&rating=$rate";
+            "${api.serviceman}?provider_id=${userModel!.id}&experience=${yearValue == "highestExperience" ? "high" : "low"}&search=${searchCtrl.text}&rating=$rate$onlineFilter";
       } else {
-        apiUrl = "${api.serviceman}?provider_id=${userModel!.id}";
+        apiUrl = "${api.serviceman}?provider_id=${userModel!.id}$onlineFilter";
       }
 
       await apiServices.getApi(apiUrl, []).then((value) {

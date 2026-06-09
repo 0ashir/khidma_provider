@@ -9,10 +9,11 @@ import 'package:http/http.dart' as http;
 
 import 'environment.dart';
 import 'error/exceptions.dart';
+import 'translation_interceptor.dart';
 
 class ApiServices {
   static var client = http.Client();
-  final dio = Dio();
+  final dio = Dio()..interceptors.add(TranslationInterceptor());
   static List<Map<String, String>> conversationHistory = [];
 
   //to get full path with paramiters
@@ -133,7 +134,8 @@ class ApiServices {
         final response = e.response;
 
         if (response!.data != null) {
-          apiData.message = response.data['message'];
+          log("dioException response.data: ${response.data}");
+          apiData.message = (response.data['message'] ?? response.data['errors']?.toString() ?? response.data.toString()).toString();
           apiData.isSuccess = false;
           apiData.data = 0;
           return apiData;

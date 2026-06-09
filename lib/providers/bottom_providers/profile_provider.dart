@@ -231,12 +231,10 @@ class ProfileProvider with ChangeNotifier {
         /* Provider.of<ServiceListProvider>(context, listen: false)
           .getCategoryService(isAllService: true); */
         // route.pushNamed(context, routeName.);
-      } else if (data.title ==
-          appFonts.appDetails /* translations!.services */) {
-        /* Provider.of<ServiceListProvider>(context, listen: false)
-          .getCategoryService(isAllService: true); */
+      } else if (data.title == appFonts.appDetails) {
         route.pushNamed(context, routeName.appDetails);
-        /* route.pushNamed(context, routeName.serviceList); */
+      } else if (data.title == translations!.changeLanguage) {
+        route.pushNamed(context, routeName.changeLanguage);
       }
     } finally {
       _isGoing = false;

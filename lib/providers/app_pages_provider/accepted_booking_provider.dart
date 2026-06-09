@@ -62,53 +62,85 @@ class AcceptedBookingProvider with ChangeNotifier {
               }));
     } else {
       log("message=-=-=-=-=-=-=-=-=-=-=-=-= ${bookingModel?.requiredServicemen}");
-      if ((bookingModel?.requiredServicemen ?? 1) > 1) {
-        log("DDDD ");
-        route.pushNamed(context, routeName.bookingServicemenList, arg: {
-          "servicemen": bookingModel?.requiredServicemen ?? 1,
-          "data": bookingModel
-        }).then((e) {
-          log(" :$e");
-          if (e != null) {
-            List<ServicemanModel> serMan = e;
-            List ids = [];
-            for (var d in serMan) {
-              ids.add(d.id);
-            }
-            log("SSS :$ids");
-
-            assignServiceman(context, ids,
-                bookingId: bookingModel?.id.toString());
-          }
-        });
-      } else {
-        route.pushNamed(context, routeName.bookingServicemenList, arg: {
-          "servicemen": bookingModel?.requiredServicemen ?? 1,
-          "data": bookingModel
-        }).then((e) {
-          log(" :$bookingModel");
-          if (e != null) {
-            List<ServicemanModel> serMan = e;
-            List ids = [];
-            for (var d in serMan) {
-              ids.add(d.id);
-            }
-            log("SSS :$ids");
-
-            assignServiceman(context, ids,
-                bookingId: bookingModel?.id.toString());
-          }
-        });
-        // log("bookingModel!.requiredServicemen::${bookingModel?.requiredServicemen}");
-        // showModalBottomSheet(
-        //     isScrollControlled: true,
-        //     context: context,
-        //     builder: (context1) {
-        //       return SelectServicemenSheet(
-        //           arguments: bookingModel?.requiredServicemen ?? 1);
-        //     });
-      }
+      // Show dialog: assign to self or assign to servicemen
+      showDialog(
+          context: context,
+          builder: (context1) => AlertDialogCommon(
+                title: translations!.assignBooking,
+                subtext: translations!.doYouWant,
+                image: eGifAssets.dateGif,
+                isTwoButton: true,
+                firstBText: translations!.assignToMe,
+                secondBText: translations!.assignToServicemen,
+                height: Sizes.s145,
+                firstBTap: () {
+                  route.pop(context);
+                  log("Provider assign to self: ${userModel!.id}");
+                  _selfAssignInPlace(context,
+                      bookingId: bookingModel?.id.toString());
+                },
+                secondBTap: () {
+                  route.pop(context);
+                  _pushServicemenList(context, bookingModel);
+                },
+              ));
     }
+  }
+
+  Future<void> _selfAssignInPlace(BuildContext context, {String? bookingId}) async {
+    try {
+      showLoading(context);
+
+      final body = {
+        "booking_id": bookingModel!.id,
+        "servicemen_ids": [userModel!.id],
+      };
+      log("SELF ASSIGN BODY: $body");
+
+      final result = await apiServices.postApi(
+        api.assignBooking, body,
+        isToken: true, isData: true,
+      );
+
+      if (result.isSuccess == true) {
+        createBookingNotification(NotificationType.updateBookingStatusEvent);
+        // Refresh the booking that this provider exposes — it's the one the
+        // current screen (Consumer2<AcceptedBookingProvider, ...>) actually
+        // renders via `value.bookingModel`, so the status updates in place
+        // with no navigation/reload, same as the assign-to-servicemen flow.
+        await getBookingDetailById(context, bookingId);
+        notifyListeners();
+
+        if (context.mounted) {
+          Provider.of<UserDataApiProvider>(context, listen: false)
+              .getBookingHistory(context);
+        }
+      } else {
+        if (context.mounted) {
+          snackBarMessengers(context, message: result.message);
+        }
+      }
+
+      if (context.mounted) hideLoading(context);
+    } catch (e, s) {
+      log("EEEE _selfAssignInPlace: $e => $s");
+      if (context.mounted) hideLoading(context);
+    }
+  }
+
+  void _pushServicemenList(context, BookingModel? bm) {
+    route.pushNamed(context, routeName.bookingServicemenList, arg: {
+      "servicemen": bm?.requiredServicemen ?? 1,
+      "data": bm
+    }).then((e) {
+      log(" :$e");
+      if (e != null) {
+        List<ServicemanModel> serMan = e;
+        List ids = serMan.map((d) => d.id).toList();
+        log("SSS :$ids");
+        assignServiceman(context, ids, bookingId: bm?.id.toString());
+      }
+    });
   }
 
   onTapContinue(context, arguments) {
@@ -153,85 +185,44 @@ class AcceptedBookingProvider with ChangeNotifier {
   //assign serviceman
 
   bool isAssignServiceman = false;
-  assignServiceman(context, List val,
-      {isDirectBack = false, String? bookingId}) async {
-    /* route.pop(context);
-    route.pushNamed(context, routeName.assignBooking, arg: bookingModel!.id); */
+  // Mirrors _selfAssignInPlace: call the API, then refresh `this.bookingModel`
+  // (the one the screen actually renders via Consumer2<AcceptedBookingProvider,
+  // ...>) and notify — no navigation, so the status updates in place exactly
+  // like the "assign to me" flow.
+  assignServiceman(context, List val, {String? bookingId}) async {
     try {
       isAssignServiceman = true;
-      log("message-=-=-=-=-=-= $bookingId");
-      await getBookingDetailById(context, bookingId);
+      showLoading(context);
 
-// Show loading using safe context
-      if (navigatorKey.currentContext != null) {
-        showLoading(navigatorKey.currentContext!);
-      }
-
-      var body = {"booking_id": bookingModel!.id, "servicemen_ids": val};
+      final body = {"booking_id": bookingModel!.id, "servicemen_ids": val};
       log("ASSIGN BODY : $body");
 
-      final value = await apiServices.postApi(api.assignBooking, body,
+      final result = await apiServices.postApi(api.assignBooking, body,
           isToken: true, isData: true);
       isAssignServiceman = false;
-      notifyListeners();
 
-      if (value.isSuccess!) {
+      if (result.isSuccess == true) {
         createBookingNotification(NotificationType.updateBookingStatusEvent);
-        route.pop(context);
-        route.pop(context);
-        /* route.pop(context); */
-        getBookingDetailById(context, bookingModel!.id);
-        route.pushNamed(context, routeName.assignBooking,
-            arg: bookingModel!.id);
-        final common = Provider.of<UserDataApiProvider>(
-          context,
-          /*   navigatorKey.currentContext!, */
-          listen: false,
-        );
-        common.getBookingHistory(context /* navigatorKey.currentContext! */);
+        await getBookingDetailById(context, bookingModel!.id);
+        notifyListeners();
 
-        BookingModel book = bookingModel!;
-
-        if (isDirectBack) {
-          navigatorKey.currentState?.pop();
-          navigatorKey.currentState?.pop();
-          hideLoading(navigatorKey.currentContext!);
-          navigatorKey.currentState
-              ?.pushNamed(routeName.assignBooking, arguments: book.id);
-        } else {
-          if (selectIndex == 0) {
-            await Future.delayed(const Duration(milliseconds: 150));
-            navigatorKey.currentState?.pop();
-            hideLoading(context /* navigatorKey.currentContext! */);
-
-            log("message-=-=-=-=-=-= ${book.id}");
-            /*  navigatorKey.currentState
-                ?.pushNamed(routeName.assignBooking, arguments: book.id); */
-          } else {
-            hideLoading(navigatorKey.currentContext!);
-            await Future.delayed(const Duration(milliseconds: 150));
-            navigatorKey.currentState?.pop();
-            navigatorKey.currentState?.pop();
-          }
+        if (context.mounted) {
+          Provider.of<UserDataApiProvider>(context, listen: false)
+              .getBookingHistory(context);
         }
       } else {
-        isAssignServiceman = false;
-        // hideLoading(navigatorKey.currentContext!);
-        navigatorKey.currentState?.pop();
-        navigatorKey.currentState?.pop();
-        snackBarMessengers(
-          navigatorKey.currentContext,
-          color: appColor(navigatorKey.currentContext!).appTheme.red,
-          message: value.message,
-        );
+        notifyListeners();
+        if (context.mounted) {
+          snackBarMessengers(context, message: result.message);
+        }
       }
+
+      if (context.mounted) hideLoading(context);
     } catch (e, s) {
       isAssignServiceman = false;
       log("EEEE assignServiceman Accepted : $e====> $s");
-      /* route.pop(context); */
-      // hideLoading(context);
       notifyListeners();
-      log("EEEE assignServiceman Accepted : $e====> $s");
+      if (context.mounted) hideLoading(context);
     }
   }
 
@@ -256,23 +247,20 @@ class AcceptedBookingProvider with ChangeNotifier {
   //booking detail by id
   getBookingDetailById(context, id) async {
     isLoading = true;
+    notifyListeners();
     try {
-      await apiServices
-          .getApi("${api.booking}/$id", [], isToken: true, isData: true)
-          .then((value) {
-        if (value.isSuccess!) {
-          isLoading = false;
-          // log("DHRUVU :${value.data}");
-          notifyListeners();
-          bookingModel = BookingModel.fromJson(value.data['data']);
-          notifyListeners();
-        } else {
-          isLoading = false;
-          snackBarMessengers(context, message: value.message);
-          notifyListeners();
+      final response = await apiServices
+          .getApi("${api.booking}/$id", [], isToken: true, isData: true);
+      if (response.isSuccess == true && response.data != null) {
+        final data = response.data['data'];
+        if (data != null) {
+          bookingModel = BookingModel.fromJson(data);
         }
-      });
+      }
     } catch (e) {
+      log("EEEE getBookingDetailById accepted: $e");
+    } finally {
+      isLoading = false;
       notifyListeners();
     }
   }

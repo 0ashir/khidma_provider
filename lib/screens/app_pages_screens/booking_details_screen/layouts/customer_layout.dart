@@ -1,4 +1,4 @@
-import '../../../../config.dart';
+﻿import '../../../../config.dart';
 
 class CustomerLayout extends StatelessWidget {
   final UserModel? data;
@@ -18,7 +18,7 @@ class CustomerLayout extends StatelessWidget {
     if (data == null) return const SizedBox.shrink();
     return SizedBox(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(language(context, title ?? ''),
+      TranslatedText(title ?? '',
               style: appCss.dmDenseMedium12
                   .textColor(appColor(context).appTheme.lightText))
           .padding(horizontal: Insets.i15, top: Insets.i15),
@@ -81,3 +81,4 @@ class CustomerLayout extends StatelessWidget {
     ])).boxShapeExtension(color: appColor(context).appTheme.fieldCardBg);
   }
 }
+

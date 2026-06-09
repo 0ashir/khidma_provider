@@ -62,7 +62,6 @@ class TimeSlotProvider with ChangeNotifier {
       );
     }
     log("Initialized selectedSlots: ${selectedSlots.length} days, ${selectedSlots.isNotEmpty ? selectedSlots[0].length : 0} slots");
-    notifyListeners();
   }
 
   // Format time to 24-hour or 12-hour with AM/PM
@@ -342,96 +341,84 @@ class TimeSlotProvider with ChangeNotifier {
   }
 
   // API call to add/update time slots
-  // Updated timeSlotAddApi
   Future<void> timeSlotAddApi(BuildContext context) async {
     try {
       showLoading(context);
       isLoading = true;
       notifyListeners();
 
-      // Fetch latest server state to ensure accuracy
-      await fetchTimeSlots();
-      List timeSlotList = [];
-      for (var d in appArray.timeSlotList) {
-        timeSlotList.add(d.toJson());
-        notifyListeners();
-      }
-      log("getSelectedTimesForDay(selectedDayIndex)L::${getSelectedTimesForDay(selectedDayIndex)}");
+      // Build payload from all days
       List<Map<String, dynamic>> timeSlots = [];
-
       for (int i = 0; i < appArray.timeSlotList.length; i++) {
-        final day = appArray.timeSlotList[i].day.toString(); // e.g. "MONDAY"
-        final slots = getSelectedTimesForDay(i); // List<String>
-        final isActive = slots.isNotEmpty ? "1" : "0"; // active if slots exist
-
+        final day = appArray.timeSlotList[i].day.toString();
+        final slots = getSelectedTimesForDay(i);
         timeSlots.add({
           "day": day,
           "slots": slots,
-          "is_active": isActive,
+          "is_active": slots.isNotEmpty ? 1 : 0,
         });
       }
 
-      var body = {
-        "time_slots": timeSlots,
-      };
-
+      final body = {"time_slots": timeSlots};
       log("TIME SLOT BODY => $body");
 
-      // Call POST API for creating slots
-      if (getSelectedTimesForDay(selectedDayIndex).isNotEmpty) {
-        final response = await apiServices.postApi(
-          api.providerTimeSlot,
-          body,
-          isToken: true,
-        );
-        log("POST API Response: ${response.message}");
-        if (response.isSuccess!) {
-          snackBarMessengers(
-            isDuration: true,
-            context,
-            message: "Slots created successfully.",
-            color: appColor(context).appTheme.primary,
-          );
-        } else {
-          snackBarMessengers(
-            isDuration: true,
-            context,
-            message: response.message ?? "Failed to create slots.",
-            color: Colors.red,
-          );
-          hideLoading(context);
-          return; // Stop if POST fails
-        }
+      // Check if provider already has a time slot record to decide create vs update
+      bool hasExisting = false;
+      try {
+        final check = await apiServices.getApi(
+            "${api.providerTimeSlot}/${userModel!.id}", [],
+            isToken: true, isData: true);
+        hasExisting = check.data != null && check.data is Map && (check.data as Map).containsKey('id');
+      } catch (_) {
+        hasExisting = false;
       }
 
-      // Call PUT API for updating slots
-      if (getSelectedTimesForDay(selectedDayIndex).isNotEmpty) {
+      if (hasExisting) {
+        log("PUT body => ${jsonEncode(body)}");
+        // Update existing record
         final response = await apiServices.putApi(
           api.updateProviderTimeSlot,
           body,
           isToken: true,
         );
-        log("PUT API Response: ${response.message}");
-        if (response.isSuccess!) {
-          snackBarMessengers(
-            isDuration: true,
-            context,
-            message: "Slots updated successfully.",
-            color: appColor(context).appTheme.primary,
-          );
-        } else {
-          snackBarMessengers(
-            isDuration: true,
-            context,
-            message: response.message ?? "Failed to update slots.",
-            color: Colors.red,
-          );
-          hideLoading(context);
-          return; // Stop if PUT fails
-        }
+        log("PUT Response: ${response.message}");
+        hideLoading(context);
+        snackBarMessengers(
+          isDuration: true,
+          context,
+          message: response.isSuccess!
+              ? "Slots updated successfully."
+              : response.message ?? "Failed to update slots.",
+          color: response.isSuccess!
+              ? appColor(context).appTheme.primary
+              : Colors.red,
+        );
+      } else {
+        // Create new record
+        final response = await apiServices.postApi(
+          api.providerTimeSlot,
+          body,
+          isToken: true,
+        );
+        log("POST Response: ${response.message}");
+        hideLoading(context);
+        snackBarMessengers(
+          isDuration: true,
+          context,
+          message: response.isSuccess!
+              ? "Slots created successfully."
+              : response.message ?? "Failed to create slots.",
+          color: response.isSuccess!
+              ? appColor(context).appTheme.primary
+              : Colors.red,
+        );
       }
-    } catch (e,s) {
+    } catch (e, s) {
       log("EEEE::$e ==---=---= $s");
+      hideLoading(context);
+    } finally {
+      isLoading = false;
+      notifyListeners();
     }
   }
 
@@ -442,7 +429,7 @@ class TimeSlotProvider with ChangeNotifier {
       notifyListeners();
       final response = await apiServices.getApi(
           "${api.providerTimeSlot}/${userModel!.id}", [],
-          isToken: true);
+          isToken: true, isData: true);
       log("GET API Response: ${response}");
 
       /*  if (response.isSuccess!) { */

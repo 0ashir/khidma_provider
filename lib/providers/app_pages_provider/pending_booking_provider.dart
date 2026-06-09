@@ -15,6 +15,7 @@ class PendingBookingProvider with ChangeNotifier {
   final GlobalKey<FormState> amountFormKey = GlobalKey<FormState>();
 
   bool isServicemen = false, isAmount = false, isNotify = false;
+  bool isAssigningNow = false; // true while the self-assign API call is in flight
 
   onReady(context) {
     isLoading = true;
@@ -46,32 +47,21 @@ class PendingBookingProvider with ChangeNotifier {
   //booking detail by id
   getBookingDetailById(context, id) async {
     isLoading = true;
-    print("object===========> ${api.booking}/$id");
+    notifyListeners();
     try {
-      await apiServices
-          .getApi("${api.booking}/$id", [], isToken: true, isData: true)
-          .then((value) {
-        if (value.isSuccess!) {
-          isLoading = false;
-          notifyListeners();
-          debugPrint("BOOKING DATA : ${value.data['data']}");
-          log("DESCRIPTION RAW : ${value.data['data']['description']}");
-          bookingModel = BookingModel.fromJson(value.data["data"]);
-
-          log("BOOKING DATA Is CALLING:${bookingModel!.toJson()}");
-          log("DESCRIPTION PARSED : ${bookingModel!.description}");
-          notifyListeners();
-        } else {
-          isLoading = false;
-          Navigator.pushReplacementNamed(context, routeName.intro);
-          showErrorToast(context, value.message);
+      final response = await apiServices
+          .getApi("${api.booking}/$id", [], isToken: true, isData: true);
+      if (response.isSuccess == true && response.data != null) {
+        final data = response.data['data'];
+        if (data != null) {
+          bookingModel = BookingModel.fromJson(data);
+          _pendingStatus = null; // real data arrived — stop overriding
         }
-      });
-
-      notifyListeners();
+      }
     } catch (e, s) {
+      log("getBookingDetailById pending error: $e => $s");
+    } finally {
       isLoading = false;
-      print("object===========> $e,========> $s");
       notifyListeners();
     }
   }
@@ -103,144 +93,225 @@ class PendingBookingProvider with ChangeNotifier {
     });
   }
 
-  //update status
+  // Optimistic status slug — set immediately so the UI updates before the
+  // server responds. Cleared once getBookingDetailById brings back real data.
+  String? _pendingStatus;
+  String get displayStatus =>
+      _pendingStatus ?? bookingModel?.bookingStatus?.slug ?? '';
+
   bool isLoadingStatus = false;
+  bool loading = false;
 
-  updateStatus(
-    BuildContext context,
-    id, {
-    bool isCancel = false,
-    bool isBack = false,
-    bool isServiceAssgn = false,
-  }) async {
-    isLoadingStatus = true;
+  onAcceptBooking(context) {
+    loading = true;
     notifyListeners();
+    _updateAcceptStatus(context, bookingModel!.id);
+  }
+
+  _updateAcceptStatus(BuildContext context, id) async {
+    showLoading(context);
     try {
-      log("id khjdfjkadsfhkads $id");
-      // showLoading(context);
+      final response = await apiServices.putApi(
+          "${api.booking}/$id", {"booking_status": appFonts.accepted},
+          isToken: true, isData: true);
 
-      notifyListeners();
-      dynamic data;
-      if (isCancel) {
-        data = {
-          "reason": reasonCtrl.text,
-          "booking_status":
-              translations?.cancel ?? "cancelled", // Null-safe translations
-        };
-      } else {
-        data = isServiceAssgn == true
-            ? {"booking_status": appFonts.assigned}
-            : {"booking_status": appFonts.accepted};
-      }
-
-      log("DATA: $data");
-      await apiServices
-          .putApi("${api.booking}/$id", data, isToken: true, isData: true)
-          .then((value) {
-        isLoadingStatus = false;
-        loading = false;
-        hideLoading(context);
-        notifyListeners();
-
-        if (value.isSuccess == true && value.data != null) {
-          createBookingNotification(NotificationType.updateBookingStatusEvent);
-          getBookingDetailById(context, id);
-
-          final commonApi =
-              Provider.of<CommonApiProvider>(context, listen: false);
-          final dash = Provider.of<UserDataApiProvider>(context, listen: false);
-          dash.getBookingHistory(context);
-          commonApi.getDashBoardApi(context);
-
-          try {
-            bookingModel = BookingModel.fromJson(value.data);
-          } catch (e) {
-            log("Error parsing BookingModel: $e");
-            snackBarMessengers(context,
-                message: "Failed to parse booking data");
-            return;
-          }
-
-          // Update user booking history
-          final userApi =
-              Provider.of<UserDataApiProvider>(context, listen: false);
-          userApi.getBookingHistory(context);
-          userApi.notifyListeners();
-
-          if (isCancel) {
-            reasonCtrl.text = "";
-            isLoadingStatus = true;
-            route.pop(context);
-            route.pop(context);
-            notifyListeners();
-            if (isBack) {
-              log("=======${bookingModel!.id}");
-              // Pop two screens for cancellation
-              /*  Navigator.popUntil(
-                  context, (route) => route.isFirst); // Clear stack to root
-              route.pushNamed(context, routeName.cancelledBooking,
-                  arg: bookingModel!.id); */
-            } else {
-              log("=======23${bookingModel!.id}");
-              /*  Navigator.pop(context); // Pop current screen
-              route.pushNamed(context, routeName.cancelledBooking,
-                  arg: bookingModel!.id); */
-            }
-          } else {
-            log("Booking ID: ${bookingModel!.id}");
-            // Show dialog for accepted booking
-            showDialog(
-                context: context,
-                builder: (context1) => AppAlertDialogCommon(
-                    height: Sizes.s100,
-                    title: translations?.assignBooking ?? "Assign Booking",
-                    firstBText: translations?.doItLater ?? "Do it later",
-                    secondBText: translations?.yes ?? "Yes",
-                    image: eGifAssets.dateGif,
-                    subtext:
-                        translations?.doYouWant ?? "Do you want to assign now?",
-                    firstBTap: () {
-                      Navigator.pop(context1); // Close dialog
-                      Navigator.pop(context); // Pop previous screen
-                    },
-                    secondBTap: () {
-                      log("DDDDD");
-
-                      Navigator.pop(context1); // Close dialog
-                      Navigator.pop(context1);
-                      userApi.getBookingHistory(context);
-                      userApi.notifyListeners();
-                      route.pushNamed(context, routeName.acceptedBooking,
-                          arg: bookingModel!.id);
-                      notifyListeners();
-                    }));
-          }
-        } else {
-          isLoadingStatus = false;
-          loading = false;
-          notifyListeners();
-          showErrorToast(context, value.message);
-          /*  snackBarMessengers(context,
-              message: value.message ?? "Failed to update booking status"); */
-        }
-      });
-    } catch (e) {
-      isLoadingStatus = false;
-      loading = false;
       hideLoading(context);
+      loading = false;
 
+      if (response.isSuccess == true) {
+        // Show "Assign Now" button only after server confirms acceptance
+        _pendingStatus = appFonts.accepted;
+        notifyListeners();
+        createBookingNotification(NotificationType.updateBookingStatusEvent);
+        // Only refresh this booking's detail — skip full list + dashboard
+        // to avoid redundant API calls; those refresh when the user navigates back.
+        getBookingDetailById(context, id);
+      } else {
+        _pendingStatus = null;
+        showErrorToast(context, response.message);
+        notifyListeners();
+      }
+    } catch (e) {
+      hideLoading(context);
+      loading = false;
+      _pendingStatus = null;
       showErrorToast(context, e.toString());
-      /*  snackBarMessengers(context, message: e.toString()); */
       notifyListeners();
     }
   }
 
-  bool loading = false;
+  // Reject/cancel — keeps the reason dialog, then pops back on success.
+  updateStatus(BuildContext context, id, {bool isCancel = false}) async {
+    isLoadingStatus = true;
+    notifyListeners();
+    try {
+      final data = {
+        "reason": reasonCtrl.text,
+        "booking_status": "cancel",
+      };
+      final response = await apiServices.putApi(
+          "${api.booking}/$id", data,
+          isToken: true, isData: true);
+      isLoadingStatus = false;
 
-  //accept booking
-  onAcceptBooking(context) {
-    loading = true;
-    updateStatus(context, bookingModel!.id,
-        isServiceAssgn: bookingModel!.servicemen!.isEmpty ? false : true);
+      if (response.isSuccess == true) {
+        reasonCtrl.text = "";
+        createBookingNotification(NotificationType.updateBookingStatusEvent);
+        Provider.of<UserDataApiProvider>(context, listen: false)
+            .getBookingHistory(context);
+        route.pop(context); // close reason dialog
+        route.pop(context); // pop booking detail
+      } else {
+        showErrorToast(context, response.message);
+      }
+    } catch (e) {
+      isLoadingStatus = false;
+      showErrorToast(context, e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  // Shows the assign dialog from the "Assign Now" button on the detail screen.
+  showAssignDialog(BuildContext context) {
+    final bookingId = bookingModel?.id;
+    if (bookingId == null) return;
+    showDialog(
+        context: context,
+        builder: (ctx) {
+          final nav = Navigator.of(ctx);
+          if (isFreelancer) {
+            return AppAlertDialogCommon(
+                height: Sizes.s100,
+                title: translations?.assignToMe ?? "Assign to Me",
+                image: eImageAssets.assignMe,
+                subtext:
+                    translations?.areYouSureYourself ?? "Assign to yourself?",
+                firstBText: translations?.cancel ?? "Cancel",
+                secondBText: translations?.yes ?? "Yes",
+                firstBTap: () => nav.pop(),
+                secondBTap: () {
+                  nav.pop();
+                  _assignToSelf(bookingId, nav);
+                });
+          }
+          return AlertDialogCommon(
+              isTwoButton: true,
+              title: translations?.assignBooking ?? "Assign Booking",
+              image: eGifAssets.dateGif,
+              subtext: translations?.doYouWant ?? "How to assign?",
+              firstBText: translations?.assignToMe ?? "Assign to Me",
+              secondBText:
+                  translations?.assignToServicemen ?? "Assign to Servicemen",
+              height: Sizes.s145,
+              firstBTap: () {
+                nav.pop();
+                isAssigningNow = true;
+                notifyListeners();
+                _assignToSelf(bookingId, nav);
+              },
+              secondBTap: () {
+                nav.pop();
+                // Capture the result from BookingServicemenListScreen — the
+                // selected servicemen — and actually call the assign API with
+                // it. The previous code pushed the screen and discarded its
+                // result, so the booking was never assigned on this path
+                // (only a manual retry through a different screen worked).
+                nav.pushNamed(routeName.bookingServicemenList, arguments: {
+                  "servicemen": bookingModel?.requiredServicemen ?? 1,
+                  "data": bookingModel,
+                }).then((result) {
+                  if (result != null) {
+                    final serviceman = (result as List).cast<ServicemanModel>();
+                    final ids = serviceman.map((d) => d.id).toList();
+                    _assignToServicemen(bookingId, ids, nav);
+                  }
+                });
+              });
+        });
+  }
+
+  // Self-assign: provider assigns themselves after accepting the booking.
+  // nav is captured from Navigator.of(context1) before any pops, so it
+  // stays valid even after the dialog and booking-detail contexts are gone.
+  Future<void> _assignToSelf(int bookingId, NavigatorState nav) async {
+    try {
+      showLoading(nav.context);
+
+      final body = {
+        "booking_id": bookingId,
+        "servicemen_ids": [userModel!.id],
+      };
+      log("SELF ASSIGN BODY: $body");
+
+      final result = await apiServices.postApi(
+        api.assignBooking, body,
+        isToken: true, isData: true,
+      );
+
+      hideLoading(nav.context);
+
+      // Always navigate — assignment itself succeeds even when backend SMTP
+      // fails to send the notification email. The assignBooking screen's
+      // onReady will fetch fresh data, so no separate getBookingHistory needed.
+      createBookingNotification(NotificationType.updateBookingStatusEvent);
+      nav.pushNamed(routeName.assignBooking, arguments: bookingId);
+
+      if (result.isSuccess != true) {
+        final msg = result.message.toLowerCase();
+        // Suppress server-side email/SMTP errors — they don't affect the
+        // assignment itself. The backend error contains the SMTP host/port.
+        final isEmailError = msg.contains('smtp') ||
+            msg.contains('mail') ||
+            msg.contains('email') ||
+            msg.contains('authentication') ||
+            msg.contains('delivery') ||
+            msg.contains(':465') ||
+            msg.contains(':25') ||
+            msg.contains(':587') ||
+            msg.contains('ssl://') ||
+            msg.contains('connection could not');
+        if (!isEmailError) {
+          snackBarMessengers(nav.context, message: result.message);
+        }
+      }
+    } catch (e, s) {
+      log("EEEE _assignToSelf: $e => $s");
+      try { hideLoading(nav.context); } catch (_) {}
+    } finally {
+      isAssigningNow = false;
+      notifyListeners();
+    }
+  }
+
+  // Assign to servicemen — mirrors _assignToSelf so both paths behave
+  // identically: call the API with the chosen servicemen ids, then navigate
+  // to the assignBooking screen which fetches the fresh (now-assigned) data.
+  Future<void> _assignToServicemen(
+      int bookingId, List ids, NavigatorState nav) async {
+    try {
+      showLoading(nav.context);
+
+      final body = {"booking_id": bookingId, "servicemen_ids": ids};
+      log("ASSIGN BODY : $body");
+
+      final result = await apiServices.postApi(
+        api.assignBooking, body,
+        isToken: true, isData: true,
+      );
+
+      hideLoading(nav.context);
+
+      createBookingNotification(NotificationType.updateBookingStatusEvent);
+      createBookingNotification(NotificationType.assignBooking);
+      nav.pushNamed(routeName.assignBooking, arguments: bookingId);
+
+      if (result.isSuccess != true) {
+        snackBarMessengers(nav.context, message: result.message);
+      }
+    } catch (e, s) {
+      log("EEEE _assignToServicemen: $e => $s");
+      try { hideLoading(nav.context); } catch (_) {}
+    }
   }
 }

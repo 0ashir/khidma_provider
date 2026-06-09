@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+﻿import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../../config.dart';
 
@@ -67,7 +67,7 @@ class TopCategoriesLayout extends StatelessWidget {
                   ? Image.asset(data?.title == "All" ? eImageAssets.all: eImageAssets.noImageFound1, color: appColor(context).appTheme.primary, fit: BoxFit.cover, height: Sizes.s22, width: Sizes.s22).paddingAll(Insets.i18)
                   : Image.asset(data?.title == "All" ? eImageAssets.all:eImageAssets.noImageFound1, fit: BoxFit.cover, height: Sizes.s22, width: Sizes.s22).paddingAll(Insets.i18)),
       const VSpace(Sizes.s8),
-      Text(data!.title!,
+      TranslatedText(data!.title ?? "",
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
@@ -78,3 +78,4 @@ class TopCategoriesLayout extends StatelessWidget {
     ]).inkWell(onTap: onTap).paddingOnly(right: rPadding ?? 0);
   }
 }
+

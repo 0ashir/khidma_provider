@@ -1,4 +1,4 @@
-import '../../../../config.dart';
+﻿import '../../../../config.dart';
 
 class RecentBookingLayout extends StatelessWidget {
   final BookingModel? data;
@@ -12,7 +12,7 @@ class RecentBookingLayout extends StatelessWidget {
     return Column(children: [
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(language(context, data!.service!.title),
+          TranslatedText(data?.service?.title ?? "",
               style: appCss.dmDenseMedium16
                   .textColor(appColor(context).appTheme.darkText)),
           Row(children: [
@@ -26,7 +26,7 @@ class RecentBookingLayout extends StatelessWidget {
                     .textColor(appColor(context).appTheme.primary)),
             const HSpace(Sizes.s8),
             if (data!.coupon != null)
-              Text(language(context, "(${data!.coupon!.amount})"),
+              TranslatedText("(${data!.coupon!.amount})",
                   style: appCss.dmDenseMedium14
                       .textColor(appColor(context).appTheme.red))
           ]),
@@ -37,7 +37,7 @@ class RecentBookingLayout extends StatelessWidget {
                   colorFilter: ColorFilter.mode(
                       appColor(context).appTheme.darkText, BlendMode.srcIn)),
               const HSpace(Sizes.s6),
-              Text(language(context, data!.createdAt!),
+              TranslatedText(data?.createdAt ?? "",
                   style: appCss.dmDenseMedium13
                       .textColor(appColor(context).appTheme.darkText)),
               VerticalDivider(
@@ -51,7 +51,7 @@ class RecentBookingLayout extends StatelessWidget {
                   colorFilter: ColorFilter.mode(
                       appColor(context).appTheme.darkText, BlendMode.srcIn)),
               const HSpace(Sizes.s6),
-              Text(language(context, data!.createdAt!),
+              TranslatedText(data?.createdAt ?? "",
                   style: appCss.dmDenseMedium13
                       .textColor(appColor(context).appTheme.darkText))
             ]),
@@ -88,7 +88,7 @@ class RecentBookingLayout extends StatelessWidget {
       ]),
       const VSpace(Sizes.s12),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Text(language(context, translations!.requiredServiceman),
+        Text(translations?.requiredServiceman ?? "",
             style: appCss.dmDenseMedium12
                 .textColor(appColor(context).appTheme.darkText)),
         const HSpace(Sizes.s8),
@@ -165,3 +165,5 @@ class RecentBookingLayout extends StatelessWidget {
         .inkWell(onTap: onTap);
   }
 }
+
+

@@ -15,10 +15,9 @@ class AcceptBookingScreen extends StatelessWidget {
             if (didPop) return;
           },
           child: StatefulWrapper(
-              onInit: () => value.onReady(
-                  context) /* () => Future.delayed(const Duration(milliseconds: 150),
-                  () => value.onReady(context)) */
-              ,
+              onInit: () => Future.delayed(
+                  const Duration(milliseconds: 50),
+                  () => value.onReady(context)),
               child: Scaffold(
                   appBar: AppBarCommon(
                       title: translations!.acceptedBooking,

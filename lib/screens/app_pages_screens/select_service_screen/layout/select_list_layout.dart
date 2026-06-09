@@ -1,4 +1,4 @@
-import '../../../../config.dart';
+﻿import '../../../../config.dart';
 
 class SelectListLayout extends StatelessWidget {
   final Services? data;
@@ -44,7 +44,7 @@ class SelectListLayout extends StatelessWidget {
         const HSpace(Sizes.s12),
         SizedBox(
           width: Sizes.s215,
-          child: Text(language(context, data!.title),
+          child: TranslatedText(data?.title ?? "",
               overflow: TextOverflow.ellipsis,
               style: appCss.dmDenseMedium15
                   .textColor(appColor(context).appTheme.darkText)),
@@ -62,3 +62,4 @@ class SelectListLayout extends StatelessWidget {
         .paddingOnly(bottom: Insets.i15);
   }
 }
+

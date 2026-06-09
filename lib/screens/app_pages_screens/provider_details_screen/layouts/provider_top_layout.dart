@@ -1,4 +1,4 @@
-import 'dart:developer';
+﻿import 'dart:developer';
 
 import 'package:fixit_provider/screens/app_pages_screens/provider_details_screen/layouts/personal_detail_layout.dart';
 
@@ -62,7 +62,7 @@ class ProviderTopLayout extends StatelessWidget {
                                 endIndent: 3)
                             .paddingSymmetric(horizontal: Insets.i10),
                       Text(
-                          "${provider!.experienceDuration ?? 0} ${provider!.experienceInterval != null ? capitalizeFirstLetter(provider!.experienceInterval) : "Years"} ${translations!.of} ${language(context, translations!.experience)}",
+                          "${provider!.experienceDuration ?? 0} ${provider!.experienceInterval != null ? capitalizeFirstLetter(provider?.experienceInterval ?? "") : "Years"} ${translations!.of} ${language(context, translations!.experience)}",
                           style: appCss.dmDenseMedium13
                               .textColor(appColor(context).appTheme.darkText))
                     ])),
@@ -70,15 +70,15 @@ class ProviderTopLayout extends StatelessWidget {
                 const DottedLines(),
                 const VSpace(Sizes.s10),
                 ServicesDeliveredLayout(services: provider!.served ?? "0"),
-                Text(language(context, translations!.detailsOfProvider),
+                Text(translations?.detailsOfProvider ?? "",
                         style: appCss.dmDenseMedium12
                             .textColor(appColor(context).appTheme.lightText))
                     .paddingOnly(top: Insets.i15, bottom: Insets.i8),
                 if (provider!.description != null)
-                  Text(provider!.description!,
+                  TranslatedText(provider!.description ?? "",
                       style: appCss.dmDenseMedium14
                           .textColor(appColor(context).appTheme.darkText)),
-                Text(language(context, translations!.personalInfo),
+                Text(translations?.personalInfo ?? "",
                         style: appCss.dmDenseMedium12
                             .textColor(appColor(context).appTheme.lightText))
                     .paddingOnly(top: Insets.i15, bottom: Insets.i8),
@@ -91,3 +91,5 @@ class ProviderTopLayout extends StatelessWidget {
     });
   }
 }
+
+

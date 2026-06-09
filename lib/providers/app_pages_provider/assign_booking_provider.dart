@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'package:fixit_provider/config.dart';
-import 'package:fixit_provider/utils/toast_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AssignBookingProvider with ChangeNotifier {
@@ -112,25 +111,20 @@ class AssignBookingProvider with ChangeNotifier {
   //booking detail by id
   getBookingDetailById(context) async {
     isLoading = true;
+    notifyListeners();
     try {
-      await apiServices
-          .getApi("${api.booking}/$id", [], isToken: true, isData: true)
-          .then((value) {
-        if (value.isSuccess!) {
-          isLoading = false;
-          notifyListeners();
-          // debugPrint("New BOOKING DATA : ${value.data}");
-          bookingModel = BookingModel.fromJson(value.data['data']);
+      final response = await apiServices
+          .getApi("${api.booking}/$id", [], isToken: true, isData: true);
+      if (response.isSuccess == true && response.data != null) {
+        final data = response.data['data'];
+        if (data != null) {
+          bookingModel = BookingModel.fromJson(data);
           log("bookingModel::$bookingModel");
-          notifyListeners();
-        } else {
-          isLoading = false;
-          snackBarMessengers(context, message: value.message);
-          notifyListeners();
         }
-      });
+      }
     } catch (e, s) {
-      log("EEEE :booo :$e////$s");
+      log("EEEE getBookingDetailById assign: $e////$s");
+    } finally {
       isLoading = false;
       notifyListeners();
     }
@@ -151,60 +145,108 @@ class AssignBookingProvider with ChangeNotifier {
         data = {"booking_status": appFonts.ontheway};
       }
       log("DATA :$data");
-      await apiServices
-          .putApi("${api.booking}/${bookingModel!.id}", data,
-              isToken: true, isData: true)
-          .then((value) {
-        log("DATA ss:${value.data} //${value.isSuccess} // ${value.message}");
+      final response = await apiServices.putApi(
+          "${api.booking}/${bookingModel!.id}", data,
+          isToken: true, isData: true);
 
-        showErrorToast(context, value.message);
+      hideLoading(context);
+      notifyListeners();
 
-        route.pop(context);
-
-        notifyListeners();
-        if (value.isSuccess!) {
-          bookingModel = BookingModel.fromJson(value.data);
-          final userApi =
-              Provider.of<UserDataApiProvider>(context, listen: false);
-          userApi.loadBookingsFromLocal(context);
-          userApi.notifyListeners();
-          if (isCancel) {
-            route.pop(context);
-            route.pop(context);
-            route.pushNamed(context, routeName.cancelledBooking,
-                arg: bookingModel!.id);
-          } else {
-            log("isAssign :$isAssign");
-            if (isAssign) {
-              showDialog(
-                  context: context,
-                  builder: (context1) => AppAlertDialogCommon(
-                      height: Sizes.s100,
-                      title: translations!.assignBooking,
-                      firstBText: translations!.doItLater,
-                      secondBText: translations!.yes,
-                      image: eGifAssets.dateGif,
-                      subtext: translations!.doYouWant,
-                      firstBTap: () => route.pop(context),
-                      secondBTap: () {
-                        route.pop(context);
-                        route.pop(context);
-                        route.pop(context);
-                        route.pushNamed(context, routeName.ongoingBooking,
-                            arg: bookingModel!.id);
-                      }));
-            } else {
-              route.pop(context);
-              route.pushNamed(context, routeName.ongoingBooking,
-                  arg: bookingModel!.id);
-            }
-          }
+      if (response.isSuccess == true) {
+        final currentId = bookingModel!.id;
+        Provider.of<UserDataApiProvider>(context, listen: false)
+            .loadBookingsFromLocal(context);
+        if (isCancel) {
+          route.pop(context);
+          route.pop(context);
+          route.pop(context);
+          route.pushNamed(context, routeName.cancelledBooking, arg: currentId);
+        } else {
+          route.pop(context);
+          route.pushNamed(context, routeName.ongoingBooking, arg: currentId);
         }
-      });
+      } else {
+        snackBarMessengers(context, message: response.message);
+      }
     } catch (e, s) {
       log("EEEE update : $e==========> $s");
       hideLoading(context);
       notifyListeners();
+    }
+  }
+
+// Reassign booking to a different serviceman (or self)
+  onReassignTap(context) {
+    if (isFreelancer) {
+      showDialog(
+          context: context,
+          builder: (context1) => AppAlertDialogCommon(
+                height: Sizes.s145,
+                title: translations!.assignToMe,
+                firstBText: translations!.cancel,
+                secondBText: translations!.yes,
+                image: eImageAssets.assignMe,
+                subtext: translations!.areYouSureYourself,
+                secondBTap: () {
+                  route.pop(context);
+                  _doReassign(context, [userModel!.id]);
+                },
+                firstBTap: () => route.pop(context),
+              ));
+    } else {
+      showDialog(
+          context: context,
+          builder: (context1) => AlertDialogCommon(
+                title: translations!.assignBooking,
+                subtext: translations!.doYouWant,
+                image: eGifAssets.dateGif,
+                isTwoButton: true,
+                firstBText: translations!.assignToMe,
+                secondBText: translations!.assignToServicemen,
+                height: Sizes.s145,
+                firstBTap: () {
+                  route.pop(context);
+                  _doReassign(context, [userModel!.id]);
+                },
+                secondBTap: () {
+                  route.pop(context);
+                  route.pushNamed(context, routeName.bookingServicemenList,
+                      arg: {
+                        "servicemen": bookingModel?.requiredServicemen ?? 1,
+                        "data": bookingModel
+                      }).then((e) {
+                    if (e != null) {
+                      final ids =
+                          (e as List<ServicemanModel>).map((s) => s.id).toList();
+                      _doReassign(context, ids);
+                    }
+                  });
+                },
+              ));
+    }
+  }
+
+  Future<void> _doReassign(BuildContext context, List ids) async {
+    try {
+      showLoading(context);
+      final body = {"booking_id": bookingModel!.id, "servicemen_ids": ids};
+      log("REASSIGN BODY: $body");
+      final result = await apiServices.postApi(api.reassignBooking, body,
+          isToken: true, isData: true);
+      if (!context.mounted) return;
+      hideLoading(context);
+      if (result.isSuccess == true) {
+        createBookingNotification(NotificationType.updateBookingStatusEvent);
+        await getBookingDetailById(context);
+        if (!context.mounted) return;
+        Provider.of<UserDataApiProvider>(context, listen: false)
+            .getBookingHistory(context);
+      } else {
+        snackBarMessengers(context, message: result.message);
+      }
+    } catch (e, s) {
+      log("EEEE _doReassign: $e => $s");
+      if (context.mounted) hideLoading(context);
     }
   }
 

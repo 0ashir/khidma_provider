@@ -1,4 +1,4 @@
-import 'dart:developer';
+﻿import 'dart:developer';
 
 import 'package:intl/intl.dart';
 import 'package:fixit_provider/providers/app_pages_provider/job_request_providers/job_request_details_provider.dart';
@@ -51,7 +51,7 @@ class _JobRequestListCardState extends State<JobRequestListCard> {
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                        Text(capitalizeFirstLetter(widget.data!.title),
+                        Text(capitalizeFirstLetter(widget.data?.title ?? ""),
                             style: appCss.dmDenseMedium14.textColor(
                                 appColor(context).appTheme.darkText)),
                         const VSpace(Sizes.s8),
@@ -80,7 +80,7 @@ class _JobRequestListCardState extends State<JobRequestListCard> {
                           shape: SmoothRectangleBorder(
                               borderRadius: SmoothBorderRadius(
                                   cornerRadius: 11, cornerSmoothing: 2))),
-                      child: Text(capitalizeFirstLetter(widget.data!.status),
+                      child: Text(capitalizeFirstLetter(widget.data?.status ?? ""),
                           style: appCss.dmDenseMedium10.textColor(
                               appColor(context).appTheme.whiteColor))),
                   const VSpace(Sizes.s8),

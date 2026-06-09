@@ -34,7 +34,7 @@ class BookingLayout extends StatelessWidget {
                       if (data!.servicePackageId != null)
                         BookingStatusLayout(title: translations!.package)
                     ]),
-                    Text(language(context, data!.service!.title),
+                    TranslatedText(data!.service!.title ?? '',
                             style: appCss.dmDenseMedium16
                                 .textColor(appColor(context).appTheme.darkText))
                         .paddingOnly(top: Insets.i8, bottom: Insets.i3),
@@ -178,7 +178,8 @@ class BookingLayout extends StatelessWidget {
               children: [
                 Image.asset(eImageAssets.bulletDotted)
                     .paddingSymmetric(vertical: Insets.i12),
-                if (data!.consumer != null)
+                if (data!.consumer != null &&
+                    data!.bookingStatus?.slug != 'completed')
                   ServiceProviderLayout(
                           expand: value.isExpand,
                           title: translations!.customer,
@@ -193,10 +194,10 @@ class BookingLayout extends StatelessWidget {
                       .boxShapeExtension(
                           color: appColor(context).appTheme.fieldCardBg,
                           radius: AppRadius.r15),
-                if (data!.servicemen!.isNotEmpty)
+                if (!isServiceman && data!.servicemen!.isNotEmpty)
                   Image.asset(eImageAssets.bulletDotted)
                       .paddingSymmetric(vertical: Insets.i12),
-                if (isFreelancer == false)
+                if (!isServiceman && isFreelancer == false)
                   if (data!.servicemen!.isNotEmpty)
                     Stack(alignment: Alignment.bottomCenter, children: [
                       Column(children: [
@@ -236,14 +237,14 @@ class BookingLayout extends StatelessWidget {
                               onTap: () => value.onExpand(data),
                               color: appColor(context).appTheme.whiteBg) */
                     ]),
-                if (data!.servicemen!.isEmpty)
+                if (!isServiceman && data!.servicemen!.isEmpty)
                   Text(
                           language(context,
                               translations!.noteServicemenNotSelectYet),
                           style: appCss.dmDenseRegular12
                               .textColor(appColor(context).appTheme.lightText))
                       .paddingOnly(top: Insets.i8),
-                if (data!.servicemen!.isEmpty &&
+                if (!isServiceman && data!.servicemen!.isEmpty &&
                     data!.bookingStatus!.slug == translations!.assigned)
                   RichText(
                       text: TextSpan(
@@ -257,7 +258,7 @@ class BookingLayout extends StatelessWidget {
                             text: language(
                                 context, translations!.youAssignedService))
                       ])).paddingOnly(top: Insets.i8),
-                if (data!.servicemen!.isEmpty &&
+                if (!isServiceman && data!.servicemen!.isEmpty &&
                     data!.bookingStatus!.slug == translations!.ongoing)
                   if (isFreelancer != true)
                     RichText(

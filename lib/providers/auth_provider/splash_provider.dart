@@ -171,7 +171,7 @@ class SplashProvider extends ChangeNotifier {
         /*     onUpdate(currencyData, currentZoneModel.first.currency ?? "USD"); */
         onUpdate(currencyData, appSettingModel!.general!.defaultCurrency!);
 
-        onUpdateLanguage(context, appSettingModel!.general!.defaultLanguage!);
+        await onUpdateLanguage(context, appSettingModel!.general!.defaultLanguage!);
         // SharedPreferences pref = await SharedPreferences.getInstance();
         // var selectedLocale = sharedPreferences.getString("selectedLocale");
         // languageProvider.changeLocale(
@@ -214,34 +214,21 @@ class SplashProvider extends ChangeNotifier {
 
   Locale? locale;
 
-  onUpdateLanguage(context, DefaultLanguage data) async {
+  Future<void> onUpdateLanguage(context, DefaultLanguage data) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     final language = Provider.of<LanguageProvider>(context, listen: false);
-    var selectedLocale = sharedPreferences.getString("selectedLocale");
-    /*   log("messagedatadatadavdsfsdta::${data.locale}");
-    log("messagedatadatadavdsfsdta::12${selectedLocale}"); */
+    var selectedLocale = pref.getString("selectedLocale");
 
-    // Locale convertedLocale;
-    // convertedLocale = Locale(selectedLocale.toString(), "AR");
-    if (pref.getString("selectedLocale") == null) {
+    log('🌐 [onUpdateLanguage] savedLocale=$selectedLocale  defaultLocale=${data.locale}');
+
+    if (selectedLocale == null) {
       await pref.setString('selectedLocale', data.locale!);
-
-      language.getLocal();
-      if (selectedLocale == null) {
-        language.getLanguageTranslate(context, languageCode: data.locale);
-      } else {
-        language.getLanguageTranslate(context,
-            languageCode: selectedLocale.toString());
-      }
-    } else {
-      /*  log("messagedatadatadavdsfsdta::${data.locale}"); */
-      language.getLocal();
-      if (selectedLocale == null) {
-        language.getLanguageTranslate(context, languageCode: data.locale);
-      } else {
-        language.getLanguageTranslate(context,
-            languageCode: selectedLocale.toString());
-      }
+      log('🌐 [onUpdateLanguage] No saved locale — saved default: ${data.locale}');
     }
+
+    final langCode = selectedLocale ?? data.locale ?? 'en';
+    log('🌐 [onUpdateLanguage] Fetching translations for: $langCode');
+    await language.getLanguageTranslate(context, languageCode: langCode);
+    log('🌐 [onUpdateLanguage] Translations fetch complete');
   }
 }

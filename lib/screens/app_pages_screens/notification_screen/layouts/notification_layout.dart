@@ -1,4 +1,4 @@
-import 'dart:developer';
+﻿import 'dart:developer';
 
 import 'package:intl/intl.dart';
 
@@ -57,7 +57,7 @@ class NotificationLayout extends StatelessWidget {
                         shape: BoxShape.circle),
                 const HSpace(Sizes.s12),
                 Flexible(
-                  child: Text(data?.data?.title ?? "",
+                  child: TranslatedText(data?.data?.title ?? "",
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       softWrap: false,
@@ -71,7 +71,7 @@ class NotificationLayout extends StatelessWidget {
                   style: appCss.dmDenseRegular12
                       .textColor(appColor(context).appTheme.lightText))
             ]),
-        Text(data!.data!.message ?? "",
+        TranslatedText(data!.data!.message ?? "",
                 style: appCss.dmDenseRegular12.textColor(data!.readAt != null
                     ? appColor(context).appTheme.lightText
                     : appColor(context).appTheme.darkText))
@@ -121,3 +121,4 @@ checkCurrentDateShowMin(date) {
     }
   }
 }
+

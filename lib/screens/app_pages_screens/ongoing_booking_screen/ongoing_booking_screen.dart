@@ -58,7 +58,7 @@ class OngoingBookingScreen extends StatelessWidget {
                                       : OngoingBillSummary(
                                           bookingModel: value.bookingModel),
                                   // const VSpace(Sizes.s20),
-                                  if (value.bookingModel!.advancePaymentEnable!)
+                                  if (value.bookingModel!.advancePaymentEnable == true)
                                     PaymentSummaryWidget(
                                       booking: value.bookingModel!,
                                     ),
@@ -92,7 +92,7 @@ class OngoingBookingScreen extends StatelessWidget {
                                     ReviewListWithTitle(
                                         reviews: value
                                             .bookingModel!.service!.reviews!) */
-                                  if (value.bookingModel!.service!.reviews !=
+                                  if (value.bookingModel!.service?.reviews !=
                                           null &&
                                       value.bookingModel!.service!.reviews!
                                           .isNotEmpty)
@@ -191,64 +191,73 @@ class OngoingBookingScreen extends StatelessWidget {
                           if (value.bookingModel?.service?.type != "remotely")
                             Material(
                                 elevation: 20,
-                                child: (value.bookingModel!.servicemen!
-                                        .where((element) =>
-                                            element.id.toString() ==
-                                            userModel!.id.toString())
-                                        .isEmpty)
-                                    ? AssignStatusLayout(
-                                        status: translations!.status,
-                                        title: translations!.serviceInProgress,
-                                        isGreen: true)
-                                    : value.bookingModel!.bookingStatus!.slug !=
-                                            appFonts.onGoing
-                                        ? AssignStatusLayout(
-                                            status: translations!.status,
-                                            title:
-                                                /* "Service Completed" */ translations!
-                                                    .serviceNotStarted,
-                                            isGreen: true)
-                                        : Row(children: [
-                                            Expanded(
-                                                child: ButtonCommon(
-                                                    onTap: () {
-                                                      final asd = Provider.of<
-                                                              CompletedBookingProvider>(
-                                                          context,
-                                                          listen: false);
-                                                      asd.addProofTap(context);
-                                                      /* value.updateStatus(
-                                                          context,
-                                                          value.bookingModel!
-                                                              .id)*/
-                                                    },
-                                                    title: translations!
-                                                        .addServiceProof,
-                                                    color: appColor(context)
-                                                        .appTheme
-                                                        .green)),
-                                            const HSpace(Sizes.s15),
-                                            if (appSettingModel?.activation
-                                                        ?.extraChargeStatus ==
-                                                    "1" &&
-                                                value.bookingModel?.service
-                                                        ?.type !=
-                                                    "remotely")
-                                              Expanded(
-                                                child: ButtonCommon(
-                                                  title:
-                                                      translations!.addCharges,
-                                                  onTap: () =>
-                                                      value.addCharges(context),
-                                                ),
-                                              )
-                                          ]).paddingAll(Insets.i20).decorated(
-                                            color: appColor(context)
-                                                .appTheme
-                                                .whiteBg))
+                                child: _buildServicemanActions(context, value))
                         ]),
                       ))),
       );
     });
+  }
+
+  Widget _buildServicemanActions(BuildContext context, OngoingBookingProvider value) {
+    final booking = value.bookingModel!;
+    final slug = value.currentSlug;
+
+    // Not assigned to this user — view only
+    final isAssigned = booking.servicemen != null &&
+        booking.servicemen!.any((e) => e.id.toString() == userModel!.id.toString());
+    if (!isAssigned) {
+      return AssignStatusLayout(
+          status: translations!.status,
+          title: translations!.serviceInProgress,
+          isGreen: true);
+    }
+
+    // Serviceman is on the way — show Start Service
+    if (slug == appFonts.ontheway || slug == appFonts.ontheway1) {
+      return ButtonCommon(
+              title: translations!.startService,
+              onTap: () => value.onStart(context))
+          .paddingAll(Insets.i20)
+          .decorated(color: appColor(context).appTheme.whiteBg);
+    }
+
+    // Service on hold — show Restart
+    if (slug == appFonts.onHold || slug == appFonts.onHold1) {
+      return ButtonCommon(
+              title: "Restart Service",
+              onTap: () => value.onPauseConfirmation(context, isHold: false))
+          .paddingAll(Insets.i20)
+          .decorated(color: appColor(context).appTheme.whiteBg);
+    }
+
+    // Service ongoing — show Pause + Complete (with optional Add Charges)
+    if (slug == appFonts.onGoing || slug == appFonts.startAgain) {
+      return Row(children: [
+        Expanded(
+            child: ButtonCommon(
+                title: "Pause Service",
+                color: const Color(0xFFFF4B4B),
+                onTap: () => value.onPauseConfirmation(context))),
+        const HSpace(Sizes.s10),
+        Expanded(
+            child: ButtonCommon(
+                title: "Complete",
+                color: appColor(context).appTheme.green,
+                onTap: () => value.completeConfirmation(context))),
+        if (appSettingModel?.activation?.extraChargeStatus == "1") ...[
+          const HSpace(Sizes.s10),
+          Expanded(
+              child: ButtonCommon(
+                  title: translations!.addCharges,
+                  onTap: () => value.addCharges(context))),
+        ]
+      ]).paddingAll(Insets.i20).decorated(color: appColor(context).appTheme.whiteBg);
+    }
+
+    // Default — service not started yet
+    return AssignStatusLayout(
+        status: translations!.status,
+        title: translations!.serviceNotStarted,
+        isGreen: true);
   }
 }

@@ -1,4 +1,4 @@
-import 'dart:developer';
+﻿import 'dart:developer';
 
 import '../../../../config.dart';
 
@@ -25,7 +25,7 @@ class ServicemenDetailProfileLayout extends StatelessWidget {
       IntrinsicHeight(
           child:
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text(value.servicemanModel?.name ?? "",
+            TranslatedText(value.servicemanModel?.name ?? "",
                 style: appCss.dmDenseMedium14
                     .textColor(appColor(context).appTheme.darkText)),
             if (value.servicemanModel!.reviewRatings != null)

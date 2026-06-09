@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+﻿import 'package:flutter/cupertino.dart';
 
 import '../../../../config.dart';
 
@@ -21,7 +21,7 @@ class AddServiceLayout extends StatelessWidget {
                         Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(e.value.title!,
+                              TranslatedText(e.value.title ?? "",
                                   style: appCss.dmDenseMedium14.textColor(
                                       appColor(context).appTheme.darkText)),
                               const VSpace(Sizes.s5),
@@ -137,3 +137,4 @@ class AddServiceLayout extends StatelessWidget {
             .toList());
   }
 }
+

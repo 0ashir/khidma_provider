@@ -1,4 +1,4 @@
-import '../../../../config.dart';
+﻿import '../../../../config.dart';
 
 class ServiceReviewLayout extends StatelessWidget {
   final Reviews data;
@@ -18,7 +18,7 @@ class ServiceReviewLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // log("data::${jsonEncode(data.toJson())}"); // assuming you have a `toJson()` in Reviews model
+    // log("data::${jsonEncode(data.toJson())}"); // assuming you have a toJson() in Reviews model
 
     return SizedBox(
       child: Column(
@@ -81,7 +81,7 @@ class ServiceReviewLayout extends StatelessWidget {
             ),
           ),
           const VSpace(Sizes.s5),
-          Text(data.description ?? "",
+          TranslatedText(data.description ?? "",
                   style: appCss.dmDenseRegular12
                       .textColor(appColor(context).appTheme.darkText))
               .paddingOnly(bottom: Insets.i15),
@@ -239,3 +239,4 @@ class ServiceReviewLayout extends StatelessWidget {
 //         bColor: appColor(context).appTheme.stroke);
 //   }
 // }
+

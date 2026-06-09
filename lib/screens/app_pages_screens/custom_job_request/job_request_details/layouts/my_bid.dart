@@ -1,4 +1,4 @@
-import '../../../../../config.dart';
+﻿import '../../../../../config.dart';
 
 class MyBidHome extends StatelessWidget {
   final dynamic service;
@@ -22,7 +22,7 @@ class MyBidHome extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(language(context, translations!.myBid),
+        Text(translations?.myBid ?? "",
             style: appCss.dmDenseMedium14
                 .textColor(appColor(context).appTheme.darkText)),
         const VSpace(Sizes.s8),
@@ -55,7 +55,7 @@ class MyBidHome extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(service!.title!,
+            TranslatedText(service!.title ?? "",
                 style: appCss.dmDenseMedium14
                     .textColor(appColor(context).appTheme.darkText)),
             const VSpace(Sizes.s8),
@@ -83,7 +83,7 @@ class MyBid extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(language(context, translations!.myBid),
+        Text(translations?.myBid ?? "",
             style: appCss.dmDenseMedium14
                 .textColor(appColor(context).appTheme.darkText)),
         const VSpace(Sizes.s8),
@@ -106,7 +106,7 @@ class MyBid extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(service!.title!,
+                TranslatedText(service!.title ?? "",
                     style: appCss.dmDenseMedium14
                         .textColor(appColor(context).appTheme.darkText)),
                 const VSpace(Sizes.s8),
@@ -123,3 +123,5 @@ class MyBid extends StatelessWidget {
     );
   }
 }
+
+

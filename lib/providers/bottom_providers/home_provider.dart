@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:fixit_provider/config.dart';
 import 'package:fixit_provider/services/environment.dart';
+import 'package:fixit_provider/utils/toast_utils.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../model/dash_board_model.dart' show Booking;
@@ -42,6 +43,41 @@ class HomeProvider with ChangeNotifier {
   //total yearly revenue count
   double get totalYearlyRevenue =>
       appArray.yearData.fold(0, (i, j) => i + (j.y ?? 0.0));
+
+  bool get isServicemanOnline => (userModel?.isOnline ?? 1) == 1;
+  bool get isProviderOnline => (userModel?.isOnline ?? 1) == 1;
+
+  Future<void> toggleMyAvailability(BuildContext context, bool makeOnline) async {
+    if (userModel == null) return;
+    final prev = userModel!.isOnline;
+    userModel!.isOnline = makeOnline ? 1 : 0;
+    notifyListeners();
+    final body = {"serviceman_id": userModel!.id, "is_online": makeOnline ? 1 : 0};
+    await apiServices.postApi(api.servicemanAvailability, body, isToken: true).then((value) {
+      if (value.isSuccess == true) {
+        showToast(context, value.message, type: "success");
+      } else {
+        userModel!.isOnline = prev;
+        notifyListeners();
+      }
+    });
+  }
+
+  Future<void> toggleProviderAvailability(BuildContext context, bool makeOnline) async {
+    if (userModel == null) return;
+    final prev = userModel!.isOnline;
+    userModel!.isOnline = makeOnline ? 1 : 0;
+    notifyListeners();
+    final body = {"provider_id": userModel!.id, "is_online": makeOnline ? 1 : 0};
+    await apiServices.postApi(api.providerAvailability, body, isToken: true).then((value) {
+      if (value.isSuccess == true) {
+        showToast(context, value.message, type: "success");
+      } else {
+        userModel!.isOnline = prev;
+        notifyListeners();
+      }
+    });
+  }
 
   // select week, month or year option for graph
   onTapWmy(index) {
@@ -373,27 +409,23 @@ class HomeProvider with ChangeNotifier {
       }
     }
 
-    await Future.wait([
-      Future(
-        () {
-          final commonApi =
-              Provider.of<CommonApiProvider>(context, listen: false);
-          // commonApi.getBlog();
-          commonApi.getGooglePlanIds(context);
-          final userApi =
-              Provider.of<UserDataApiProvider>(context, listen: false);
-          userApi.loadBookingsFromLocal(context);
-          // getAppSettingList(context);
-        },
-      )
-    ]);
+    final commonApi =
+        Provider.of<CommonApiProvider>(context, listen: false);
+    final userApi =
+        Provider.of<UserDataApiProvider>(context, listen: false);
+
+    // Refresh user profile so isOnline reflects the value stored on the server.
+    await commonApi.selfApi(context);
+
+    commonApi.getGooglePlanIds(context);
+    userApi.loadBookingsFromLocal(context);
+
     messageFocus.addListener(() {
       notifyListeners();
     });
 
     await Future.delayed(const Duration(milliseconds: 150));
     isSkeleton = false;
-    notifyListeners();
     notifyListeners();
   }
 

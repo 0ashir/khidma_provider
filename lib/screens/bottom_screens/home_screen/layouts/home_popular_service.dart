@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable
+﻿// ignore_for_file: unused_local_variable
 
 import '../../../../config.dart';
 import '../../../../model/dash_board_model.dart' show PopularService;
@@ -57,7 +57,7 @@ class HomeFeaturedServicesLayout extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
-                        child: Text(capitalizeFirstLetter(data!.title),
+                        child: TranslatedText(capitalizeFirstLetter(data?.title ?? ""),
                             style: appCss.dmDenseSemiBold15.textColor(
                                 appColor(context).appTheme.darkText)),
                       ),

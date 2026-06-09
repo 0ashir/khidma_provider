@@ -1,4 +1,4 @@
-import 'package:intl/intl.dart';
+﻿import 'package:intl/intl.dart';
 
 import '../../../../config.dart';
 
@@ -13,7 +13,7 @@ class HistoryLayout extends StatelessWidget {
       Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         SizedBox(
             width: MediaQuery.of(context).size.width / 1.6,
-            child: Text(data?.booking?.service?.title ?? "",
+            child: TranslatedText(data?.booking?.service?.title ?? "",
                 overflow: TextOverflow.ellipsis,
                 style: appCss.dmDenseMedium14
                     .textColor(appColor(context).appTheme.darkText))),
@@ -44,3 +44,4 @@ class HistoryLayout extends StatelessWidget {
         .paddingOnly(bottom: Insets.i15);
   }
 }
+

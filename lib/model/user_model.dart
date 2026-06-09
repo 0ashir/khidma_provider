@@ -35,6 +35,7 @@ class UserModel {
   ActiveSubscription? activeSubscription;
   List<ZoneModel>? zones;
   String? subscriptionReminderNote;
+  int? isOnline;
 
   UserModel(
       {this.id,
@@ -94,6 +95,7 @@ class UserModel {
     updatedAt = json['updated_at'];
     deletedAt = json['deleted_at'];
     subscriptionReminderNote = json['subscription_reminder_note'];
+    isOnline = json['is_online'];
     companyId = json['company_id']?.toString();
     role = json['role'] /*!= null ? Role.fromJson(json['role']) : null*/;
 
@@ -165,6 +167,7 @@ class UserModel {
     data['deleted_at'] = deletedAt;
     data['company_id'] = companyId;
     data['subscription_reminder_note'] = subscriptionReminderNote;
+    data['is_online'] = isOnline;
 
     data['role'] = role;
     /*    if (role != null) {

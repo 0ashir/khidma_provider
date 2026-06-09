@@ -41,22 +41,21 @@ class AssignMultipleServiceman extends StatelessWidget {
             Provider.of<BookingServicemenListProvider>(context, listen: false);
             service.isAssignLoading = true;
             service.notifyListeners();
+
+            // Capture the navigator BEFORE popping — reusing `context` for a
+            // second pop after the dialog route is gone targets a deactivated
+            // widget and silently fails, which is why assign needed 2 tries.
+            final navigator = Navigator.of(context);
+
             await Future.delayed(const Duration(seconds: 1));
 
             await createBookingNotification(
                 NotificationType.updateBookingStatusEvent);
             await createBookingNotification(NotificationType.assignBooking);
 
-            route.pop(context);
-            /* route.pop(context); */
-            route.pop(context, arg: selectService);
-            final userApi =
-            Provider.of<UserDataApiProvider>(context, listen: false);
-
-            userApi.getBookingHistory(context);
-            route.pop(context);
+            navigator.pop();
+            navigator.pop(selectService);
             log("AssignMultipleServiceman : $selectService");
-            // route.pop(context, arg: selectService);
           });
     });
   }

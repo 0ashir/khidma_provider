@@ -1,4 +1,4 @@
-import 'dart:developer';
+﻿import 'dart:developer';
 
 import '../../../../config.dart';
 
@@ -10,7 +10,7 @@ class PersonalInfoLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     log("servicemanModel!.knownLanguages::${servicemanModel!.description}");
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(language(context, translations!.personalInfo),
+      Text(translations?.personalInfo ?? "",
           style: appCss.dmDenseMedium14
               .textColor(appColor(context).appTheme.darkText)),
       const VSpace(Sizes.s10),
@@ -30,7 +30,7 @@ class PersonalInfoLayout extends StatelessWidget {
           .boxShapeExtension(color: appColor(context).appTheme.fieldCardBg),
       if (servicemanModel!.knownLanguages != null &&
           servicemanModel!.knownLanguages!.isNotEmpty)
-        Text(language(context, translations!.knowLanguage),
+        Text(translations?.knowLanguage ?? "",
                 style: appCss.dmDenseMedium14
                     .textColor(appColor(context).appTheme.darkText))
             .alignment(Alignment.centerLeft)
@@ -50,7 +50,7 @@ class PersonalInfoLayout extends StatelessWidget {
         const VSpace(Sizes.s20),
       if (servicemanModel!.expertise != null &&
           servicemanModel!.expertise!.isNotEmpty)
-        Text(language(context, translations!.expertiseIn),
+        Text(translations?.expertiseIn ?? "",
                 style: appCss.dmDenseMedium14
                     .textColor(appColor(context).appTheme.darkText))
             .alignment(Alignment.centerLeft),
@@ -74,17 +74,19 @@ class PersonalInfoLayout extends StatelessWidget {
       const VSpace(Sizes.s20),
       if (servicemanModel!.description != null &&
           servicemanModel!.description!.isNotEmpty)
-        Text(language(context, translations!.description),
+        Text(translations?.description ?? "",
                 style: appCss.dmDenseMedium14
                     .textColor(appColor(context).appTheme.darkText))
             .alignment(Alignment.centerLeft),
       if (servicemanModel!.description != null &&
           servicemanModel!.description!.isNotEmpty)
         const VSpace(Sizes.s10),
-      Text(servicemanModel!.description ?? "",
+      TranslatedText(servicemanModel!.description ?? "",
               style: appCss.dmDenseMedium12
                   .textColor(appColor(context).appTheme.lightText))
           .alignment(Alignment.centerLeft)
     ]);
   }
 }
+
+

@@ -1,4 +1,4 @@
-import 'dart:developer';
+﻿import 'dart:developer';
 
 import '../../../../config.dart';
 
@@ -57,7 +57,7 @@ class CompanyTopLayout extends StatelessWidget {
                       isBorder: true)
             ]),
             if (userModel!.company != null)
-              Text(language(context, userModel!.company?.name?.toUpperCase()),
+              TranslatedText(userModel!.company?.name?.toUpperCase() ?? '',
                   style: appCss.dmDenseBold14
                       .textColor(appColor(context).appTheme.primary)),
             const VSpace(Sizes.s3),
@@ -153,12 +153,12 @@ class CompanyTopLayout extends StatelessWidget {
                       ]).paddingSymmetric(horizontal: Insets.i10) */
           ]).paddingSymmetric(vertical: Insets.i15).boxBorderExtension(context),
           if (userModel!.description != null)
-            Text(language(context, translations!.description),
+            Text(translations?.description ?? '',
                     style: appCss.dmDenseRegular12
                         .textColor(appColor(context).appTheme.lightText))
                 .paddingOnly(top: Insets.i20, bottom: Insets.i6),
           if (userModel!.description != null)
-            Text(userModel!.description ?? "",
+            TranslatedText(userModel!.description ?? "",
                 style: appCss.dmDenseRegular14
                     .textColor(appColor(context).appTheme.darkText))
         ]).paddingAll(Insets.i15).boxBorderExtension(context,
@@ -167,3 +167,5 @@ class CompanyTopLayout extends StatelessWidget {
     });
   }
 }
+
+

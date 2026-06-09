@@ -1,4 +1,4 @@
-import 'dart:developer';
+﻿import 'dart:developer';
 
 import '../../../../config.dart';
 
@@ -23,7 +23,7 @@ class ServiceListTabBarCommon extends StatelessWidget {
                             return IntrinsicWidth(
                               child: Column(
                                 children: [
-                                  Text(e.value.title!,
+                                  TranslatedText(e.value.title ?? "",
                                           style: value.tabIndex == e.key
                                               ? appCss.dmDenseSemiBold14
                                                   .textColor(appColor(context)
@@ -81,7 +81,7 @@ class ServiceListTabBarCommon extends StatelessWidget {
                 ...categoryList[value.selectedIndex].hasSubCategories!
                     .asMap()
                     .entries
-                    .map((e) => Text(e.value.title!,
+                    .map((e) => TranslatedText(e.value.title ?? "",
                             style: appCss.dmDenseMedium14.textColor(
                                 value.controller!.index == e.key
                                     ? appColor(context).appTheme.primary
@@ -96,3 +96,4 @@ class ServiceListTabBarCommon extends StatelessWidget {
     ):Container();*/
   }
 }
+

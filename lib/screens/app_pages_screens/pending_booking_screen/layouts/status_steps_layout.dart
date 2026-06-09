@@ -58,14 +58,17 @@ class StatusStepsLayout extends StatelessWidget {
         IntrinsicHeight(
             child: Row(children: [
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(DateFormat("dd MM").format(DateTime.parse(data!.createdAt!)),
+            Text(
+                DateFormat("dd MM")
+                    .format(DateTime.parse(data!.createdAt!).toLocal()),
                 style: appCss.dmDenseMedium12.textColor(
                     /* selectIndex == index
                     ? appColor(context).appTheme.darkText
                     : */
                     appColor(context).appTheme.lightText)),
             Text(
-                DateFormat("hh:mm aa").format(DateTime.parse(data!.createdAt!)),
+                DateFormat("hh:mm aa")
+                    .format(DateTime.parse(data!.createdAt!).toLocal()),
                 style: appCss.dmDenseMedium12.textColor(
                     /* selectIndex == index
                     ? appColor(context).appTheme.darkText

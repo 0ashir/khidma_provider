@@ -109,13 +109,13 @@ class CustomNotificationController {
     if (notification) {
       if (!kIsWeb) {
         channel = const AndroidNotificationChannel(
-          'high_importance_channel', // id
-          'High Importance Notifications', // titledescription
-          importance: Importance.high,
+          'fixit_notifications',
+          'Fixit Notifications',
+          importance: Importance.max,
+          playSound: true,
+          sound: RawResourceAndroidNotificationSound('notification_sound'),
         );
 
-        /// We use this channel in the `AndroidManifest.xml` file to override the
-        /// default FCM channel to enable heads up notifications.
         await flutterLocalNotificationsPlugin
             .resolvePlatformSpecificImplementation<
                 AndroidFlutterLocalNotificationsPlugin>()
@@ -207,54 +207,36 @@ class CustomNotificationController {
   }
 
   void showFlutterNotification(RemoteMessage message, isOpen, context) async {
-    Map<String, dynamic> notificationData = message.data;
-
     RemoteNotification? notification = message.notification;
-    if (message.data["title"] == "Incoming Video Call..." ||
-        message.data["title"] == "Incoming Audio Call...") {
-      flutterLocalNotificationsPlugin.show(
-        message.notification.hashCode,
-        message.notification!.title,
-        message.notification!.body,
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-              channelDescription: channel?.description ?? 'High Importance Notifications',
-              'high_importance_channel',
-              'High Importance Notifications',
-              playSound: true,
-              importance: Importance.max,
-              priority: Priority.high,
-              sound: (message.data['title'] != 'Incoming Audio Call...' ||
-                      message.data['title'] != 'Incoming Video Call...')
-                  ? null
-                  : const RawResourceAndroidNotificationSound('callsound'),
-              // TODO add a proper drawable resource to android, for now using
-              //      one that already exists in example app.
-              icon: '@mipmap/ic_launcher',
-              fullScreenIntent: true),
+    final isCall = message.data["title"] == "Incoming Video Call..." ||
+        message.data["title"] == "Incoming Audio Call...";
+
+    flutterLocalNotificationsPlugin.show(
+      message.notification.hashCode,
+      message.notification!.title,
+      message.notification!.body,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          'fixit_notifications',
+          'Fixit Notifications',
+          channelDescription: 'Fixit Notifications',
+          playSound: true,
+          importance: Importance.max,
+          priority: Priority.high,
+          sound: isCall
+              ? const RawResourceAndroidNotificationSound('callsound')
+              : const RawResourceAndroidNotificationSound('notification_sound'),
+          icon: '@mipmap/ic_launcher',
+          fullScreenIntent: true,
         ),
-      );
-    } else {
-      flutterLocalNotificationsPlugin.show(
-        message.notification.hashCode,
-        message.notification!.title,
-        message.notification!.body,
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-              channelDescription: channel?.description ?? 'High Importance Notifications',
-              'high_importance_channel',
-              'High Importance Notifications',
-              playSound: true,
-              importance: Importance.max,
-              priority: Priority.high,
-              sound: RawResourceAndroidNotificationSound('callsound'),
-              // TODO add a proper drawable resource to android, for now using
-              //      one that already exists in example app.
-              icon: '@mipmap/ic_launcher',
-              fullScreenIntent: true),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+          sound: isCall ? 'callsound.wav' : 'notification_sound.aiff',
         ),
-      );
-    }
+      ),
+    );
     if (isOpen) {
       if (message.data["type"] == "booking") {
         getBookingDetailById(context, message.data['booking_id']);
@@ -300,43 +282,46 @@ class CustomNotificationController {
 
 void showForegroundNotification(RemoteMessage message) async {
   final notification = message.notification;
-  final android = notification?.android;
-  final imageUrl = message.data["image"] as String?;
+  if (notification == null) return;
 
-  if (notification != null && android != null) {
-    BigPictureStyleInformation? bigPicture;
-    if (imageUrl != null) {
-      final String filePath =
-          await downloadAndSaveFile(imageUrl, 'big_img.jpg');
+  final imageUrl = message.data["image"] as String?;
+  BigPictureStyleInformation? bigPicture;
+
+  if (imageUrl != null && imageUrl.isNotEmpty) {
+    try {
+      final String filePath = await downloadAndSaveFile(imageUrl, 'big_img.jpg');
       final bigImage = FilePathAndroidBitmap(filePath);
       bigPicture = BigPictureStyleInformation(bigImage,
           contentTitle: notification.title, summaryText: notification.body);
-    }
-
-    flutterLocalNotificationsPlugin.show(
-      notification.hashCode,
-      notification.title,
-      notification.body,
-      NotificationDetails(
-        android: AndroidNotificationDetails(
-            channel?.id ?? 'high_importance_channel',
-            channel?.name ?? 'High Importance Notifications',
-            channelDescription:
-                channel?.description ?? 'Default channel for notifications',
-            icon: '@mipmap/ic_launcher',
-            importance: Importance.max,
-            priority: Priority.high,
-            styleInformation: bigPicture,
-            fullScreenIntent: true),
-        iOS: const DarwinNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
-        ),
-      ),
-      payload: jsonEncode(message.data),
-    );
+    } catch (_) {}
   }
+
+  flutterLocalNotificationsPlugin.show(
+    notification.hashCode,
+    notification.title,
+    notification.body,
+    NotificationDetails(
+      android: AndroidNotificationDetails(
+        channel?.id ?? 'fixit_notifications',
+        channel?.name ?? 'Fixit Notifications',
+        channelDescription: channel?.description ?? 'Fixit Notifications',
+        icon: '@mipmap/ic_launcher',
+        importance: Importance.max,
+        priority: Priority.high,
+        playSound: true,
+        sound: const RawResourceAndroidNotificationSound('notification_sound'),
+        styleInformation: bigPicture,
+        fullScreenIntent: true,
+      ),
+      iOS: const DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+        sound: 'notification_sound.aiff',
+      ),
+    ),
+    payload: jsonEncode(message.data),
+  );
 }
 
 //save notification in database
@@ -467,35 +452,34 @@ getBookingDetailById(context, id) async {
 }
 
 showNotification(RemoteMessage remote) async {
-  print("---Show Notification ---- ${remote.notification?.title}");
-  Map<String, dynamic> notificationData = remote.data;
+  final String title = remote.notification?.title ?? remote.data['title'] ?? "";
+  final String message = remote.notification?.body ?? remote.data['body'] ?? "";
+  final bool isCall = remote.data['title'] == 'Incoming Audio Call...' ||
+      remote.data['title'] == 'Incoming Video Call...';
 
-  String title = remote.notification?.title ?? remote.data['title'] ?? "",
-      message = remote.notification?.body ?? remote.data['body'] ?? "";
-
-  BigPictureStyleInformation? bigPictureStyleInformation;
-
-  AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-      channelDescription: channel?.description ?? 'High Importance Notifications',
-      icon: "ic_notification",
-      'high_importance_channel',
-      'your other channel name',
-      playSound: true,
-      importance: Importance.max,
-      priority: Priority.high,
-      sound: (remote.data['title'] != 'Incoming Audio Call...' ||
-              remote.data['title'] != 'Incoming Video Call...')
-          ? null
-          : const RawResourceAndroidNotificationSound('callsound'),
-      fullScreenIntent: true);
-  DarwinNotificationDetails iOSDetails = const DarwinNotificationDetails(
-      sound: 'callsound.wav', presentSound: true);
-
-  NotificationDetails notificationDetails = NotificationDetails(
-    android: androidDetails,
-    iOS: iOSDetails,
+  flutterLocalNotificationsPlugin.show(
+    0,
+    title,
+    message,
+    NotificationDetails(
+      android: AndroidNotificationDetails(
+        'fixit_notifications',
+        'Fixit Notifications',
+        channelDescription: 'Fixit Notifications',
+        icon: '@mipmap/ic_launcher',
+        playSound: true,
+        importance: Importance.max,
+        priority: Priority.high,
+        sound: isCall
+            ? const RawResourceAndroidNotificationSound('callsound')
+            : const RawResourceAndroidNotificationSound('notification_sound'),
+        fullScreenIntent: true,
+      ),
+      iOS: DarwinNotificationDetails(
+        presentSound: true,
+        sound: isCall ? 'callsound.wav' : 'notification_sound.aiff',
+      ),
+    ),
+    payload: remote.data.toString(),
   );
-
-  flutterLocalNotificationsPlugin.show(0, title, message, notificationDetails,
-      payload: remote.data.toString());
 }

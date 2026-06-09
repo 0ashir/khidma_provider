@@ -11,10 +11,12 @@ class StatefulWrapper extends StatefulWidget {
 class _StatefulWrapperState extends State<StatefulWrapper> {
   @override
   void initState() {
-    if(widget.onInit != null) {
-      widget.onInit!();
-    }
     super.initState();
+    if (widget.onInit != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        widget.onInit!();
+      });
+    }
   }
 
 

@@ -1,4 +1,4 @@
-import 'dart:ffi';
+﻿import 'dart:ffi';
 
 import 'package:intl/intl.dart';
 
@@ -33,7 +33,7 @@ class PackageLayout extends StatelessWidget {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(language(context, data!.title!),
+                        TranslatedText(data?.title ?? "",
                             overflow: TextOverflow.ellipsis,
                             style: appCss.dmDenseMedium16.textColor(
                                 appColor(context).appTheme.darkText)),
@@ -81,7 +81,7 @@ class PackageLayout extends StatelessWidget {
       ])),
       const DottedLines(),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Text(language(context, translations!.activeStatus),
+        Text(translations?.activeStatus ?? "",
             style: appCss.dmDenseMedium12
                 .textColor(appColor(context).appTheme.primary)),
         FlutterSwitchCommon(
@@ -99,3 +99,5 @@ class PackageLayout extends StatelessWidget {
     });
   }
 }
+
+

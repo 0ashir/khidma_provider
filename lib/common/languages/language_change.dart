@@ -1,26 +1,26 @@
 import 'dart:developer';
 
-import 'package:fixit_provider/common/languages/ar.dart';
-import 'package:fixit_provider/common/languages/language_helper.dart';
 import 'package:fixit_provider/model/translation_model.dart';
+import 'package:fixit_provider/services/environment.dart' as env;
+import 'package:fixit_provider/services/google_translation_service.dart';
 
 import '../../config.dart';
 import '../../model/system_language_model.dart';
 
 class LanguageProvider with ChangeNotifier {
   LanguageProvider(this.sharedPreferences, context) {
-    // getLanguageTranslate();
     var selectedLocale = sharedPreferences.getString("selectedLocale");
 
     if (selectedLocale != null) {
       locale = Locale(selectedLocale);
     } else {
-      // selectedLocale = "english";
-      // locale = const Locale("en");
+      locale = Locale(
+          appSettingModel?.general?.defaultLanguage?.locale ?? "en");
     }
 
     setVal(selectedLocale, context);
     getLanguage();
+    getLanguageTranslate(context); // load translations immediately at app start
   }
 
   String currentLanguage = appFonts.english;
@@ -44,56 +44,42 @@ class LanguageProvider with ChangeNotifier {
 
   bool isLoading = false;
   getLanguage() async {
+    // Fetches the list of available languages only — does NOT touch translations.
     try {
-      translations = Translation.defaultTranslations();
-      await apiServices
-          .getApi(api.systemLanguage, [], isToken: false)
-          .then((value) {
-        if (value.isSuccess!) {
-          languageList.clear(); // Clear before adding
-          for (var item in value.data) {
-            SystemLanguage systemLanguage = SystemLanguage.fromJson(item);
-            if (!languageList.contains(systemLanguage)) {
-              languageList.add(systemLanguage);
-            }
-          }
-
-// ✅ Compare with saved locale and set selected index
-          String? selectedLocaleCode =
-              sharedPreferences.getString("selectedLocale") ?? "en";
-          int index = languageList.indexWhere((element) =>
-          element.appLocale?.split("_")[0] == selectedLocaleCode);
-          if (index != -1) {
-            selectedIndex = index;
-            log("✅ Selected index set to $selectedIndex for locale $selectedLocaleCode");
-          } else {
-            selectedIndex = 0; // fallback
+      final value = await apiServices.getApi(api.systemLanguage, [], isToken: false);
+      if (value.isSuccess == true) {
+        languageList.clear();
+        for (var item in value.data) {
+          SystemLanguage systemLanguage = SystemLanguage.fromJson(item);
+          if (!languageList.contains(systemLanguage)) {
+            languageList.add(systemLanguage);
           }
         }
-        notifyListeners();
-      });
+        String? selectedLocaleCode =
+            sharedPreferences.getString("selectedLocale") ?? "en";
+        int index = languageList.indexWhere(
+            (element) => element.appLocale?.split("_")[0] == selectedLocaleCode);
+        selectedIndex = index != -1 ? index : 0;
+        log("✅ Language list loaded. selectedIndex=$selectedIndex");
+      }
+      notifyListeners();
     } catch (e) {
       debugPrint("EEEE NOTI LANGUAGE $e");
     }
   }
 
-  // LanguageHelper languageHelper = LanguageHelper();
-
-  changeLocale(SystemLanguage newLocale, context) {
-    log("sharedPreferences a1: ${newLocale.locale}");
-    Locale convertedLocale;
-
+  // Awaits the full translation fetch so screens rebuild exactly once with the
+  // correct language — no English flash, no stale rebuild before data arrives.
+  changeLocale(SystemLanguage newLocale, context) async {
     currentLanguage = newLocale.name!;
-    convertedLocale = Locale(
+    locale = Locale(
         newLocale.appLocale!.split("_")[0], newLocale.appLocale!.split("_")[1]);
-
-    locale = convertedLocale;
-    sharedPreferences.setString(
-        'selectedLocale', locale!.languageCode.toString());
-
-    getLanguageTranslate(context,
-        languageCode: locale!.languageCode.toString());
-
+    final langCode = locale!.languageCode.toString();
+    sharedPreferences.setString('selectedLocale', langCode);
+    env.local = langCode;
+    GoogleTranslationService.clearCache(); // discard stale translations
+    log('🌐 [changeLocale] switching to $langCode');
+    await getLanguageTranslate(context, languageCode: langCode);
     notifyListeners();
   }
 
@@ -106,36 +92,31 @@ class LanguageProvider with ChangeNotifier {
   bool isTranslateLoader = false;
   getLanguageTranslate(context,
       {bool? isSelectLanguage = false, String? languageCode}) async {
+    final resolvedCode = isSelectLanguage == true
+        ? locale?.languageCode
+        : languageCode;
+    final endpoint = "${api.translate}/$resolvedCode";
+    log('🌐 [Translation] START — lang=$resolvedCode  endpoint=$endpoint');
     isTranslateLoader = true;
     notifyListeners();
     try {
-      translations = Translation.defaultTranslations();
+      // Do NOT reset translations before the await — keep whatever language
+      // is currently shown so there is no English flash while data loads.
       final response = await apiServices.getApi(
-          isSelectLanguage == true
-              ? "${api.translate}/${locale!.languageCode}"
-              : "${api.translate}/${languageCode}",
-          [],
-          isToken: false,
-          isData: true);
+          endpoint, [], isToken: false, isData: true);
 
-      if (response.isSuccess!) {
-        isTranslateLoader = false;
-        translations = Translation.fromJson(
-            response.data, context); // Directly pass the map
-        // log("Loaded translations: ${response.data}");
+      log('🌐 [Translation] RESPONSE — isSuccess=${response.isSuccess}  data=${response.data == null ? "null" : "received"}');
 
-        notifyListeners();
+      if (response.isSuccess == true && response.data != null) {
+        translations = Translation.fromJson(response.data, context);
+        log('🌐 [Translation] DONE — loaded successfully for $resolvedCode');
       } else {
-        isTranslateLoader = false;
-        log('Failed to load translations, using defaults');
-        translations = Translation.defaultTranslations();
-        notifyListeners();
+        log('🌐 [Translation] FAILED — keeping existing. message=${response.message}');
+        translations ??= Translation.defaultTranslations();
       }
     } catch (e, s) {
-      isTranslateLoader = false;
-      log('Error Translation: $e==$s');
-      translations = Translation.defaultTranslations();
-      notifyListeners();
+      log('🌐 [Translation] ERROR — $e\n$s');
+      translations ??= Translation.defaultTranslations();
     } finally {
       isTranslateLoader = false;
       notifyListeners();

@@ -1,4 +1,4 @@
-import 'dart:developer';
+﻿import 'dart:developer';
 
 import 'package:intl/intl.dart';
 import '../../../../../config.dart';
@@ -43,7 +43,7 @@ class LatestJobRequestListCard extends StatelessWidget {
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                      Text(capitalizeFirstLetter(data!.title),
+                      Text(capitalizeFirstLetter(data?.title ?? ""),
                           style: appCss.dmDenseMedium14
                               .textColor(appColor(context).appTheme.darkText)),
                       const VSpace(Sizes.s8),
@@ -72,7 +72,7 @@ class LatestJobRequestListCard extends StatelessWidget {
                         shape: SmoothRectangleBorder(
                             borderRadius: SmoothBorderRadius(
                                 cornerRadius: 11, cornerSmoothing: 2))),
-                    child: Text(capitalizeFirstLetter(data!.status),
+                    child: Text(capitalizeFirstLetter(data?.status ?? ""),
                         style: appCss.dmDenseMedium10
                             .textColor(appColor(context).appTheme.whiteColor))),
                 // const VSpace(Sizes.s8),

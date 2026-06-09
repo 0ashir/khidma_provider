@@ -1,4 +1,4 @@
-import '../../../../config.dart';
+﻿import '../../../../config.dart';
 
 class PackageIncludeServiceLayout extends StatelessWidget {
   final Services? data;
@@ -44,7 +44,7 @@ class PackageIncludeServiceLayout extends StatelessWidget {
                     radius: AppRadius.r8),
             const HSpace(Sizes.s10),
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(data!.title!,
+              TranslatedText(data!.title ?? "",
                       overflow: TextOverflow.ellipsis,
                       style: appCss.dmDenseMedium14
                           .textColor(appColor(context).appTheme.darkText))
@@ -104,3 +104,4 @@ class PackageIncludeServiceLayout extends StatelessWidget {
     ]);
   }
 }
+

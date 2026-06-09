@@ -53,15 +53,16 @@ class CommonApiProvider extends ChangeNotifier {
           if (userModel?.status == 0) {
             route.pushReplacementNamed(context, routeName.loginProvider);
           }
-          if (isServiceman) {
-            log("isServiceman:$isServiceman");
+          final freshIsServiceman = userModel!.role != "provider";
+          if (freshIsServiceman) {
+            log("isServiceman:$freshIsServiceman");
 
             await getProviderById(context, userModel!.providerId);
             notifyListeners();
           }
           // Check if widget is still mounted before interacting with context
           if (context.mounted) {
-            isServiceman = userModel!.role == "provider" ? false : true;
+            isServiceman = freshIsServiceman;
             isFreelancer = userModel!.type == "freelancer" ? true : false;
             notifyListeners();
 

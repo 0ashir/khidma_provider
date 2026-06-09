@@ -36,6 +36,8 @@ class ApiMethods {
   String notifications = '$apiUrl/notifications';
   String markAsRead = '$apiUrl/notifications/markAsRead';
   String serviceman = '$apiUrl/serviceman';
+  String servicemanAvailability = '$apiUrl/serviceman/availability';
+  String providerAvailability = '$apiUrl/provider/availability';
   String booking = '$apiUrl/booking';
   String verifyPayment = '$apiUrl/verifyPayment';
   String bookingStatus = '$apiUrl/bookingStatus';
@@ -53,6 +55,7 @@ class ApiMethods {
   String addServiceAddress = '$apiUrl/addServiceAddress';
   String deleteServiceAddress = '$apiUrl/deleteServiceAddress';
   String assignBooking = '$apiUrl/booking/assign';
+  String reassignBooking = '$apiUrl/booking/reassign';
   String generateZoomMeeting = '$apiUrl/generateZoomMeeting';
   String servicePackage = '$apiUrl/service-package';
   String uploadProviderDocument = '$apiUrl/upload-provider-document';

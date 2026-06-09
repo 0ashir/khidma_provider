@@ -1,4 +1,4 @@
-import 'dart:developer';
+﻿import 'dart:developer';
 
 import '../../../../config.dart';
 
@@ -61,7 +61,7 @@ class ListTileLayout extends StatelessWidget {
                 width: 1,
                 color: appColor(context).appTheme.stroke)
             .paddingSymmetric(horizontal: Insets.i12),
-        Text(language(context, data!.title),
+        TranslatedText(data?.title ?? "",
             style: appCss.dmDenseMedium14
                 .textColor(appColor(context).appTheme.darkText))
       ])),
@@ -78,3 +78,4 @@ class ListTileLayout extends StatelessWidget {
         .padding(horizontal: Insets.i20, bottom: Insets.i15);
   }
 }
+

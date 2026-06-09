@@ -1,4 +1,4 @@
-import '../../../../config.dart';
+﻿import '../../../../config.dart';
 
 class CategoriesListLayout extends StatelessWidget {
   final CategoryModel? data;
@@ -28,11 +28,11 @@ class CategoriesListLayout extends StatelessWidget {
                 width: Sizes.s22)),
         const HSpace(Sizes.s15),
         Row(children: [
-          Text(language(context, data!.title),
+          TranslatedText(data?.title ?? "",
               style: appCss.dmDenseRegular14
                   .textColor(appColor(context).appTheme.darkText)),
           if (isCommission == true)
-            Text(language(context, " - ${data?.commission ?? "0"}%"),
+            TranslatedText(" - ${data?.commission ?? "0"}%",
                 style: appCss.dmDenseRegular14
                     .textColor(appColor(context).appTheme.darkText))
         ])
@@ -49,3 +49,4 @@ class CategoriesListLayout extends StatelessWidget {
         .paddingOnly(bottom: Insets.i12);
   }
 }
+

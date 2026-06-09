@@ -492,6 +492,9 @@ class Translation {
   String? areYiuSureDeleteLocation;
   String? deleteSuccessfully;
   String? noteServicemenNotSelectYet;
+  String? serviceAssignedToYou;
+  String? currentlyHandlingService;
+  String? serviceDoneByYou;
   String? areYouClearChat;
   String? no;
   String? hurrayChatDelete;
@@ -1211,6 +1214,9 @@ class Translation {
     this.areYiuSureDeleteLocation,
     this.deleteSuccessfully,
     this.noteServicemenNotSelectYet,
+    this.serviceAssignedToYou,
+    this.currentlyHandlingService,
+    this.serviceDoneByYou,
     this.areYouClearChat,
     this.no,
     this.hurrayChatDelete,
@@ -1929,6 +1935,9 @@ class Translation {
     areYiuSureDeleteLocation = json['areYiuSureDeleteLocation'] ?? "";
     deleteSuccessfully = json['deleteSuccessfully'] ?? "";
     noteServicemenNotSelectYet = json['noteServicemenNotSelectYet'] ?? "";
+    serviceAssignedToYou = json['serviceAssignedToYou'] ?? "";
+    currentlyHandlingService = json['currentlyHandlingService'] ?? "";
+    serviceDoneByYou = json['serviceDoneByYou'] ?? "";
     areYouClearChat = json['areYouClearChat'] ?? "";
     no = json['no'] ?? "";
     hurrayChatDelete = json['hurrayChatDelete'] ?? "";
@@ -2660,6 +2669,9 @@ class Translation {
     data['areYiuSureDeleteLocation'] = areYiuSureDeleteLocation;
     data['deleteSuccessfully'] = deleteSuccessfully;
     data['noteServicemenNotSelectYet'] = noteServicemenNotSelectYet;
+    data['serviceAssignedToYou'] = serviceAssignedToYou;
+    data['currentlyHandlingService'] = currentlyHandlingService;
+    data['serviceDoneByYou'] = serviceDoneByYou;
     data['areYouClearChat'] = areYouClearChat;
     data['no'] = no;
     data['hurrayChatDelete'] = hurrayChatDelete;
@@ -3401,6 +3413,9 @@ class Translation {
           "Are your sure you want to delete this location ?",
       deleteSuccessfully: "Delete Successfully",
       noteServicemenNotSelectYet: "Note : Servicemen Is Not Selected Yet.",
+      serviceAssignedToYou: "This service is assigned to you",
+      currentlyHandlingService: "You are currently handling this service",
+      serviceDoneByYou: "This service is done by you",
       areYouClearChat: "Are your sure you want to clear this chat ?",
       no: "No",
       hurrayChatDelete: "Hurray ! Your chat is successfully delete from list.",

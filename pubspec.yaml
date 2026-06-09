@@ -2,7 +2,7 @@ name: fixit_provider
 description: A new Flutter project.
 publish_to: "none"
 
-version: 8.0.8+100
+version: 8.0.9+101
 
 environment:
   sdk: ">=3.4.4 <4.0.0"
@@ -12,6 +12,7 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
+  font_awesome_flutter: ^10.10.0
   provider: ^6.1.5+1
   shared_preferences: ^2.5.4
   google_fonts: ^7.0.0

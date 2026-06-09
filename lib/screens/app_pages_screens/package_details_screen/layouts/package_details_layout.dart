@@ -1,4 +1,4 @@
-import 'dart:developer';
+﻿import 'dart:developer';
 
 import '../../../../config.dart';
 
@@ -17,7 +17,7 @@ class PackageDetailsLayout extends StatelessWidget {
         Column(children: [
           Image.asset(eImageAssets.packageBg),
           const VSpace(Sizes.s10),
-          Text(language(context, data?.title ?? ''),
+          TranslatedText(data?.title ?? '',
               style: appCss.dmDenseMedium16
                   .textColor(appColor(context).appTheme.darkText)),
           const VSpace(Sizes.s4),
@@ -33,7 +33,7 @@ class PackageDetailsLayout extends StatelessWidget {
         const VSpace(Sizes.s15),
         const PackageDescriptionLayout(),
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(language(context, translations!.includedService),
+          Text(translations?.includedService ?? "",
                   style: appCss.dmDenseMedium14
                       .textColor(appColor(context).appTheme.darkText))
               .paddingOnly(top: Insets.i15, bottom: Insets.i10),
@@ -54,3 +54,5 @@ class PackageDetailsLayout extends StatelessWidget {
     });
   }
 }
+
+

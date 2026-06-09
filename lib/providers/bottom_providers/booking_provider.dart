@@ -137,7 +137,7 @@ class BookingProvider with ChangeNotifier {
                     Provider.of<PendingBookingProvider>(context, listen: false);
 
                 bookingProvider.updateStatus(context, id,
-                    isCancel: true, isBack: true);
+                    isCancel: true);
               }
               notifyListeners();
             })).then((value) {
@@ -162,38 +162,56 @@ class BookingProvider with ChangeNotifier {
                 assignServiceman(context, [userModel!.id], bookingModel.id);
               },
               firstBTap: () {
-                // log("firstBTap  Booking Provider");
                 route.pop(context);
               }));
     } else {
-      if ((bookingModel.requiredServicemen ?? 1) > 1) {
-        log("DDDD ");
-        route.pushNamed(context, routeName.bookingServicemenList, arg: {
-          "servicemen": bookingModel.requiredServicemen ?? 1,
-          "data": bookingModel
-        }).then((e) {
-          log(" :$e");
-          if (e != null) {
-            List<ServicemanModel> serMan = e;
-            List ids = [];
-            for (var d in serMan) {
-              ids.add(d.id);
-            }
-            log("SSS :$ids");
+      showDialog(
+          context: context,
+          builder: (context1) => AppAlertDialogCommon(
+              height: Sizes.s145,
+              title: translations!.assignToMe,
+              firstBText: translations!.selectServicemen,
+              secondBText: translations!.assignToMe,
+              image: eImageAssets.assignMe,
+              subtext: translations!.areYouSureYourself,
+              secondBTap: () {
+                route.pop(context);
+                assignServiceman(context, [userModel!.id], bookingModel.id);
+              },
+              firstBTap: () {
+                route.pop(context);
+                _openServicemenSelection(context, bookingModel);
+              }));
+    }
+  }
 
-            assignServiceman(context, ids, bookingModel.id);
+  void _openServicemenSelection(context, BookingModel bookingModel) {
+    if ((bookingModel.requiredServicemen ?? 1) > 1) {
+      log("DDDD ");
+      route.pushNamed(context, routeName.bookingServicemenList, arg: {
+        "servicemen": bookingModel.requiredServicemen ?? 1,
+        "data": bookingModel
+      }).then((e) {
+        log(" :$e");
+        if (e != null) {
+          List<ServicemanModel> serMan = e;
+          List ids = [];
+          for (var d in serMan) {
+            ids.add(d.id);
           }
-        });
-      } else {
-        log("bookingModel!.requiredServicemen::${bookingModel.requiredServicemen}");
-        showModalBottomSheet(
-            isScrollControlled: true,
-            context: context,
-            builder: (context1) {
-              return SelectServicemenSheet(
-                  arguments: bookingModel.requiredServicemen ?? 1);
-            });
-      }
+          log("SSS :$ids");
+          assignServiceman(context, ids, bookingModel.id);
+        }
+      });
+    } else {
+      log("bookingModel!.requiredServicemen::${bookingModel.requiredServicemen}");
+      showModalBottomSheet(
+          isScrollControlled: true,
+          context: context,
+          builder: (context1) {
+            return SelectServicemenSheet(
+                arguments: bookingModel.requiredServicemen ?? 1);
+          });
     }
   }
 

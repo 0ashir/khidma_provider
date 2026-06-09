@@ -1,13 +1,13 @@
-import 'package:fixit_provider/model/array_model.dart';
+﻿import 'package:fixit_provider/model/array_model.dart';
 import 'package:intl/intl.dart';
 
 import '../config.dart';
 
 class AppArray {
   List<String> get themeModeList => [
-        translations!.darkTheme!,
-        translations!.lightTheme!,
-        translations!.systemDefault!
+        translations?.darkTheme ?? "",
+        translations?.lightTheme ?? "",
+        translations?.systemDefault ?? ""
       ];
   List selectHomeCat = ["Home", appFonts.categories];
   List serviceBanner = [appFonts.service, "Banner"];
@@ -15,13 +15,13 @@ class AppArray {
 
   // language list
   List<Map<String, dynamic>> get joiningList => [
-        {"title": translations!.company, "image": eImageAssets.company},
-        {"title": translations!.freelancer, "image": eImageAssets.freelancer}
+        {"title": translations?.company, "image": eImageAssets.company},
+        {"title": translations?.freelancer, "image": eImageAssets.freelancer}
       ];
 
   List<String> get experienceList => [
-        translations!.month!.toLowerCase(),
-        translations!.year!.toLowerCase(),
+        (translations?.month ?? "").toLowerCase(),
+        (translations?.year ?? "").toLowerCase(),
       ];
 
   List<String> get adsStatusList => [
@@ -114,9 +114,9 @@ class AppArray {
       ];
 
   // List<String> allCategories = [
-  //   translations!.allCategory??"",
+  //   translations?.allCategory??"",
   //   appFonts.acCleaning,
-  //   translations!.cleaning!,
+  //   translations?.cleaning ?? "",
   //   appFonts.painting,
   //   appFonts.cooking
   // ];
@@ -147,8 +147,8 @@ class AppArray {
       ];
 
   List<Map<String, dynamic>> get priceList => [
-        {"title": translations!.onlyPrice, "isSelect": false},
-        {"title": translations!.priceWithDiscount, "isSelect": true}
+        {"title": translations?.onlyPrice, "isSelect": false},
+        {"title": translations?.priceWithDiscount, "isSelect": true}
       ];
 
   var reviewList = [
@@ -158,7 +158,7 @@ class AppArray {
       "service": "Cleaning service",
       "rate": "4.0",
       "review":
-          "“I just love their service & the staff nature for work, I’d like to hire them again”",
+          "â€œI just love their service & the staff nature for work, Iâ€™d like to hire them againâ€",
       "time": "12 min ago",
     },
     {
@@ -175,81 +175,81 @@ class AppArray {
       "name": "Lorri Warf",
       "service": "Ac cleaning",
       "rate": "4.0",
-      "review": "“I love their work with ease, Thank you !”",
+      "review": "â€œI love their work with ease, Thank you !â€",
       "time": "28 days ago",
     },
   ];
 
-  List<Map<String, dynamic>> reviewRating = [
+  List<Map<String, dynamic>> get reviewRating => [
     {
-      "star": translations!.star5,
+      "star": translations?.star5 ?? "",
       "percentage": "84",
     },
     {
-      "star": translations!.star4,
+      "star": translations?.star4 ?? "",
       "percentage": "9",
     },
     {
-      "star": translations!.star3,
+      "star": translations?.star3 ?? "",
       "percentage": "4",
     },
     {
-      "star": translations!.star2,
+      "star": translations?.star2 ?? "",
       "percentage": "2",
     },
     {
-      "star": translations!.star1,
+      "star": translations?.star1 ?? "",
       "percentage": 1,
     },
   ];
 
   List<Map<String, dynamic>> get reviewLowHighList => [
-        {"id": "0", "title": translations!.all},
-        {"id": 1, "title": translations!.lowestRate},
-        {"id": "2", "title": translations!.highestRate}
+        {"id": "0", "title": translations?.all},
+        {"id": 1, "title": translations?.lowestRate},
+        {"id": "2", "title": translations?.highestRate}
       ];
 
   List<String> get servicemanFilterList => [
-        translations!.category!,
-        translations!.statusMember!,
+        translations?.category ?? "",
+        translations?.statusMember ?? "",
       ];
 
   List<String> get jobExperienceList => [
-        translations!.highestExperience!,
-        translations!.lowestExperience!,
+        translations?.highestExperience ?? "",
+        translations?.lowestExperience ?? "",
       ];
 
-  // var languagesList = [translations!.english, translations!.spanish, translations!.chines];
+  // var languagesList = [translations?.english, translations?.spanish, translations?.chines];
 
   List<Map<String, dynamic>> get selectList => [
-        {"image": eSvgAssets.gallery, "title": translations!.chooseFromGallery},
-        {"image": eSvgAssets.cameraFill, "title": translations!.openCamera}
+        {"image": eSvgAssets.gallery, "title": translations?.chooseFromGallery},
+        {"image": eSvgAssets.cameraFill, "title": translations?.openCamera}
       ];
 
   List<Map<String, dynamic>> get profileList => [
         {
-          "title": translations!.companyInfo,
+          "title": translations?.companyInfo,
           "data": [
             {
               "icon": eSvgAssets.buildings,
               "title": isFreelancer
-                  ? translations!.serviceLocation
-                  : translations!.companyDetails,
+                  ? translations?.serviceLocation
+                  : translations?.companyDetails,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.bank,
-              "title": translations!.bankDetails,
+              "title": translations?.bankDetails,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.identity,
-              "title": translations!.idVerification,
+              "title": translations?.idVerification,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.serviceIcon,
-              "title": translations!.services,
+              "title": translations?.services,
               "isArrow": true
             },
             {
@@ -259,47 +259,47 @@ class AppArray {
             },
             {
               "icon": eSvgAssets.servicemanIcon,
-              "title": translations!.serviceman,
+              "title": translations?.serviceman,
               "isArrow": true
             }
           ],
         },
         {
-          "title": translations!.otherDetails,
+          "title": translations?.otherDetails,
           "data": [
             {
               "icon": eSvgAssets.mobile,
-              "title": translations!.appDetails,
+              "title": translations?.appDetails,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.adsType,
-              "title": translations!.advertisement,
+              "title": translations?.advertisement,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.calender,
-              "title": translations!.timeSlots,
+              "title": translations?.timeSlots,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.commission,
-              "title": translations!.commissionDetails,
+              "title": translations?.commissionDetails,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.gift,
-              "title": translations!.myPackages,
+              "title": translations?.myPackages,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.starOut,
-              "title": translations!.myReview,
+              "title": translations?.myReview,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.crown,
-              "title": translations!.subscriptionPlan,
+              "title": translations?.subscriptionPlan,
               "isArrow": true
             },
             if (appSettingModel!.activation!.referralEnable == "1")
@@ -309,23 +309,28 @@ class AppArray {
                 "isArrow": true
               },
             {
+              "icon": eSvgAssets.translate,
+              "title": translations?.changeLanguage,
+              "isArrow": true
+            },
+            {
               "icon": eSvgAssets.chat,
-              "title": translations!.staffChat,
+              "title": translations?.staffChat,
               "isArrow": true
             },
           ]
         },
         {
-          "title": translations!.alertZone,
+          "title": translations?.alertZone,
           "data": [
             {
               "icon": eSvgAssets.delete,
-              "title": translations!.deleteAccount,
+              "title": translations?.deleteAccount,
               "isArrow": false
             },
             {
               "icon": eSvgAssets.logout,
-              "title": translations!.logOut,
+              "title": translations?.logOut,
               "isArrow": false
             }
           ]
@@ -333,28 +338,28 @@ class AppArray {
       ];
   List<Map<String, dynamic>> get profileListWithoutSubscription => [
         {
-          "title": translations!.companyInfo,
+          "title": translations?.companyInfo,
           "data": [
             {
               "icon": eSvgAssets.buildings,
               "title": isFreelancer
-                  ? translations!.serviceLocation
-                  : translations!.companyDetails,
+                  ? translations?.serviceLocation
+                  : translations?.companyDetails,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.bank,
-              "title": translations!.bankDetails,
+              "title": translations?.bankDetails,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.identity,
-              "title": translations!.idVerification,
+              "title": translations?.idVerification,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.serviceIcon,
-              "title": translations!.services,
+              "title": translations?.services,
               "isArrow": true
             },
             {
@@ -364,42 +369,42 @@ class AppArray {
             },
             {
               "icon": eSvgAssets.servicemanIcon,
-              "title": translations!.serviceman,
+              "title": translations?.serviceman,
               "isArrow": true
             }
           ],
         },
         {
-          "title": translations!.otherDetails,
+          "title": translations?.otherDetails,
           "data": [
             {
               "icon": eSvgAssets.mobile,
-              "title": translations!.appDetails,
+              "title": translations?.appDetails,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.adsType,
-              "title": translations!.advertisement,
+              "title": translations?.advertisement,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.calender,
-              "title": translations!.timeSlots,
+              "title": translations?.timeSlots,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.commission,
-              "title": translations!.commissionDetails,
+              "title": translations?.commissionDetails,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.gift,
-              "title": translations!.myPackages,
+              "title": translations?.myPackages,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.starOut,
-              "title": translations!.myReview,
+              "title": translations?.myReview,
               "isArrow": true
             },
             if (appSettingModel!.activation!.referralEnable == "1")
@@ -409,23 +414,28 @@ class AppArray {
                 "isArrow": true
               },
             {
+              "icon": eSvgAssets.translate,
+              "title": translations?.changeLanguage,
+              "isArrow": true
+            },
+            {
               "icon": eSvgAssets.chat,
-              "title": translations!.staffChat,
+              "title": translations?.staffChat,
               "isArrow": true
             },
           ]
         },
         {
-          "title": translations!.alertZone,
+          "title": translations?.alertZone,
           "data": [
             {
               "icon": eSvgAssets.delete,
-              "title": translations!.deleteAccount,
+              "title": translations?.deleteAccount,
               "isArrow": false
             },
             {
               "icon": eSvgAssets.logout,
-              "title": translations!.logOut,
+              "title": translations?.logOut,
               "isArrow": false
             }
           ]
@@ -434,63 +444,68 @@ class AppArray {
 
   List<Map<String, dynamic>> get profileListAsServiceman => [
         {
-          "title": translations!.companyInfo,
+          "title": translations?.companyInfo,
           "data": [
             {
               "icon": eSvgAssets.buildings,
               "title": isFreelancer
-                  ? translations!.serviceLocation
-                  : translations!.companyDetails,
+                  ? translations?.serviceLocation
+                  : translations?.companyDetails,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.bank,
-              "title": translations!.bankDetails,
+              "title": translations?.bankDetails,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.identity,
-              "title": translations!.idVerification,
+              "title": translations?.idVerification,
               "isArrow": true
             },
           ],
         },
         {
-          "title": translations!.otherDetails,
+          "title": translations?.otherDetails,
           "data": [
             {
               "icon": eSvgAssets.mobile,
-              "title": translations!.appDetails,
+              "title": translations?.appDetails,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.commission,
-              "title": translations!.commissionDetails,
+              "title": translations?.commissionDetails,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.starOut,
-              "title": translations!.myReview,
+              "title": translations?.myReview,
+              "isArrow": true
+            },
+            {
+              "icon": eSvgAssets.translate,
+              "title": translations?.changeLanguage,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.chat,
-              "title": translations!.staffChat,
+              "title": translations?.staffChat,
               "isArrow": true
             },
           ]
         },
         {
-          "title": translations!.alertZone,
+          "title": translations?.alertZone,
           "data": [
             {
               "icon": eSvgAssets.delete,
-              "title": translations!.deleteAccount,
+              "title": translations?.deleteAccount,
               "isArrow": false
             },
             {
               "icon": eSvgAssets.logout,
-              "title": translations!.logOut,
+              "title": translations?.logOut,
               "isArrow": false
             }
           ]
@@ -499,26 +514,26 @@ class AppArray {
 
   List<Map<String, dynamic>> get profileListAsFreelance => [
         {
-          "title": translations!.companyInfo,
+          "title": translations?.companyInfo,
           "data": [
             {
               "icon": eSvgAssets.buildings,
-              "title": translations!.serviceLocation,
+              "title": translations?.serviceLocation,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.bank,
-              "title": translations!.bankDetails,
+              "title": translations?.bankDetails,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.identity,
-              "title": translations!.idVerification,
+              "title": translations?.idVerification,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.serviceIcon,
-              "title": translations!.services,
+              "title": translations?.services,
               "isArrow": true
             },
             {
@@ -528,37 +543,37 @@ class AppArray {
             },
             {
               "icon": eSvgAssets.gift,
-              "title": translations!.myPackages,
+              "title": translations?.myPackages,
               "isArrow": true
             },
           ],
         },
         {
-          "title": translations!.otherDetails,
+          "title": translations?.otherDetails,
           "data": [
             {
               "icon": eSvgAssets.mobile,
-              "title": translations!.appDetails,
+              "title": translations?.appDetails,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.calender,
-              "title": translations!.timeSlots,
+              "title": translations?.timeSlots,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.commission,
-              "title": translations!.commissionDetails,
+              "title": translations?.commissionDetails,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.starOut,
-              "title": translations!.myReview,
+              "title": translations?.myReview,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.crown,
-              "title": translations!.subscriptionPlan,
+              "title": translations?.subscriptionPlan,
               "isArrow": true
             },
             if (appSettingModel!.activation!.referralEnable == "1")
@@ -568,23 +583,28 @@ class AppArray {
                 "isArrow": true
               },
             {
+              "icon": eSvgAssets.translate,
+              "title": translations?.changeLanguage,
+              "isArrow": true
+            },
+            {
               "icon": eSvgAssets.chat,
-              "title": translations!.staffChat,
+              "title": translations?.staffChat,
               "isArrow": true
             },
           ]
         },
         {
-          "title": translations!.alertZone,
+          "title": translations?.alertZone,
           "data": [
             {
               "icon": eSvgAssets.delete,
-              "title": translations!.deleteAccount,
+              "title": translations?.deleteAccount,
               "isArrow": false
             },
             {
               "icon": eSvgAssets.logout,
-              "title": translations!.logOut,
+              "title": translations?.logOut,
               "isArrow": false
             }
           ]
@@ -592,26 +612,26 @@ class AppArray {
       ];
   List<Map<String, dynamic>> get profileListAsFreelanceWithoutSubscription => [
         {
-          "title": translations!.companyInfo,
+          "title": translations?.companyInfo,
           "data": [
             {
               "icon": eSvgAssets.buildings,
-              "title": translations!.serviceLocation,
+              "title": translations?.serviceLocation,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.bank,
-              "title": translations!.bankDetails,
+              "title": translations?.bankDetails,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.identity,
-              "title": translations!.idVerification,
+              "title": translations?.idVerification,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.serviceIcon,
-              "title": translations!.services,
+              "title": translations?.services,
               "isArrow": true
             },
             {
@@ -621,32 +641,32 @@ class AppArray {
             },
             {
               "icon": eSvgAssets.gift,
-              "title": translations!.myPackages,
+              "title": translations?.myPackages,
               "isArrow": true
             },
           ],
         },
         {
-          "title": translations!.otherDetails,
+          "title": translations?.otherDetails,
           "data": [
             {
               "icon": eSvgAssets.mobile,
-              "title": translations!.appDetails,
+              "title": translations?.appDetails,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.calender,
-              "title": translations!.timeSlots,
+              "title": translations?.timeSlots,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.commission,
-              "title": translations!.commissionDetails,
+              "title": translations?.commissionDetails,
               "isArrow": true
             },
             {
               "icon": eSvgAssets.starOut,
-              "title": translations!.myReview,
+              "title": translations?.myReview,
               "isArrow": true
             },
             if (appSettingModel!.activation!.referralEnable == "1")
@@ -656,23 +676,28 @@ class AppArray {
                 "isArrow": true
               },
             {
+              "icon": eSvgAssets.translate,
+              "title": translations?.changeLanguage,
+              "isArrow": true
+            },
+            {
               "icon": eSvgAssets.chat,
-              "title": translations!.staffChat,
+              "title": translations?.staffChat,
               "isArrow": true
             },
           ]
         },
         {
-          "title": translations!.alertZone,
+          "title": translations?.alertZone,
           "data": [
             {
               "icon": eSvgAssets.delete,
-              "title": translations!.deleteAccount,
+              "title": translations?.deleteAccount,
               "isArrow": false
             },
             {
               "icon": eSvgAssets.logout,
-              "title": translations!.logOut,
+              "title": translations?.logOut,
               "isArrow": false
             }
           ]
@@ -682,21 +707,21 @@ class AppArray {
   //app setting
   List appSetting(isTheme) => [
         {
-          'title': isTheme ? translations!.lightTheme : translations!.darkTheme,
+          'title': isTheme ? translations?.lightTheme : translations?.darkTheme,
           'icon': eSvgAssets.dark
         },
         {
-          'title': translations!.updateNotification,
+          'title': translations?.updateNotification,
           'icon': eSvgAssets.notification
         },
-        /*     {'title': translations!.changeCurrency, 'icon': eSvgAssets.currency}, */
-        {'title': translations!.changeLanguage, 'icon': eSvgAssets.translate},
-        {'title': translations!.changePassword, 'icon': eSvgAssets.lock}
+        /*     {'title': translations?.changeCurrency, 'icon': eSvgAssets.currency}, */
+        {'title': translations?.changeLanguage, 'icon': eSvgAssets.translate},
+        {'title': translations?.changePassword, 'icon': eSvgAssets.lock}
       ];
 
   List<Map<String, dynamic>> get currencyList => [
         {
-          'title': translations!.usDollar,
+          'title': translations?.usDollar,
           'icon': eSvgAssets.usCurrency,
           "code": "USD",
           "symbol": "\$",
@@ -706,30 +731,30 @@ class AppArray {
           'EUR': 0.96,
         },
         {
-          'title': translations!.euro,
+          'title': translations?.euro,
           'icon': eSvgAssets.euroCurrency,
           "code": "EUR",
-          "symbol": '€',
+          "symbol": 'â‚¬',
           'USD': 1.05,
           'INR': 87.10,
           'POU': 0.87,
           'EUR': 1,
         },
         {
-          'title': translations!.inr,
+          'title': translations?.inr,
           'icon': eSvgAssets.inCurrency,
           "code": "INR",
-          "symbol": '₹',
+          "symbol": 'â‚¹',
           'USD': 0.012,
           'INR': 1,
           'POU': 0.010,
           'EUR': 0.011,
         },
         {
-          'title': translations!.pound,
+          'title': translations?.pound,
           'icon': eSvgAssets.ukCurrency,
           "code": "POU",
-          "symbol": "£",
+          "symbol": "Â£",
           'USD': 1.22,
           'INR': 101.74,
           'POU': 1,
@@ -737,10 +762,10 @@ class AppArray {
         }
       ];
 
-  List<Map<String, dynamic>> companyDetailList = [
+  List<Map<String, dynamic>> get companyDetailList => [
     {
       "icon": eSvgAssets.phone,
-      "title": translations!.phone,
+      "title": translations?.phone ?? "",
       "subtitle": "+91 25623 25623"
     },
     {
@@ -750,41 +775,41 @@ class AppArray {
     },
     {
       "icon": eSvgAssets.timer,
-      "title": translations!.experience,
+      "title": translations?.experience ?? "",
       "subtitle": "2 years of experience"
     },
     {
       "icon": eSvgAssets.service,
-      "title": translations!.noOfCompletedService,
+      "title": translations?.noOfCompletedService ?? "",
       "subtitle": "234"
     },
   ];
 
   List<Map<String, dynamic>> get documentsList => [
         {
-          "title": translations!.drivingLicence,
+          "title": translations?.drivingLicence,
           "image": eImageAssets.dl,
-          "status": translations!.requestPending
+          "status": translations?.requestPending
         },
         {
-          "title": translations!.panCard,
+          "title": translations?.panCard,
           "image": eImageAssets.panCard,
-          "status": translations!.requestForUpdate
+          "status": translations?.requestForUpdate
         },
         {
-          "title": translations!.aadhaarCard,
+          "title": translations?.aadhaarCard,
           "image": eImageAssets.aadharCard,
-          "status": translations!.requestForUpdate
+          "status": translations?.requestForUpdate
         },
         {
-          "title": translations!.votingCard,
+          "title": translations?.votingCard,
           "image": eImageAssets.voterCard,
-          "status": translations!.requestForUpdate
+          "status": translations?.requestForUpdate
         },
       ];
 
   List<String> get timeSlotStartAtList =>
-      [translations!.days!, translations!.startsAt!, translations!.endAt!];
+      [translations?.days ?? "", translations?.startsAt ?? "", translations?.endAt ?? ""];
 
   List<TimeSlots> timeSlotList = [
     TimeSlots(day: 'MONDAY', slots: [], status: 1),
@@ -865,24 +890,24 @@ class AppArray {
       ];
 
   Map<String, dynamic> get subscriptionPlanList => {
-        "title": translations!.try7Days,
-        "subtext": translations!.getFreeTrial,
+        "title": translations?.try7Days,
+        "subtext": translations?.getFreeTrial,
         "benefits": [
-          translations!.addUpTo3Service,
-          translations!.addUpTo3Servicemen,
-          translations!.addUpTo3ServiceLocation,
-          translations!.addUpTo3ServicePackages
+          translations?.addUpTo3Service,
+          translations?.addUpTo3Servicemen,
+          translations?.addUpTo3ServiceLocation,
+          translations?.addUpTo3ServicePackages
         ]
       };
 
   List<String> get bookingFilterList => [
-        translations!.status!,
-        translations!.date!,
-        translations!.category!,
+        translations?.status ?? "",
+        translations?.date ?? "",
+        translations?.category ?? "",
       ];
 
   List<String> get selectServicemenList =>
-      [translations!.assignToMe!, translations!.assignToOther!];
+      [translations?.assignToMe ?? "", translations?.assignToOther ?? ""];
 
   List<Map<String, dynamic>> get ratingList => [
         {
@@ -908,19 +933,19 @@ class AppArray {
       ];
 
   List<String> get optionList =>
-      [translations!.call!, translations!.clearChat!];
+      [translations?.call ?? "", translations?.clearChat ?? ""];
 
   List<String> get chatHistoryOptionList =>
-      [translations!.refresh!, translations!.clearChat!];
+      [translations?.refresh ?? "", translations?.clearChat ?? ""];
 
   List<Map<String, dynamic>> get dashBoardList => [
         {
           "image": eSvgAssets.colorFilter,
-          "title": translations!.addNewService,
+          "title": translations?.addNewService,
         },
         {
           "image": eSvgAssets.userTagFill,
-          "title": translations!.addNewServicemen,
+          "title": translations?.addNewServicemen,
         },
       ];
 
@@ -930,11 +955,11 @@ class AppArray {
   List<XFile> servicemanDocImageList = [];
 
   List<String> get servicemenExperienceList => [
-        translations!.allServicemen!,
-        translations!.highestExperience!,
-        translations!.lowestExperience!,
-        translations!.highestServed!,
-        translations!.lowestServed!
+        translations?.allServicemen ?? "",
+        translations?.highestExperience ?? "",
+        translations?.lowestExperience ?? "",
+        translations?.highestServed ?? "",
+        translations?.lowestServed ?? ""
       ];
 
   List<ChartData> weekData = [
@@ -978,9 +1003,11 @@ class AppArray {
   List<ChartDataColor> earningChartData = [];
 
   List<Map<String, dynamic>> get serviceType => [
-        {"title": translations!.userSite, "val": "fixed"},
-        {"title": translations!.providerSite, "val": "provider_site"},
-        {"title": translations!.remotely, "val": "remotely"},
-        {"title": translations!.scheduled, "val": "scheduled"}
+        {"title": translations?.userSite, "val": "fixed"},
+        {"title": translations?.providerSite, "val": "provider_site"},
+        {"title": translations?.remotely, "val": "remotely"},
+        {"title": translations?.scheduled, "val": "scheduled"}
       ];
 }
+
+

@@ -815,8 +815,11 @@ class UserDataApiProvider extends ChangeNotifier {
   }
 
   Future<void> loadBookingsFromLocal(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
+    // Guard both cases: context already deactivated on entry (navigation happened
+    // before this was called) AND context deactivated after the await below.
+    if (!context.mounted) return;
     final booking = Provider.of<BookingProvider>(context, listen: false);
+    final prefs = await SharedPreferences.getInstance();
 
     String? bookingsJson = prefs.getString('booking_history');
     if (bookingsJson != null) {

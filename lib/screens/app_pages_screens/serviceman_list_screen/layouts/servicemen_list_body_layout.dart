@@ -77,16 +77,16 @@ class ServicemenListBodyLayout extends StatelessWidget {
                             crossAxisSpacing: 15,
                             mainAxisSpacing: 15),
                     itemBuilder: (context, index) {
+                      final sm = value.searchList[index];
                       return AvailableServiceLayout(
                           onTap: () => route.pushNamed(
-                                  context, routeName.servicemanDetail, arg: {
-                                "detail": value.searchCtrl.text.isNotEmpty
-                                    ? value.searchList[index].id
-                                    : servicemanList[index]
-                              }),
-                          data: value.searchCtrl.text.isNotEmpty
-                              ? value.searchList[index]
-                              : servicemanList[index]);
+                              context, routeName.servicemanDetail,
+                              arg: {"detail": sm.id}),
+                          showAvailabilityToggle: !isServiceman,
+                          onToggleAvailability: (val) =>
+                              value.toggleServicemanAvailability(
+                                  context, sm.id!, val),
+                          data: sm);
                     })
             : servicemanList.isEmpty
                 ? const CommonEmpty().padding(top: Sizes.s100)
@@ -102,15 +102,18 @@ class ServicemenListBodyLayout extends StatelessWidget {
                             crossAxisSpacing: 15,
                             mainAxisSpacing: 15),
                     itemBuilder: (context, index) {
+                      final sm = servicemanList[index];
                       return AvailableServiceLayout(
-                          onTap: () /* => */ {
-                            details.getServicemenById(context,
-                                id: servicemanList[index].id);
+                          onTap: () {
+                            details.getServicemenById(context, id: sm.id);
                             route.pushNamed(context, routeName.servicemanDetail,
-                                arg: details
-                                    .servicemanModel /* servicemanList[index] */);
+                                arg: details.servicemanModel);
                           },
-                          data: servicemanList[index]);
+                          showAvailabilityToggle: !isServiceman,
+                          onToggleAvailability: (val) =>
+                              value.toggleServicemanAvailability(
+                                  context, sm.id!, val),
+                          data: sm);
                     }),
         (servicemanList.length < 5)
             ? const VSpace(Sizes.s150)

@@ -27,6 +27,7 @@ import 'package:upgrader/upgrader.dart';
 import 'common/languages/app_language.dart';
 import 'common/theme/app_theme.dart';
 import 'config.dart';
+import 'services/google_translation_service.dart';
 
 // ─── Global error log collected during startup ────────────────────────────────
 // Every caught error is appended here. The app reads this list to show a
@@ -47,6 +48,9 @@ void main() async {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
+    // ── System UI — edge-to-edge so nav bar is transparent ───────────────────
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
     // ── Orientation ───────────────────────────────────────────────────────────
     try {
       await SystemChrome.setPreferredOrientations([
@@ -64,8 +68,10 @@ void main() async {
     } catch (e) {
       startupErrors.add('initializeAppSettings failed: $e');
       debugPrint('⚠️ initializeAppSettings failed: $e');
-      // Non-fatal — continue booting.
     }
+
+    // ── Translation disk cache ────────────────────────────────────────────────
+    await GoogleTranslationService.loadCache();
 
     // ── Firebase ──────────────────────────────────────────────────────────────
     bool firebaseInitialized = false;
@@ -553,6 +559,7 @@ class _RouteToPageState extends State<RouteToPage> {
                   Provider.of<LanguageProvider>(context, listen: true);
 
               return MaterialApp(
+                key: ValueKey(lang.locale?.languageCode ?? 'en'),
                 title: 'Khidma Provider',
                 debugShowCheckedModeBanner: false,
                 theme: AppTheme.fromType(ThemeType.light).themeData,
@@ -569,16 +576,17 @@ class _RouteToPageState extends State<RouteToPage> {
                 initialRoute: '/',
                 routes: appRoute.route,
                 builder: (context, child) {
-                  // Overlay a collapsible error banner if any startup errors occurred.
-                  // The user can still use the app normally — the banner just
-                  // informs them (and you, during debugging) what went wrong.
                   Widget page = child!;
 
                   return Directionality(
                     textDirection: lang.locale?.languageCode == 'ar'
                         ? TextDirection.rtl
                         : TextDirection.ltr,
-                    child: page,
+                    child: SafeArea(
+                      top: false,
+                      bottom: true,
+                      child: page,
+                    ),
                   );
                 },
               );
@@ -632,18 +640,28 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   }
 
   try {
-    AndroidNotificationChannel channel = AndroidNotificationChannel(
-      'high_importance_channel',
-      'High Importance Notifications',
-      description: 'This channel is used for important notifications.',
+    const AndroidNotificationChannel bgChannel = AndroidNotificationChannel(
+      'fixit_notifications',
+      'Fixit Notifications',
+      description: 'Fixit Notifications',
       playSound: true,
-      importance: Importance.high,
-      sound: (message.data['title'] != 'Incoming Audio Call...' ||
-              message.data['title'] != 'Incoming Video Call...')
-          ? null
-          : const RawResourceAndroidNotificationSound('callsound'),
+      importance: Importance.max,
+      sound: RawResourceAndroidNotificationSound('notification_sound'),
       showBadge: true,
     );
+
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(bgChannel);
+
+    await flutterLocalNotificationsPlugin.initialize(
+      const InitializationSettings(
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        iOS: DarwinInitializationSettings(),
+      ),
+    );
+
     log('background message received: $message');
     showNotification(message);
   } catch (e) {

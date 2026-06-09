@@ -85,6 +85,144 @@ class _HomeScreenState extends State<HomeScreen>
                                 .padding(horizontal: Sizes.s20)
                                 .width(MediaQuery.sizeOf(context).width),
                           if (isServiceman) const ProviderInfo(),
+                          if (isServiceman)
+                            Consumer<HomeProvider>(
+                                builder: (context, hp, _) => Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: Insets.i20),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: Insets.i15,
+                                          vertical: Insets.i10),
+                                      decoration: ShapeDecoration(
+                                          color: appColor(context)
+                                              .appTheme
+                                              .fieldCardBg,
+                                          shape: SmoothRectangleBorder(
+                                              borderRadius: SmoothBorderRadius(
+                                                  cornerRadius: 8,
+                                                  cornerSmoothing: 1))),
+                                      child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                      language(
+                                                          context,
+                                                          translations!
+                                                              .activeStatus),
+                                                      style: appCss
+                                                          .dmDenseMedium14
+                                                          .textColor(appColor(
+                                                                  context)
+                                                              .appTheme
+                                                              .darkText)),
+                                                  Text(
+                                                      hp.isServicemanOnline
+                                                          ? language(
+                                                              context,
+                                                              translations!
+                                                                  .online)
+                                                          : "Offline",
+                                                      style: appCss
+                                                          .dmDenseRegular12
+                                                          .textColor(
+                                                              hp.isServicemanOnline
+                                                                  ? const Color(
+                                                                      0xFF4CAF50)
+                                                                  : appColor(context)
+                                                                      .appTheme
+                                                                      .lightText))
+                                                ]),
+                                            Theme(
+                                                data: ThemeData(
+                                                    useMaterial3: false),
+                                                child: FlutterSwitchCommon(
+                                                    value: hp.isServicemanOnline,
+                                                    activeColor: const Color(0xFF4CAF50),
+                                                    inactiveColor: appColor(context).appTheme.red,
+                                                    toggleColor: Colors.white,
+                                                    inactiveToggleColor: Colors.white,
+                                                    width: 56,
+                                                    height: 30,
+                                                    toggleSize: 22,
+                                                    onToggle: (val) =>
+                                                        hp.toggleMyAvailability(
+                                                            context, val)))
+                                          ]),
+                                    )).marginOnly(bottom: Insets.i16),
+                          if (!isServiceman)
+                            Consumer<HomeProvider>(
+                                builder: (context, hp, _) => Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: Insets.i20),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: Insets.i15,
+                                          vertical: Insets.i10),
+                                      decoration: ShapeDecoration(
+                                          color: appColor(context)
+                                              .appTheme
+                                              .fieldCardBg,
+                                          shape: SmoothRectangleBorder(
+                                              borderRadius: SmoothBorderRadius(
+                                                  cornerRadius: 8,
+                                                  cornerSmoothing: 1))),
+                                      child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                      language(
+                                                          context,
+                                                          translations!
+                                                              .activeStatus),
+                                                      style: appCss
+                                                          .dmDenseMedium14
+                                                          .textColor(appColor(
+                                                                  context)
+                                                              .appTheme
+                                                              .darkText)),
+                                                  Text(
+                                                      hp.isProviderOnline
+                                                          ? language(
+                                                              context,
+                                                              translations!
+                                                                  .online)
+                                                          : "Offline",
+                                                      style: appCss
+                                                          .dmDenseRegular12
+                                                          .textColor(
+                                                              hp.isProviderOnline
+                                                                  ? const Color(
+                                                                      0xFF4CAF50)
+                                                                  : appColor(context)
+                                                                      .appTheme
+                                                                      .lightText))
+                                                ]),
+                                            Theme(
+                                                data: ThemeData(
+                                                    useMaterial3: false),
+                                                child: FlutterSwitchCommon(
+                                                    value: hp.isProviderOnline,
+                                                    activeColor: const Color(0xFF4CAF50),
+                                                    inactiveColor: appColor(context).appTheme.red,
+                                                    toggleColor: Colors.white,
+                                                    inactiveToggleColor: Colors.white,
+                                                    width: 56,
+                                                    height: 30,
+                                                    toggleSize: 22,
+                                                    onToggle: (val) =>
+                                                        hp.toggleProviderAvailability(
+                                                            context, val)))
+                                          ]),
+                                    )).marginOnly(bottom: Insets.i16),
                           WalletBalanceLayout(
                               onTap: () => value.onWithdraw(context)),
                           const VSpace(Sizes.s16),

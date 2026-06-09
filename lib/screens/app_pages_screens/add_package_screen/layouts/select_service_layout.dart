@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+﻿import 'package:flutter/cupertino.dart';
 import '../../../../config.dart';
 
 class SelectServiceLayout extends StatelessWidget {
@@ -60,7 +60,7 @@ class SelectServiceLayout extends StatelessWidget {
             .inkWell(onTap: onTapCross)
       ]),
       const VSpace(Sizes.s6),
-      Text(language(context, data!.title),
+      TranslatedText(data?.title ?? "",
           overflow: TextOverflow.ellipsis,
           style: appCss.dmDenseRegular12
               .textColor(appColor(context).appTheme.darkText))
@@ -68,3 +68,4 @@ class SelectServiceLayout extends StatelessWidget {
     ]).paddingOnly(right: Insets.i12);
   }
 }
+
