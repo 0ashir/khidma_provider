@@ -663,7 +663,13 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     );
 
     log('background message received: $message');
-    showNotification(message);
+    // Only show a local notification for data-only messages (no notification
+    // field).  For notification messages the FCM SDK already displayed the
+    // notification using the channel we just created/updated above, so showing
+    // again here would produce a duplicate with a second sound.
+    if (message.notification == null) {
+      showNotification(message);
+    }
   } catch (e) {
     debugPrint('⚠️ showNotification in background handler failed: $e');
   }

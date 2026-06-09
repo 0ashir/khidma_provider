@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(ls /c/FlutterWork/ 2>/dev/null; ls /c/ 2>/dev/null | head -20)",
-      "Read(//c//**)"
+      "Read(//c//**)",
+      "Skill(code-review)",
+      "Skill(code-review:*)",
+      "Bash(git -C \"C:\\\\FlutterWork\\\\fixit_user\" log --oneline -8)",
+      "Bash(git -C \"C:\\\\FlutterWork\\\\fixit_provider\" log --oneline -8)"
     ],
     "additionalDirectories": [
       "c:\\FlutterWork\\fixit_backend\\app\\Listeners",
