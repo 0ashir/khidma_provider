@@ -6,7 +6,8 @@
       "Skill(code-review)",
       "Skill(code-review:*)",
       "Bash(git -C \"C:\\\\FlutterWork\\\\fixit_user\" log --oneline -8)",
-      "Bash(git -C \"C:\\\\FlutterWork\\\\fixit_provider\" log --oneline -8)"
+      "Bash(git -C \"C:\\\\FlutterWork\\\\fixit_provider\" log --oneline -8)",
+      "PowerShell(cd c:\\\\FlutterWork\\\\fixit_provider; $output = flutter analyze 2>&1 | Out-String; $lines = $output -split \"`n\"; $errors = $lines | Where-Object { $_ -match \"^\\\\s+error \" }; Write-Output \"Total errors: $\\($errors.Count\\)\"; $errors | Select-Object -First 20)"
     ],
     "additionalDirectories": [
       "c:\\FlutterWork\\fixit_backend\\app\\Listeners",
