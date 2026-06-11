@@ -97,9 +97,8 @@ class HomeBookingLayout extends StatelessWidget {
           if (data!.bookingStatus != null &&
               data!.bookingStatus!.slug != translations!.cancelled)
             StatusRow(
-                title: translations!.requiredServiceman,
-                title2:
-                    "${((data!.requiredServicemen ?? 1) /*(data!.totalExtraServicemen != null ? (data!.totalExtraServicemen ?? 1) : 0)*/)} ${language(context, translations!.serviceman)}",
+                title: language(context, "Required Service Quantity"),
+                title2: "${data!.quantity ?? 1}",
                 style: appCss.dmDenseMedium12
                     .textColor(appColor(context).appTheme.darkText)),
           if (data!.dateTime != null)

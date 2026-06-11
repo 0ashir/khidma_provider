@@ -93,6 +93,7 @@ class Booking {
   Service? service;
   BookingStatus? bookingStatus;
   int? requiredServicemen;
+  int? quantity;
   DateTime? dateTime;
   String? paymentMethod;
   String? paymentStatus;
@@ -112,6 +113,7 @@ class Booking {
     this.service,
     this.bookingStatus,
     this.requiredServicemen,
+    this.quantity,
     this.dateTime,
     this.paymentMethod,
     this.paymentStatus,
@@ -136,6 +138,7 @@ class Booking {
           ? null
           : BookingStatus.fromJson(json["booking_status"]),
       requiredServicemen: json["required_servicemen"],
+      quantity: json["quantity"] ?? 1,
       dateTime:
           json["date_time"] == null ? null : DateTime.parse(json["date_time"]),
       paymentMethod: json["payment_method"],
@@ -160,6 +163,7 @@ class Booking {
         "service": service?.toJson(),
         "booking_status": bookingStatus?.toJson(),
         "required_servicemen": requiredServicemen,
+        "quantity": quantity,
         "date_time": dateTime?.toIso8601String(),
         "payment_method": paymentMethod,
         "payment_status": paymentStatus,
@@ -2064,6 +2068,7 @@ class Booking {
   double? total;
   BookingStatus? bookingStatus;
   int? requiredServicemen;
+  int? quantity;
   DateTime? dateTime;
   String? paymentMethod;
   String? paymentStatus;
@@ -2080,6 +2085,7 @@ class Booking {
     this.total,
     this.bookingStatus,
     this.requiredServicemen,
+    this.quantity,
     this.dateTime,
     this.paymentMethod,
     this.paymentStatus,
@@ -2099,6 +2105,7 @@ class Booking {
             ? null
             : BookingStatus.fromJson(json["booking_status"]),
         requiredServicemen: json["required_servicemen"],
+        quantity: json["quantity"] ?? 1,
         dateTime: json["date_time"] == null
             ? null
             : DateTime.parse(json["date_time"]),
@@ -2125,6 +2132,7 @@ class Booking {
         "total": total,
         "booking_status": bookingStatus?.toJson(),
         "required_servicemen": requiredServicemen,
+        "quantity": quantity,
         "date_time": dateTime?.toIso8601String(),
         "payment_method": paymentMethod,
         "payment_status": paymentStatus,

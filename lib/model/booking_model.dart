@@ -23,6 +23,7 @@ class BookingModel {
   int? totalExtraServicemen;
   int? totalServicemen;
   int? requiredServicemen;
+  int? quantity;
   int? perServicemanCommission;
   dynamic totalExtraServicemenCharge;
   dynamic couponTotalDiscount;
@@ -86,6 +87,7 @@ class BookingModel {
       this.totalExtraServicemen,
       this.totalServicemen,
       this.requiredServicemen,
+      this.quantity,
       this.perServicemanCommission,
       this.totalExtraServicemenCharge,
       this.couponTotalDiscount,
@@ -191,6 +193,7 @@ class BookingModel {
     invoiceUrl = json['invoice_url'];
     createdById = json['created_by_id'];
     requiredServicemen = json['required_servicemen'];
+    quantity = json['quantity'] ?? 1;
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     deletedAt = json['deleted_at'];
@@ -288,6 +291,7 @@ class BookingModel {
     data['total_extra_servicemen'] = totalExtraServicemen;
     data['total_servicemen'] = totalServicemen;
     data['required_servicemen'] = requiredServicemen;
+    data['quantity'] = quantity;
     data['total_extra_servicemen_charge'] = totalExtraServicemenCharge;
     data['coupon_total_discount'] = couponTotalDiscount;
     data['subtotal'] = subtotal;

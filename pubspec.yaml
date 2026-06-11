@@ -2,7 +2,7 @@ name: fixit_provider
 description: A new Flutter project.
 publish_to: "none"
 
-version: 8.0.9+101
+version: 8.0.9+102
 
 environment:
   sdk: ">=3.4.4 <4.0.0"

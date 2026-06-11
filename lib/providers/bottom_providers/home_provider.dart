@@ -44,13 +44,17 @@ class HomeProvider with ChangeNotifier {
   double get totalYearlyRevenue =>
       appArray.yearData.fold(0, (i, j) => i + (j.y ?? 0.0));
 
-  bool get isServicemanOnline => (userModel?.isOnline ?? 1) == 1;
+  bool get isServicemanOnline => (userModel?.isOnline ?? 0) == 1;
   bool get isProviderOnline => (userModel?.isOnline ?? 1) == 1;
 
+  bool isServicemanAvailabilityLoading = false;
+  bool isProviderAvailabilityLoading = false;
+
   Future<void> toggleMyAvailability(BuildContext context, bool makeOnline) async {
-    if (userModel == null) return;
+    if (userModel == null || isServicemanAvailabilityLoading) return;
     final prev = userModel!.isOnline;
     userModel!.isOnline = makeOnline ? 1 : 0;
+    isServicemanAvailabilityLoading = true;
     notifyListeners();
     final body = {"serviceman_id": userModel!.id, "is_online": makeOnline ? 1 : 0};
     await apiServices.postApi(api.servicemanAvailability, body, isToken: true).then((value) {
@@ -58,15 +62,17 @@ class HomeProvider with ChangeNotifier {
         showToast(context, value.message, type: "success");
       } else {
         userModel!.isOnline = prev;
-        notifyListeners();
       }
     });
+    isServicemanAvailabilityLoading = false;
+    notifyListeners();
   }
 
   Future<void> toggleProviderAvailability(BuildContext context, bool makeOnline) async {
-    if (userModel == null) return;
+    if (userModel == null || isProviderAvailabilityLoading) return;
     final prev = userModel!.isOnline;
     userModel!.isOnline = makeOnline ? 1 : 0;
+    isProviderAvailabilityLoading = true;
     notifyListeners();
     final body = {"provider_id": userModel!.id, "is_online": makeOnline ? 1 : 0};
     await apiServices.postApi(api.providerAvailability, body, isToken: true).then((value) {
@@ -74,9 +80,10 @@ class HomeProvider with ChangeNotifier {
         showToast(context, value.message, type: "success");
       } else {
         userModel!.isOnline = prev;
-        notifyListeners();
       }
     });
+    isProviderAvailabilityLoading = false;
+    notifyListeners();
   }
 
   // select week, month or year option for graph
