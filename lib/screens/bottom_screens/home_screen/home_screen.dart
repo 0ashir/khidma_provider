@@ -149,6 +149,7 @@ class _HomeScreenState extends State<HomeScreen>
                                                     width: 56,
                                                     height: 30,
                                                     toggleSize: 22,
+                                                    isLoading: hp.isServicemanAvailabilityLoading,
                                                     onToggle: (val) =>
                                                         hp.toggleMyAvailability(
                                                             context, val)))
@@ -218,6 +219,7 @@ class _HomeScreenState extends State<HomeScreen>
                                                     width: 56,
                                                     height: 30,
                                                     toggleSize: 22,
+                                                    isLoading: hp.isProviderAvailabilityLoading,
                                                     onToggle: (val) =>
                                                         hp.toggleProviderAvailability(
                                                             context, val)))

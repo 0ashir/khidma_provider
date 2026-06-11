@@ -24,6 +24,10 @@ class AcceptBillSummary extends StatelessWidget {
         appSettingModel?.general?.defaultCurrency?.symbolPosition == "left"
             ? "-${getSymbol(context)}${difference.toStringAsFixed(2)}"
             : "-${difference.toStringAsFixed(2)}${getSymbol(context)}";
+    final quantity = bookingModel?.quantity ?? 1;
+    final unitPrice = currencyVal * (bookingModel?.service?.price ?? 0);
+    final quantityLabel =
+        quantity > 1 ? translations!.services : translations!.service;
     return Container(
         decoration: BoxDecoration(
             image: DecorationImage(
@@ -52,15 +56,14 @@ class AcceptBillSummary extends StatelessWidget {
                         "${translations!.appliedDiscount ?? appFonts.appliedDiscount} (${bookingModel!.service!.discount}%)",
                     price: formattedDifference)
                 .marginOnly(bottom: Insets.i10),
-          if (bookingModel?.totalExtraServicemenCharge != null &&
-              bookingModel?.totalExtraServicemenCharge != 0)
+          if (bookingModel?.service?.price != null)
             BillRowCommon(
                     title: symbolPosition
-                        ? "${(bookingModel!.requiredServicemen != null ? bookingModel!.requiredServicemen! : 0) + (bookingModel!.totalExtraServicemen != null ? bookingModel!.totalExtraServicemen! : 0)} ${language(context, translations!.serviceman)} (${getSymbol(context)}${bookingModel?.perServicemanCharge} × ${(bookingModel!.requiredServicemen != null ? bookingModel!.requiredServicemen! : 0) + (bookingModel!.totalExtraServicemen != null ? bookingModel!.totalExtraServicemen! : 0)})"
-                        : "${(bookingModel!.requiredServicemen != null ? bookingModel!.requiredServicemen! : 0) + (bookingModel!.totalExtraServicemen != null ? bookingModel!.totalExtraServicemen! : 0)} ${language(context, translations!.serviceman)} (${bookingModel?.perServicemanCharge}${getSymbol(context)} × ${(bookingModel!.requiredServicemen != null ? bookingModel!.requiredServicemen! : 0) + (bookingModel!.totalExtraServicemen != null ? bookingModel!.totalExtraServicemen! : 0)})",
+                        ? "$quantity ${language(context, quantityLabel)} (${getSymbol(context)}${unitPrice.toStringAsFixed(2)} × $quantity)"
+                        : "$quantity ${language(context, quantityLabel)} (${unitPrice.toStringAsFixed(2)}${getSymbol(context)} × $quantity)",
                     price: symbolPosition
-                        ? "${getSymbol(context)}${bookingModel?.totalExtraServicemenCharge.toStringAsFixed(2)}"
-                        : "${bookingModel?.totalExtraServicemenCharge.toStringAsFixed(2)}${getSymbol(context)}",
+                        ? "${getSymbol(context)}${(unitPrice * quantity).toStringAsFixed(2)}"
+                        : "${(unitPrice * quantity).toStringAsFixed(2)}${getSymbol(context)}",
                     style: appCss.dmDenseBold14
                         .textColor(appColor(context).appTheme.darkText))
                 .marginOnly(bottom: Insets.i10),

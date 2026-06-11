@@ -10,6 +10,7 @@ class FlutterSwitchCommon extends StatelessWidget {
   final double? width;
   final double? height;
   final double? toggleSize;
+  final bool isLoading;
 
   const FlutterSwitchCommon({
     super.key,
@@ -22,10 +23,18 @@ class FlutterSwitchCommon extends StatelessWidget {
     this.width,
     this.height,
     this.toggleSize,
+    this.isLoading = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final loader = SizedBox(
+        width: (toggleSize ?? Sizes.s12) * 0.6,
+        height: (toggleSize ?? Sizes.s12) * 0.6,
+        child: CircularProgressIndicator(
+            strokeWidth: 2,
+            valueColor: AlwaysStoppedAnimation<Color>(
+                value! ? (activeColor ?? appColor(context).appTheme.primary) : (inactiveColor ?? appColor(context).appTheme.stroke))));
     return Theme(
         data: ThemeData(useMaterial3: false),
         child: FlutterSwitch(
@@ -35,6 +44,9 @@ class FlutterSwitchCommon extends StatelessWidget {
             value: value!,
             borderRadius: 15,
             padding: 4,
+            disabled: isLoading,
+            activeIcon: isLoading ? loader : null,
+            inactiveIcon: isLoading ? loader : null,
             toggleColor: toggleColor ?? appColor(context).appTheme.whiteBg,
             inactiveToggleColor: inactiveToggleColor ?? appColor(context).appTheme.lightText,
             activeColor: activeColor ?? appColor(context).appTheme.primary,
