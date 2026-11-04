@@ -1,0 +1,18 @@
+The iPhone screenshot source is prepared in ios/source.
+Browser rendering is blocked by the current managed session permissions.
+No final PNG exports have been generated yet.
+
+To render, validate, and install both eight-image sets, run from a regular
+PowerShell terminal in this Provider project folder:
+
+py output/build_ios_screenshots.py --install
+
+Requires the existing local Python Pillow and Playwright packages, Node,
+Chrome, and network access for the existing Outfit Google Font.
+
+The script creates the final PNGs at output/ios/iphone_1206x2622 and
+output/ios/iphone_1320x2868, checks dimensions and image assets, converts
+to opaque RGB, creates a contact sheet, then copies the result to:
+F:\Codebases\eDemand\eDemand Apps v5.2.0\eDemand Apps v5.2.0\eDemand Customer\eDemand\store_screenshots\ios
+
+It refuses to overwrite an existing destination ios folder.

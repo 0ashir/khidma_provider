@@ -1,0 +1,171 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=block" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#3D4BE0}
+body{font-family:'Outfit',sans-serif;-webkit-font-smoothing:antialiased}
+.row{display:flex;flex-direction:row} .col{display:flex;flex-direction:column}
+.center{align-items:center} .top{align-items:flex-start} .grow{flex:1 1 auto;min-width:0}
+.ell{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.t11{font-size:11px;line-height:1.2} .t12{font-size:12px;line-height:1.25} .t14{font-size:14px;line-height:1.25}
+.t16{font-size:16px;line-height:1.25} .t24{font-size:24px;line-height:1.25}
+.w400{font-weight:400} .w500{font-weight:500} .w600{font-weight:600} .w700{font-weight:700}
+.ic{display:inline-block;flex:none;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat}
+.dot{width:4px;height:4px;border-radius:50%;background:#EDEDED;flex:none;display:inline-block}
+.dash{height:1px;width:100%;flex:none;background:repeating-linear-gradient(90deg,#BFBFBF 0 4px,transparent 4px 8px)}
+.divider{height:1px;width:100%;background:#EDEDED;flex:none}
+
+.canvas{position:relative;width:1080px;height:1920px;overflow:hidden;
+  background:radial-gradient(120% 70% at 85% 0%,#7B88FF 0%,rgba(123,136,255,0) 60%),
+             linear-gradient(165deg,#5F6FFF 0%,#5465FF 38%,#3F4CE6 72%,#2E39C2 100%)}
+.blob{position:absolute;border-radius:50%;background:rgba(255,255,255,.07)}
+.ring{position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,.10)}
+.copy{position:absolute;left:60px;right:60px;top:118px;text-align:center;color:#fff}
+.chip{display:inline-flex;align-items:center;gap:14px;padding:10px 26px 10px 10px;border-radius:999px;
+  background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.22);font-size:30px;font-weight:600;letter-spacing:.3px}
+.chip img{width:50px;height:50px;border-radius:14px}
+.h1{margin-top:34px;font-size:86px;line-height:1.02;font-weight:700;letter-spacing:-1.6px}
+.h1 em{font-style:normal;color:#D9DDFF}
+.sub{margin-top:22px;font-size:34px;line-height:1.3;font-weight:400;color:rgba(255,255,255,.86)}
+.phone-wrap{position:absolute;left:50%;top:528px;transform-origin:top center;transform:translateX(-50%) scale(1.45)}
+.phone{position:relative;width:436px;height:916px;border-radius:52px;padding:12px;background:#0E0F14;
+  box-shadow:0 0 0 2px #2A2C36 inset,0 0 0 1.5px #3A3D4A,0 60px 120px rgba(10,14,60,.55),0 20px 40px rgba(10,14,60,.35)}
+.phone:before{content:"";position:absolute;right:-3px;top:190px;width:3px;height:80px;border-radius:2px;background:#24262F}
+.screen{position:relative;width:412px;height:892px;border-radius:40px;overflow:hidden;background:#F7F7F7;color:#1A1A1A}
+.punch{position:absolute;top:9px;left:50%;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:#0B0B0F;box-shadow:0 0 0 1.5px #1c1d24;z-index:50}
+
+.statusbar{height:28px;display:flex;align-items:center;padding:0 22px 0 24px}
+.appbar{position:absolute;left:0;top:0;right:0;background:#fff;z-index:10}
+.backbtn{margin:8px;padding:8px;border-radius:50%;background:#fff;display:flex;flex:none}
+.gesture{position:absolute;left:0;right:0;bottom:0;height:18px;display:flex;justify-content:center;align-items:flex-start;z-index:30}
+.gesture span{width:108px;height:4px;border-radius:2px;background:#1A1A1A;opacity:.85;margin-top:7px}
+.stepper{display:flex;align-items:center;gap:12px;border-radius:8px;background:#EEEFFF;border:1px solid #5465FF;flex:none}
+.add-btn{display:flex;align-items:center;justify-content:center;border-radius:8px;background:#EEEFFF;border:1px solid #5465FF;color:#5465FF;font-size:14px;flex:none}
+.cartbar-wrap{position:absolute;left:0;right:0;bottom:18px;background:#fff;padding:12px 16px;z-index:20}
+.cartbar{height:48px;border-radius:16px;background:#5465FF;padding:12px;display:flex;align-items:center;gap:8px;box-shadow:0 -4px 24px rgba(0,0,0,.08)}
+.circle-btn{padding:8px;border-radius:50%;background:#fff;display:flex;flex:none}
+.btn{height:48px;border-radius:12px;background:#5465FF;color:#fff;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center}
+</style><style>
+html,body,.canvas{height:2348.0597014925px!important}
+.phone-wrap{top:610px!important;transform:translateX(-50%) scale(1.8)!important}
+.phone{border-radius:62px!important;padding:12px!important}
+.screen{border-radius:50px!important}
+.phone:before{right:-3px;top:185px;height:77px;background:#454650}
+.phone:after{content:"";position:absolute;left:-3px;top:150px;width:3px;height:105px;border-radius:2px;background:linear-gradient(#454650 0 39%,transparent 39% 52%,#454650 52% 100%)}
+.punch{top:10px!important;width:124px!important;height:35px!important;margin-left:-62px!important;border-radius:22px!important;background:#000!important;box-shadow:none!important;z-index:100!important}
+.punch:after{content:"";position:absolute;right:12px;top:12px;width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 38% 38%,#15253b,#070b12 65%);border:1px solid #11151d}
+.statusbar{height:60px!important;padding:0 26px 0 30px!important;font-family:Arial,sans-serif!important}
+.statusbar>span:first-child{font-family:Arial,sans-serif!important;font-size:16px!important;font-weight:600!important;letter-spacing:0!important}
+.gesture{height:30px!important;align-items:flex-end!important;padding-bottom:8px!important;background:#fff!important}
+.gesture span{width:134px!important;height:5px!important;border-radius:4px!important;margin-top:0!important;background:#111!important;opacity:1!important}
+.float-svc{left:650px!important;top:1780px!important}
+</style></head><body>
+<div class="canvas">
+  <span class="blob" style="width:520px;height:520px;left:-200px;top:-180px"></span><span class="blob" style="width:420px;height:420px;right:-200px;top:900px"></span><span class="ring" style="width:760px;height:760px;right:-320px;top:1180px"></span><span class="ring" style="width:540px;height:540px;left:-280px;top:560px"></span>
+  <div class="copy">
+    <div class="chip"><img src="img/r_brand.png">Khidma Plus</div>
+    <div class="h1">Pick a time<br><em>that suits you</em></div>
+    <div class="sub">Choose your address, date &amp; time in seconds</div>
+  </div>
+  <div class="phone-wrap"><div class="phone"><div class="screen" style="background:#F7F7F7">
+    
+<div class="appbar" style="box-shadow:0 8px 16px rgba(0,0,0,.04);">
+  <div class="statusbar" style="color:#1A1A1A">
+  <span class="t14 w500" style="letter-spacing:.2px">9:41</span><span class="grow"></span>
+  <span class="row center" style="gap:6px">
+    <svg width="17" height="12" viewBox="0 0 17 12"><path d="M1 11h2V8H1zm4 0h2V6H5zm4 0h2V3.5H9zm4 0h2V1h-2z" fill="#1A1A1A"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 11.5 15.6 3.6A11 11 0 0 0 .4 3.6z" fill="#1A1A1A"/></svg>
+    <svg width="24" height="12" viewBox="0 0 24 12"><rect x=".5" y=".5" width="20" height="11" rx="3" fill="none" stroke="#1A1A1A" opacity=".5"/><rect x="2" y="2" width="17" height="8" rx="1.6" fill="#1A1A1A"/><rect x="21.5" y="4" width="1.6" height="4" rx=".8" fill="#1A1A1A" opacity=".5"/></svg>
+  </span></div>
+  <div class="row center" style="height:56px">
+    <div class="backbtn"><i class="ic" style="width:21.6px;height:21.6px;background:#1A1A1A;-webkit-mask-image:url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzYzNDdfNTI4NSkiPgo8cGF0aCBkPSJNMjAuMjUgMTJIMy43NSIgc3Ryb2tlPSIjMUExQTFBIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0xMC41IDE4Ljc1TDMuNzUgMTJMMTAuNSA1LjI1IiBzdHJva2U9IiMxQTFBMUEiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9nPgo8ZGVmcz4KPGNsaXBQYXRoIGlkPSJjbGlwMF82MzQ3XzUyODUiPgo8cmVjdCB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIGZpbGw9IndoaXRlIiB0cmFuc2Zvcm09Im1hdHJpeCgxIDAgMCAtMSAwIDI0KSIvPgo8L2NsaXBQYXRoPgo8L2RlZnM+Cjwvc3ZnPgo=);mask-image:url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzYzNDdfNTI4NSkiPgo8cGF0aCBkPSJNMjAuMjUgMTJIMy43NSIgc3Ryb2tlPSIjMUExQTFBIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0xMC41IDE4Ljc1TDMuNzUgMTJMMTAuNSA1LjI1IiBzdHJva2U9IiMxQTFBMUEiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9nPgo8ZGVmcz4KPGNsaXBQYXRoIGlkPSJjbGlwMF82MzQ3XzUyODUiPgo8cmVjdCB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIGZpbGw9IndoaXRlIiB0cmFuc2Zvcm09Im1hdHJpeCgxIDAgMCAtMSAwIDI0KSIvPgo8L2NsaXBQYXRoPgo8L2RlZnM+Cjwvc3ZnPgo=);"></i></div>
+    <div class="grow" style="padding-left:0"><div class="col"><span class="t16 w700">bareeq plus</span><div style="height:2px"></div><div class="row center"><span class="t12" style="color:#7A7A7A">1 service</span><span style="width:6px"></span><span style="width:4px;height:4px;border-radius:50%;background:#BFBFBF"></span><span style="width:6px"></span><span class="t12" style="color:#7A7A7A">AED249</span></div></div></div>
+    
+  </div></div>
+<div style="position:absolute;left:0;right:0;top:84px">
+  <div style="background:#fff;padding:12px 16px">
+    <span class="t12" style="color:#7A7A7A">Service Location</span><div style="height:4px"></div>
+    <div class="row center"><span class="t12 w500">Villa 12, Al Markaziyah, Abu Dhabi</span><span style="width:4px"></span><i class="ic" style="width:16px;height:16px;background:#1A1A1A;-webkit-mask-image:url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE5LjUgOUwxMiAxNi41TDQuNSA5IiBzdHJva2U9IiMxQTFBMUEiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg==);mask-image:url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE5LjUgOUwxMiAxNi41TDQuNSA5IiBzdHJva2U9IiMxQTFBMUEiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg==);"></i></div>
+    <div style="height:12px"></div>
+    <div class="row center"><div style="width:18px;height:18px;margin:3px;border-radius:5px;border:1px solid #5465FF;background:#F7F7F7;display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z" fill="#5465FF"/></svg></div><span style="width:8px"></span><span class="t12" style="color:#7A7A7A">Billing address is same as service address</span></div>
+  </div>
+  <div style="padding:16px">
+    <div style="background:#fff;border-radius:12px;padding:12px">
+      <div class="row center">
+        <img src="img/s_12.jpg" style="width:44px;height:44px;border-radius:8.8px;object-fit:cover">
+        <span style="width:12px"></span>
+        <div class="col grow"><span class="t12 w500">deep wash salon</span><div style="height:4px"></div><span class="t12">AED249</span></div>
+        <span style="width:10px"></span><div class="stepper" style="height:32px;padding:0 8px">
+  <svg width="16" height="16" viewBox="0 0 24 24" style="flex:none;display:block"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4z" fill="#5465FF"/></svg><span class="w500" style="font-size:14px;color:#5465FF">1</span><svg width="16" height="16" viewBox="0 0 24 24" style="flex:none;display:block"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="#5465FF"/></svg></div>
+      </div>
+      <div style="height:12px"></div>
+      <div class="row" style="gap:8px"><div class="row center" style="padding:8px 12px;border-radius:12px;background:#F7F7F7;border:1px solid #EDEDED"><i class="ic" style="width:16px;height:16px;background:#1A1A1A;-webkit-mask-image:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiB2aWV3Qm94PSIwIDAgMTYgMTYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJQbHVzIj4KPHBhdGggaWQ9IlZlY3RvciIgZD0iTTIuNSA4SDEzLjUiIHN0cm9rZT0iIzFBMUExQSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGlkPSJWZWN0b3JfMiIgZD0iTTggMi41VjEzLjUiIHN0cm9rZT0iIzFBMUExQSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjwvZz4KPC9zdmc+Cg==);mask-image:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiB2aWV3Qm94PSIwIDAgMTYgMTYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJQbHVzIj4KPHBhdGggaWQ9IlZlY3RvciIgZD0iTTIuNSA4SDEzLjUiIHN0cm9rZT0iIzFBMUExQSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGlkPSJWZWN0b3JfMiIgZD0iTTggMi41VjEzLjUiIHN0cm9rZT0iIzFBMUExQSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjwvZz4KPC9zdmc+Cg==);"></i><span style="width:8px"></span><span class="t12">Add More Item</span></div><div class="row center" style="padding:8px 12px;border-radius:12px;background:#F7F7F7;border:1px solid #EDEDED"><i class="ic" style="width:16px;height:16px;background:#1A1A1A;-webkit-mask-image:url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTcuNSAxNi44NzUxSDMuNzVDMy41ODQyNCAxNi44NzUxIDMuNDI1MjcgMTYuODA5MyAzLjMwODA2IDE2LjY5MkMzLjE5MDg1IDE2LjU3NDggMy4xMjUgMTYuNDE1OSAzLjEyNSAxNi4yNTAxVjEyLjc1ODdDMy4xMjUwOCAxMi41OTMyIDMuMTkwODIgMTIuNDM0NCAzLjMwNzgxIDEyLjMxNzNMMTIuOTQyMiAyLjY4MjkxQzEzLjA1OTQgMi41NjU3OSAxMy4yMTgzIDIuNSAxMy4zODQgMi41QzEzLjU0OTcgMi41IDEzLjcwODYgMi41NjU3OSAxMy44MjU4IDIuNjgyOTFMMTcuMzE3MiA2LjE3MTk4QzE3LjQzNDMgNi4yODkxNyAxNy41MDAxIDYuNDQ4MDggMTcuNTAwMSA2LjYxMzc3QzE3LjUwMDEgNi43Nzk0NiAxNy40MzQzIDYuOTM4MzcgMTcuMzE3MiA3LjA1NTU3TDcuNSAxNi44NzUxWiIgc3Ryb2tlPSIjMUExQTFBIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0xNi44NzUgMTYuODc1SDcuNSIgc3Ryb2tlPSIjMUExQTFBIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0xMC42MjUgNUwxNSA5LjM3NSIgc3Ryb2tlPSIjMUExQTFBIiBzdHJva2Utd2lkdGg9IjEuODc1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg==);mask-image:url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTcuNSAxNi44NzUxSDMuNzVDMy41ODQyNCAxNi44NzUxIDMuNDI1MjcgMTYuODA5MyAzLjMwODA2IDE2LjY5MkMzLjE5MDg1IDE2LjU3NDggMy4xMjUgMTYuNDE1OSAzLjEyNSAxNi4yNTAxVjEyLjc1ODdDMy4xMjUwOCAxMi41OTMyIDMuMTkwODIgMTIuNDM0NCAzLjMwNzgxIDEyLjMxNzNMMTIuOTQyMiAyLjY4MjkxQzEzLjA1OTQgMi41NjU3OSAxMy4yMTgzIDIuNSAxMy4zODQgMi41QzEzLjU0OTcgMi41IDEzLjcwODYgMi41NjU3OSAxMy44MjU4IDIuNjgyOTFMMTcuMzE3MiA2LjE3MTk4QzE3LjQzNDMgNi4yODkxNyAxNy41MDAxIDYuNDQ4MDggMTcuNTAwMSA2LjYxMzc3QzE3LjUwMDEgNi43Nzk0NiAxNy40MzQzIDYuOTM4MzcgMTcuMzE3MiA3LjA1NTU3TDcuNSAxNi44NzUxWiIgc3Ryb2tlPSIjMUExQTFBIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0xNi44NzUgMTYuODc1SDcuNSIgc3Ryb2tlPSIjMUExQTFBIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0xMC42MjUgNUwxNSA5LjM3NSIgc3Ryb2tlPSIjMUExQTFBIiBzdHJva2Utd2lkdGg9IjEuODc1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg==);"></i><span style="width:8px"></span><span class="t12">Write Instruction</span></div></div>
+    </div>
+  </div>
+  <div style="padding:0 16px">
+    <div style="background:#fff;border-radius:12px;padding:12px">
+      <div class="row center">
+        <div style="padding:8px;border-radius:12px;background:#F7F7F7;display:flex"><i class="ic" style="width:16px;height:16px;background:#1A1A1A;-webkit-mask-image:url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEzIDIuNUgzQzIuNzIzODYgMi41IDIuNSAyLjcyMzg2IDIuNSAzVjEzQzIuNSAxMy4yNzYxIDIuNzIzODYgMTMuNSAzIDEzLjVIMTNDMTMuMjc2MSAxMy41IDEzLjUgMTMuMjc2MSAxMy41IDEzVjNDMTMuNSAyLjcyMzg2IDEzLjI3NjEgMi41IDEzIDIuNVoiIHN0cm9rZT0iIzFBMUExQSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0xMSAxLjVWMy41IiBzdHJva2U9IiMxQTFBMUEiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8cGF0aCBkPSJNNSAxLjVWMy41IiBzdHJva2U9IiMxQTFBMUEiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8cGF0aCBkPSJNMi41IDUuNUgxMy41IiBzdHJva2U9IiMxQTFBMUEiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8cGF0aCBkPSJNOCA5QzguNDE0MjEgOSA4Ljc1IDguNjY0MjEgOC43NSA4LjI1QzguNzUgNy44MzU3OSA4LjQxNDIxIDcuNSA4IDcuNUM3LjU4NTc5IDcuNSA3LjI1IDcuODM1NzkgNy4yNSA4LjI1QzcuMjUgOC42NjQyMSA3LjU4NTc5IDkgOCA5WiIgZmlsbD0iIzFBMUExQSIvPgo8cGF0aCBkPSJNMTAuNzUgOUMxMS4xNjQyIDkgMTEuNSA4LjY2NDIxIDExLjUgOC4yNUMxMS41IDcuODM1NzkgMTEuMTY0MiA3LjUgMTAuNzUgNy41QzEwLjMzNTggNy41IDEwIDcuODM1NzkgMTAgOC4yNUMxMCA4LjY2NDIxIDEwLjMzNTggOSAxMC43NSA5WiIgZmlsbD0iIzFBMUExQSIvPgo8cGF0aCBkPSJNNS4yNSAxMS41QzUuNjY0MjEgMTEuNSA2IDExLjE2NDIgNiAxMC43NUM2IDEwLjMzNTggNS42NjQyMSAxMCA1LjI1IDEwQzQuODM1NzkgMTAgNC41IDEwLjMzNTggNC41IDEwLjc1QzQuNSAxMS4xNjQyIDQuODM1NzkgMTEuNSA1LjI1IDExLjVaIiBmaWxsPSIjMUExQTFBIi8+CjxwYXRoIGQ9Ik04IDExLjVDOC40MTQyMSAxMS41IDguNzUgMTEuMTY0MiA4Ljc1IDEwLjc1QzguNzUgMTAuMzM1OCA4LjQxNDIxIDEwIDggMTBDNy41ODU3OSAxMCA3LjI1IDEwLjMzNTggNy4yNSAxMC43NUM3LjI1IDExLjE2NDIgNy41ODU3OSAxMS41IDggMTEuNVoiIGZpbGw9IiMxQTFBMUEiLz4KPHBhdGggZD0iTTEwLjc1IDExLjVDMTEuMTY0MiAxMS41IDExLjUgMTEuMTY0MiAxMS41IDEwLjc1QzExLjUgMTAuMzM1OCAxMS4xNjQyIDEwIDEwLjc1IDEwQzEwLjMzNTggMTAgMTAgMTAuMzM1OCAxMCAxMC43NUMxMCAxMS4xNjQyIDEwLjMzNTggMTEuNSAxMC43NSAxMS41WiIgZmlsbD0iIzFBMUExQSIvPgo8L3N2Zz4K);mask-image:url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEzIDIuNUgzQzIuNzIzODYgMi41IDIuNSAyLjcyMzg2IDIuNSAzVjEzQzIuNSAxMy4yNzYxIDIuNzIzODYgMTMuNSAzIDEzLjVIMTNDMTMuMjc2MSAxMy41IDEzLjUgMTMuMjc2MSAxMy41IDEzVjNDMTMuNSAyLjcyMzg2IDEzLjI3NjEgMi41IDEzIDIuNVoiIHN0cm9rZT0iIzFBMUExQSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0xMSAxLjVWMy41IiBzdHJva2U9IiMxQTFBMUEiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8cGF0aCBkPSJNNSAxLjVWMy41IiBzdHJva2U9IiMxQTFBMUEiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8cGF0aCBkPSJNMi41IDUuNUgxMy41IiBzdHJva2U9IiMxQTFBMUEiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8cGF0aCBkPSJNOCA5QzguNDE0MjEgOSA4Ljc1IDguNjY0MjEgOC43NSA4LjI1QzguNzUgNy44MzU3OSA4LjQxNDIxIDcuNSA4IDcuNUM3LjU4NTc5IDcuNSA3LjI1IDcuODM1NzkgNy4yNSA4LjI1QzcuMjUgOC42NjQyMSA3LjU4NTc5IDkgOCA5WiIgZmlsbD0iIzFBMUExQSIvPgo8cGF0aCBkPSJNMTAuNzUgOUMxMS4xNjQyIDkgMTEuNSA4LjY2NDIxIDExLjUgOC4yNUMxMS41IDcuODM1NzkgMTEuMTY0MiA3LjUgMTAuNzUgNy41QzEwLjMzNTggNy41IDEwIDcuODM1NzkgMTAgOC4yNUMxMCA4LjY2NDIxIDEwLjMzNTggOSAxMC43NSA5WiIgZmlsbD0iIzFBMUExQSIvPgo8cGF0aCBkPSJNNS4yNSAxMS41QzUuNjY0MjEgMTEuNSA2IDExLjE2NDIgNiAxMC43NUM2IDEwLjMzNTggNS42NjQyMSAxMCA1LjI1IDEwQzQuODM1NzkgMTAgNC41IDEwLjMzNTggNC41IDEwLjc1QzQuNSAxMS4xNjQyIDQuODM1NzkgMTEuNSA1LjI1IDExLjVaIiBmaWxsPSIjMUExQTFBIi8+CjxwYXRoIGQ9Ik04IDExLjVDOC40MTQyMSAxMS41IDguNzUgMTEuMTY0MiA4Ljc1IDEwLjc1QzguNzUgMTAuMzM1OCA4LjQxNDIxIDEwIDggMTBDNy41ODU3OSAxMCA3LjI1IDEwLjMzNTggNy4yNSAxMC43NUM3LjI1IDExLjE2NDIgNy41ODU3OSAxMS41IDggMTEuNVoiIGZpbGw9IiMxQTFBMUEiLz4KPHBhdGggZD0iTTEwLjc1IDExLjVDMTEuMTY0MiAxMS41IDExLjUgMTEuMTY0MiAxMS41IDEwLjc1QzExLjUgMTAuMzM1OCAxMS4xNjQyIDEwIDEwLjc1IDEwQzEwLjMzNTggMTAgMTAgMTAuMzM1OCAxMCAxMC43NUMxMCAxMS4xNjQyIDEwLjMzNTggMTEuNSAxMC43NSAxMS41WiIgZmlsbD0iIzFBMUExQSIvPgo8L3N2Zz4K);"></i></div><span style="width:8px"></span>
+        <span class="t14 w500 grow">Select date &amp; Time</span>
+        <div class="row center" style="padding:4px"><span class="t14" style="color:#5465FF">View All</span><span style="width:4px"></span><i class="ic" style="width:20px;height:20px;background:#5465FF;-webkit-mask-image:url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjUiIHZpZXdCb3g9IjAgMCAyNCAyNSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik03LjMxNDMgMjEuMjkwNEM2LjkzNjkgMjAuOTc3MyA2Ljg5MzIgMjAuNDI3NCA3LjIxNjcgMjAuMDYyMkwxMy45MTQ2IDEyLjVMNy4yMTY3IDQuOTM3OEM2Ljg5MzIgNC41NzI1OCA2LjkzNjkgNC4wMjI3NCA3LjMxNDMgMy43MDk2OUM3LjY5MTcgMy4zOTY2NSA4LjI1OTkgMy40Mzg5NSA4LjU4MzMgMy44MDQxN0wxNS43ODMzIDExLjkzMzJDMTYuMDcyMiAxMi4yNTk0IDE2LjA3MjIgMTIuNzQwNiAxNS43ODMzIDEzLjA2NjhMOC41ODMzIDIxLjE5NThDOC4yNTk5IDIxLjU2MTEgNy42OTE3IDIxLjYwMzMgNy4zMTQzIDIxLjI5MDRaIiBmaWxsPSIjNTQ2NUZGIi8+Cjwvc3ZnPgo=);mask-image:url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjUiIHZpZXdCb3g9IjAgMCAyNCAyNSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik03LjMxNDMgMjEuMjkwNEM2LjkzNjkgMjAuOTc3MyA2Ljg5MzIgMjAuNDI3NCA3LjIxNjcgMjAuMDYyMkwxMy45MTQ2IDEyLjVMNy4yMTY3IDQuOTM3OEM2Ljg5MzIgNC41NzI1OCA2LjkzNjkgNC4wMjI3NCA3LjMxNDMgMy43MDk2OUM3LjY5MTcgMy4zOTY2NSA4LjI1OTkgMy40Mzg5NSA4LjU4MzMgMy44MDQxN0wxNS43ODMzIDExLjkzMzJDMTYuMDcyMiAxMi4yNTk0IDE2LjA3MjIgMTIuNzQwNiAxNS43ODMzIDEzLjA2NjhMOC41ODMzIDIxLjE5NThDOC4yNTk5IDIxLjU2MTEgNy42OTE3IDIxLjYwMzMgNy4zMTQzIDIxLjI5MDRaIiBmaWxsPSIjNTQ2NUZGIi8+Cjwvc3ZnPgo=);"></i></div>
+      </div>
+      <div style="height:12px"></div><div class="divider"></div><div style="height:12px"></div>
+      <div style="display:inline-block;padding:8px;border-radius:8px;background:#F7F7F7;border:1px solid #EDEDED"><span class="t12">30/10/2026, 10:00 AM</span></div>
+    </div>
+  </div>
+  <div style="padding:16px 16px 0">
+    <div style="background:#fff;border-radius:12px;padding:12px">
+      <div class="row center"><span class="t14 w500 grow">Bill Details</span></div>
+      <div style="height:12px"></div><div class="divider"></div><div style="height:12px"></div>
+      <div class="col" style="gap:10px">
+        <div class="row"><span class="t14 grow" style="color:#7A7A7A">Item Total</span><span class="t14">AED249</span></div>
+      </div>
+      <div style="height:12px"></div><div class="dash"></div><div style="height:12px"></div>
+      <div class="row center">
+        <div style="padding:8px;border-radius:12px;background:#F7F7F7;display:flex"><i class="ic" style="width:16px;height:16px;background:#1A1A1A;-webkit-mask-image:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiB2aWV3Qm94PSIwIDAgMTYgMTYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJGaWxlVGV4dCI+CjxwYXRoIGlkPSJWZWN0b3IiIGQ9Ik0xMi41IDE0SDMuNUMzLjM2NzM5IDE0IDMuMjQwMjEgMTMuOTQ3MyAzLjE0NjQ1IDEzLjg1MzZDMy4wNTI2OCAxMy43NTk4IDMgMTMuNjMyNiAzIDEzLjVWMi41QzMgMi4zNjczOSAzLjA1MjY4IDIuMjQwMjEgMy4xNDY0NSAyLjE0NjQ1QzMuMjQwMjEgMi4wNTI2OCAzLjM2NzM5IDIgMy41IDJIOS41TDEzIDUuNVYxMy41QzEzIDEzLjYzMjYgMTIuOTQ3MyAxMy43NTk4IDEyLjg1MzYgMTMuODUzNkMxMi43NTk4IDEzLjk0NzMgMTIuNjMyNiAxNCAxMi41IDE0WiIgc3Ryb2tlPSIjMUExQTFBIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggaWQ9IlZlY3Rvcl8yIiBkPSJNOS41IDJWNS41SDEzIiBzdHJva2U9IiMxQTFBMUEiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8cGF0aCBpZD0iVmVjdG9yXzMiIGQ9Ik02IDguNUgxMCIgc3Ryb2tlPSIjMUExQTFBIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggaWQ9IlZlY3Rvcl80IiBkPSJNNiAxMC41SDEwIiBzdHJva2U9IiMxQTFBMUEiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8L2c+Cjwvc3ZnPgo=);mask-image:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiB2aWV3Qm94PSIwIDAgMTYgMTYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJGaWxlVGV4dCI+CjxwYXRoIGlkPSJWZWN0b3IiIGQ9Ik0xMi41IDE0SDMuNUMzLjM2NzM5IDE0IDMuMjQwMjEgMTMuOTQ3MyAzLjE0NjQ1IDEzLjg1MzZDMy4wNTI2OCAxMy43NTk4IDMgMTMuNjMyNiAzIDEzLjVWMi41QzMgMi4zNjczOSAzLjA1MjY4IDIuMjQwMjEgMy4xNDY0NSAyLjE0NjQ1QzMuMjQwMjEgMi4wNTI2OCAzLjM2NzM5IDIgMy41IDJIOS41TDEzIDUuNVYxMy41QzEzIDEzLjYzMjYgMTIuOTQ3MyAxMy43NTk4IDEyLjg1MzYgMTMuODUzNkMxMi43NTk4IDEzLjk0NzMgMTIuNjMyNiAxNCAxMi41IDE0WiIgc3Ryb2tlPSIjMUExQTFBIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggaWQ9IlZlY3Rvcl8yIiBkPSJNOS41IDJWNS41SDEzIiBzdHJva2U9IiMxQTFBMUEiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8cGF0aCBpZD0iVmVjdG9yXzMiIGQ9Ik02IDguNUgxMCIgc3Ryb2tlPSIjMUExQTFBIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggaWQ9IlZlY3Rvcl80IiBkPSJNNiAxMC41SDEwIiBzdHJva2U9IiMxQTFBMUEiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8L2c+Cjwvc3ZnPgo=);"></i></div><span style="width:8px"></span>
+        <span class="t14 grow">Total Bill <b class="w600">AED249</b></span>
+      </div>
+    </div>
+  </div>
+</div>
+<div style="position:absolute;left:0;right:0;bottom:18px;background:#fff;padding:16px;box-shadow:0 -4px 24px rgba(0,0,0,.08);z-index:20">
+  <div class="btn">Book Services</div></div>
+<div class="gesture" style="background:#fff"><span></span></div>
+    <div class="punch"></div>
+  </div></div></div>
+  
+</div><script>(() => {
+ const screen = document.querySelector('.screen');
+ const home = !!screen.querySelector('.header');
+ const extra = home ? 20 : 32;
+ // Preserve the existing content layout while reserving the iPhone top safe area.
+ for(const child of screen.children){
+   if(child.classList.contains('punch') || child.classList.contains('gesture')) continue;
+   const s = getComputedStyle(child);
+   const top = parseFloat(s.top);
+   if(s.position==='absolute' && Number.isFinite(top) && top>0 && s.bottom==='auto')
+     child.style.top = (top+extra)+'px';
+ }
+ if(home){
+   const spacer=screen.querySelector('.scroll>div');
+   spacer.style.height=(parseFloat(getComputedStyle(spacer).height)+extra)+'px';
+   screen.querySelector('.gesture').style.position='relative';
+ }
+ // Put bottom controls above the iOS home indicator safe area.
+ for(const child of screen.children){
+   if(child.classList.contains('gesture') || child.classList.contains('punch')) continue;
+   const s=getComputedStyle(child);
+   if(s.position==='absolute' && s.bottom==='18px') child.style.bottom='30px';
+ }
+ // iOS Wi-Fi uses curved arcs rather than Android's filled wedge.
+ for(const bar of screen.querySelectorAll('.statusbar')){
+   const svgs=bar.querySelectorAll('svg');
+   if(svgs.length>=3){
+     const old=svgs[1];
+     const color=old.querySelector('path')?.getAttribute('fill') || '#1A1A1A';
+     old.setAttribute('viewBox','0 0 18 14');
+     old.setAttribute('width','18');old.setAttribute('height','14');
+     old.innerHTML=`<path d="M1 4.3a12 12 0 0 1 16 0M4 7.5a7.5 7.5 0 0 1 10 0M7 10.5a3 3 0 0 1 4 0" fill="none" stroke="${color}" stroke-width="2"/><circle cx="9" cy="13" r="1" fill="${color}"/>`;
+   }
+ }
+})();</script></body></html>

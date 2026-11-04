@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Native launch window: blank splash-background colour only. The branded splash with the
+     app icon is drawn by Flutter (BrandSplash) as soon as the engine starts. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/khidma_splash_bg" />
+</layer-list>

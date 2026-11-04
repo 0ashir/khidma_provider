@@ -1,0 +1,29 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g transform="translate(3.75,2)">
+<path d="M0.625 0.625V6.25" stroke="#1A1A1A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="translate(3.75,12.5)">
+<path d="M0.625 0.625V5" stroke="#1A1A1A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="translate(2.5,8.75)">
+<path d="M2.5 4.375C3.53553 4.375 4.375 3.53553 4.375 2.5C4.375 1.46447 3.53553 0.625 2.5 0.625C1.46447 0.625 0.625 1.46447 0.625 2.5C0.625 3.53553 1.46447 4.375 2.5 4.375Z" stroke="#1A1A1A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="translate(9.375,2)">
+<path d="M0.625 0.625V2.5" stroke="#1A1A1A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="translate(9.375,8.75)">
+<path d="M0.625 0.625V8.75" stroke="#1A1A1A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="translate(8.126,5)">
+<path d="M2.5 4.375C3.53553 4.375 4.375 3.53553 4.375 2.5C4.375 1.46447 3.53553 0.625 2.5 0.625C1.46447 0.625 0.625 1.46447 0.625 2.5C0.625 3.53553 1.46447 4.375 2.5 4.375Z" stroke="#1A1A1A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="translate(15,2)">
+<path d="M0.625 0.625V8.75" stroke="#1A1A1A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="translate(15,15)">
+<path d="M0.625 0.625V2.5" stroke="#1A1A1A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="translate(13.75,11.25)">
+<path d="M2.5 4.375C3.53553 4.375 4.375 3.53553 4.375 2.5C4.375 1.46447 3.53553 0.625 2.5 0.625C1.46447 0.625 0.625 1.46447 0.625 2.5C0.625 3.53553 1.46447 4.375 2.5 4.375Z" stroke="#1A1A1A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

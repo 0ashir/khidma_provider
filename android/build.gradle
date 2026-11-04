@@ -1,0 +1,106 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.buildDir = '../build'
+subprojects {
+       afterEvaluate { project ->
+            if (project.hasProperty('android')) {
+                project.android {
+                    if (namespace == null) {
+                        namespace project.group
+                    }
+                }
+            }
+        }
+    afterEvaluate { project ->
+        if (project.plugins.hasPlugin("com.android.application") ||
+                project.plugins.hasPlugin("com.android.library")) {
+            project.android {
+                compileSdkVersion 37
+            }
+        }
+    }
+    // stripe_android skips jvmTarget on AGP 9, but builtInKotlin=false -> Kotlin defaults to JDK version.
+    if (project.name == 'stripe_android') {
+        // play-services-tapandpay (via stripe issuing push provisioning) is not on public Maven,
+        // so the plugin's lint classpath can't resolve. Lint of a third-party plugin isn't needed.
+        project.tasks.configureEach { task ->
+            if (task.name.startsWith('lint')) {
+                task.enabled = false
+            }
+        }
+        project.afterEvaluate {
+            project.tasks.matching { it.class.name.contains('KotlinCompile') }.configureEach {
+                compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+            }
+        }
+    }
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+    project.evaluationDependsOn(':app')
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
+
+
+
+//buildscript {
+//    repositories {
+//        google()
+//        mavenCentral()
+//    }
+//
+//    dependencies {
+//        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+//    }
+//}
+//
+//allprojects {
+//    repositories {
+//        google()
+//        mavenCentral()
+//    }
+//}
+//
+//rootProject.buildDir = '../build'
+//subprojects {
+//       afterEvaluate { project ->
+//            if (project.hasProperty('android')) {
+//                project.android {
+//                    if (namespace == null) {
+//                        namespace project.group
+//                    }
+//                }
+//            }
+//        }
+//    afterEvaluate { project ->
+//        if (project.plugins.hasPlugin("com.android.application") ||
+//                project.plugins.hasPlugin("com.android.library")) {
+//            project.android {
+//                compileSdkVersion 35
+//            }
+//        }
+//    }
+//    project.buildDir = "${rootProject.buildDir}/${project.name}"
+//    project.evaluationDependsOn(':app')
+//}
+//
+//tasks.register("clean", Delete) {
+//    delete rootProject.buildDir
+//}

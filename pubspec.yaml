@@ -1,0 +1,177 @@
+# DO NOT CHANGE THE NAME (edemand_partner),
+#IF YOU WANT TO CHANGE THE APP NAME THEN YOU HAVE TO CHANGE THE EACH IMPORT STATEMENT IN THE CODE
+#THIS NAME WILL NOT IMPACT IN YOUR APP, SO ITS NOT MANDATORY TO CHANGE IT
+name: edemand_partner
+description: Khidma Provider application.
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 8.2.1+106
+
+environment:
+  sdk: ">=3.8.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # UI & Design
+  flutter_svg: ^2.2.1
+  shimmer: ^4.0.0
+  cached_network_image: ^4.0.2
+  #rive: ^0.13.20
+  lottie: ^3.3.2
+  readmore: ^3.0.0
+  flutter_slidable: ^4.0.3
+  easy_stepper: ^1.1.0
+  toastification: ^3.0.3
+
+  # State Management
+  flutter_bloc: ^9.1.1
+  # bloc: ^9.0.0
+
+  # Firebase Services
+  firebase_auth: ^6.7.0
+  firebase_analytics: ^12.6.0
+  firebase_core: ^4.15.0
+  firebase_messaging: ^16.4.1
+  clarity_flutter: ^1.10.0
+
+  # Networking & API
+  dio: ^5.9.0
+  http_parser: ^4.1.2
+  any_link_preview: ^3.0.3
+
+  # Local Storage & Data
+  hive_flutter: ^1.1.0
+  shared_preferences: ^2.5.3
+  # hive: ^2.2.3
+  # shared_preferences: ^2.5.1
+
+  # Media & File Handling
+  image_picker: ^1.2.0
+  file_picker: ^10.3.10
+  video_player: ^2.10.0
+  mime: ^2.0.0
+  path: ^1.9.1
+  open_file: ^4.0.0
+
+  # Maps & Location
+  google_maps_flutter: ^2.14.0
+  flutter_map: ^8.3.1
+  latlong2: ^0.10.1
+  geolocator: ^14.0.2
+  geocoding: ^5.0.0
+  # path_drawing: ^1.0.1
+
+  # Charts & Analytics
+  fl_chart: ^1.1.1
+
+  # Payment & E-commerce
+  razorpay_flutter: ^1.4.1
+  flutter_stripe: ^14.1.0
+  flutter_cashfree_pg_sdk: ^2.2.9+47
+
+  # Web & HTML
+  webview_flutter: ^4.14.0
+  html_editor_enhanced: ^2.7.1
+  flutter_widget_from_html: ^0.17.2
+
+  # Utilities
+  intl: ^0.20.2
+  version: ^3.0.2
+  url_launcher: ^6.3.2
+  package_info_plus: ^9.0.1
+  pinput: ^6.0.2
+  quick_actions: ^1.1.0
+  awesome_notifications: ^0.12.1
+  share_plus: ^12.0.0
+  google_mobile_ads: ^9.0.0
+  vibration: ^3.1.4
+  flutter_localization: ^0.4.1
+  path_provider: ^2.1.5
+  timeago: ^3.7.1
+
+  # cupertino_icons: ^1.0.2
+
+
+dependency_overrides:
+  # Published 1.1.3 with the two AGP 9 ProGuard defaults fixed locally.
+  flutter_inappwebview_android:
+    path: third_party/flutter_inappwebview_android
+  sqflite_android: 2.4.1
+  #intl: ^0.17.0
+  #webview_flutter_android: 4.0.1 #3.16.1
+  #flutter_inappwebview_ios:
+    #git:
+      #url: https://github.com/IncM/flutter_inappwebview
+      #path: flutter_inappwebview_ios
+      #ref: cbc214c7b2cf5fd7996ff2e9e25d203946b74bc3
+
+dev_dependencies:
+  rename: ^3.0.2
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.14.3
+  change_app_package_name: ^1.5.0
+
+flutter_launcher_icons:
+  android: "ic_launcher"
+  ios: true
+  image_path: "assets/images/svg/branding/provider_app_icon.png"
+  remove_alpha_ios: true
+  # background_color_ios: "#FFC100"
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/svg/
+    - assets/fonts/OFL-Outfit.txt
+    - assets/languages/
+    - assets/mapTheme/
+    - assets/animation/
+    - assets/images/flags/
+    - assets/images/svg/branding/
+
+  fonts:
+    - family: Outfit
+      fonts:
+        - asset: assets/fonts/Outfit-Variable.ttf
+          weight: 100
+        - asset: assets/fonts/Outfit-Variable.ttf
+          weight: 200
+        - asset: assets/fonts/Outfit-Variable.ttf
+          weight: 300
+        - asset: assets/fonts/Outfit-Variable.ttf
+          weight: 400
+        - asset: assets/fonts/Outfit-Variable.ttf
+          weight: 500
+        - asset: assets/fonts/Outfit-Variable.ttf
+          weight: 600
+        - asset: assets/fonts/Outfit-Variable.ttf
+          weight: 700
+        - asset: assets/fonts/Outfit-Variable.ttf
+          weight: 800
+        - asset: assets/fonts/Outfit-Variable.ttf
+          weight: 900
+    - family: Lexend
+      fonts:
+        - asset: assets/fonts/Lexend-Black.ttf
+          weight: 900
+        - asset: assets/fonts/Lexend-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Lexend-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/Lexend-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/Lexend-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Lexend-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Lexend-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Lexend-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Lexend-Thin.ttf
+          weight: 100

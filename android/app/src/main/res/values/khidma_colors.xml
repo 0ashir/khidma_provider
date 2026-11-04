@@ -1,0 +1,6 @@
+<resources>
+    <color name="khidma_brand">#5465FF</color>
+    <!-- Dominant background of the splash artwork (assets/images/svg/branding/splash_screen.jpg);
+         the blank native splash uses it so the hand-off to Flutter is seamless. -->
+    <color name="khidma_splash_bg">#F5F8FD</color>
+</resources>
