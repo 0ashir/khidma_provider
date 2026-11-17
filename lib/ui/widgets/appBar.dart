@@ -3,7 +3,14 @@ import 'package:edemand_partner/app/generalImports.dart';
 class AppBarPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
   final Widget child;
 
-  AppBarPersistentHeaderDelegate({required this.child});
+  final double maxHeight;
+  final double minHeight;
+
+  AppBarPersistentHeaderDelegate({
+    required this.child,
+    this.maxHeight = 80.0,
+    this.minHeight = 70.0,
+  });
 
   @override
   Widget build(
@@ -15,10 +22,10 @@ class AppBarPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 80.0;
+  double get maxExtent => maxHeight;
 
   @override
-  double get minExtent => 70.0;
+  double get minExtent => minHeight;
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {

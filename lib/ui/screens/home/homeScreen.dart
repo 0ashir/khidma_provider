@@ -2,6 +2,7 @@ import 'package:edemand_partner/ui/widgets/scheduledMaintainanceContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../app/generalImports.dart';
+import 'widgets/providerTeamStatusSection.dart';
 import 'widgets/subscriptionCardWidget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -21,10 +22,12 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenState extends State<HomeScreen>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   int gridItems = 4;
+  final GlobalKey<ProviderTeamStatusSectionState> _teamStatusKey =
+      GlobalKey<ProviderTeamStatusSectionState>();
   late final AnimationController _animationController = AnimationController(
     vsync: this,
   );
-  late Animation<double> fontAnimation = Tween<double>(begin: 22.0, end: 20.0)
+  late Animation<double> fontAnimation = Tween<double>(begin: 18.0, end: 17.0)
       .animate(
         CurvedAnimation(
           parent: _animationController,
@@ -32,7 +35,7 @@ class HomeScreenState extends State<HomeScreen>
           reverseCurve: Curves.easeInOut,
         ),
       );
-  late Animation<double> fontAnimation2 = Tween<double>(begin: 16.0, end: 8.0)
+  late Animation<double> fontAnimation2 = Tween<double>(begin: 13.0, end: 11.0)
       .animate(
         CurvedAnimation(
           parent: _animationController,
@@ -174,12 +177,15 @@ class HomeScreenState extends State<HomeScreen>
               return [
                 SliverPersistentHeader(
                   delegate: AppBarPersistentHeaderDelegate(
+                    maxHeight: 64,
+                    minHeight: 60,
                     child: Center(
                       child: AnimatedBuilder(
                         animation: _animationController,
                         builder: (context, _) {
                           return Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               CustomText(
                                 context
@@ -214,13 +220,6 @@ class HomeScreenState extends State<HomeScreen>
                                     ).colorScheme.lightGreyColor,
                                   ),
                                 ],
-                              ),
-                              CustomDivider(
-                                indent: 50,
-                                endIndent: 50,
-                                color: context.colorScheme.lightGreyColor
-                                    .withAlpha(0),
-                                thickness: 0.1,
                               ),
                             ],
                           );
@@ -272,6 +271,7 @@ class HomeScreenState extends State<HomeScreen>
         );
         context.read<FetchCountrySettingsCubit>().fetch();
         context.read<FetchHomeDataCubit>().getHomeData();
+        _teamStatusKey.currentState?.refresh();
         context.read<FetchBookingsCubit>().fetchBookings(
           status: 'awaiting',
           fetchBothBookings: '1',
@@ -315,10 +315,11 @@ class HomeScreenState extends State<HomeScreen>
                   UiUtils.customRequestCounter = customJobs!.totalOpenJobs
                       .toString();
                   return SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    padding: const EdgeInsets.only(top: 2, bottom: 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        ProviderTeamStatusSection(key: _teamStatusKey),
                         ScheduledMaintenanceContainer(
                           appSettings: context
                               .read<FetchSystemSettingsCubit>()

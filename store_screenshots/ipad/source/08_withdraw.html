@@ -1,0 +1,133 @@
+<!doctype html><html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:'Outfit';src:url('fonts/Outfit-Variable.ttf') format('truetype');font-weight:100 900;font-display:block}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#3D4BE0}
+body{font-family:'Outfit',sans-serif;-webkit-font-smoothing:antialiased}
+.row{display:flex;flex-direction:row} .col{display:flex;flex-direction:column}
+.center{align-items:center} .top{align-items:flex-start} .grow{flex:1 1 auto;min-width:0}
+.ell{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.t10{font-size:10px;line-height:1.2} .t11{font-size:11px;line-height:1.2} .t12{font-size:12px;line-height:1.3}
+.t13{font-size:13px;line-height:1.3} .t14{font-size:14px;line-height:1.3} .t16{font-size:16px;line-height:1.3}
+.t18{font-size:18px;line-height:1.3} .t20{font-size:20px;line-height:1.25}
+.w400{font-weight:400} .w500{font-weight:500} .w600{font-weight:600} .w700{font-weight:700}
+.ic{display:inline-block;flex:none;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-position:center;mask-position:center}
+.hr{height:1px;width:100%;background:rgba(0,22,46,.1);flex:none}
+
+.canvas{position:relative;width:1080px;height:1920px;overflow:hidden;
+  background:radial-gradient(120% 70% at 85% 0%,#7B88FF 0%,rgba(123,136,255,0) 60%),
+             linear-gradient(165deg,#5F6FFF 0%,#5465FF 38%,#3F4CE6 72%,#2E39C2 100%)}
+.blob{position:absolute;border-radius:50%;background:rgba(255,255,255,.07)}
+.ring{position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,.10)}
+.copy{position:absolute;left:60px;right:60px;top:118px;text-align:center;color:#fff}
+.chip{display:inline-flex;align-items:center;gap:14px;padding:10px 26px 10px 10px;border-radius:999px;
+  background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.22);font-size:30px;font-weight:600;letter-spacing:.3px}
+.chip img{width:50px;height:50px;border-radius:14px}
+.h1{margin-top:34px;font-size:86px;line-height:1.02;font-weight:700;letter-spacing:-1.6px}
+.h1 em{font-style:normal;color:#D9DDFF}
+.sub{margin-top:22px;font-size:34px;line-height:1.3;font-weight:400;color:rgba(255,255,255,.86)}
+.phone-wrap{position:absolute;left:50%;top:528px;transform-origin:top center;transform:translateX(-50%) scale(1.45)}
+.phone{position:relative;width:436px;height:916px;border-radius:52px;padding:12px;background:#0E0F14;
+  box-shadow:0 0 0 2px #2A2C36 inset,0 0 0 1.5px #3A3D4A,0 60px 120px rgba(10,14,60,.55),0 20px 40px rgba(10,14,60,.35)}
+.phone:before{content:"";position:absolute;right:-3px;top:190px;width:3px;height:80px;border-radius:2px;background:#24262F}
+.screen{position:relative;width:412px;height:892px;border-radius:40px;overflow:hidden;background:#F5F6F7;color:#00162E}
+.punch{position:absolute;top:9px;left:50%;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:#0B0B0F;box-shadow:0 0 0 1.5px #1c1d24;z-index:50}
+
+.statusbar{height:28px;display:flex;align-items:center;padding:0 22px 0 24px}
+.appbar{position:absolute;left:0;top:0;right:0;background:#fff;z-index:10}
+.gesture{position:absolute;left:0;right:0;bottom:0;height:18px;display:flex;justify-content:center;align-items:flex-start;z-index:30}
+.statusbar.ios{height:54px;padding:6px 26px 0 24px}
+.gesture.ios{height:34px;align-items:flex-end;padding-bottom:8px}
+.gesture.ios span{width:134px;height:5px;border-radius:3px;background:#000;opacity:1;margin:0}
+.gesture span{width:108px;height:4px;border-radius:2px;background:#00162E;opacity:.85;margin-top:7px}
+.navbar{position:absolute;left:15px;right:15px;height:56px;border-radius:10px;background:#fff;z-index:25;
+  box-shadow:0 6px 24px rgba(0,22,46,.10)}
+.btn{border-radius:10px;background:#5465FF;color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center;flex:1}
+.card{background:#fff;border-radius:10px}
+.sq{display:flex;align-items:center;justify-content:center;flex:none;border-radius:5px}
+.float{position:absolute;transform-origin:top left;border-radius:10px;
+  box-shadow:0 30px 60px rgba(14,20,90,.35),0 8px 18px rgba(14,20,90,.18)}
+
+html,body,.canvas{height:100vh}
+.phone-wrap{top:610px;transform:translateX(-50%) scale(1.8)}
+.phone{border-radius:62px;padding:12px;background:#0B0C10;
+  box-shadow:0 0 0 2px #3B3D47 inset,0 0 0 1.5px #5A5C66,0 70px 140px rgba(10,14,60,.55),0 24px 48px rgba(10,14,60,.35)}
+.screen{border-radius:50px}
+.phone:before{right:-3px;top:185px;height:77px;background:#454650}
+.phone:after{content:"";position:absolute;left:-3px;top:150px;width:3px;height:105px;border-radius:2px;
+  background:linear-gradient(#454650 0 39%,transparent 39% 52%,#454650 52% 100%)}
+.island{position:absolute;top:11px;left:50%;width:124px;height:35px;margin-left:-62px;border-radius:22px;background:#000;z-index:100}
+.island:after{content:"";position:absolute;right:12px;top:12px;width:10px;height:10px;border-radius:50%;
+  background:radial-gradient(circle at 38% 38%,#15253b,#070b12 65%);border:1px solid #11151d}
+</style><style>
+html,body,.canvas{width:1080px!important;height:1440px!important;margin:0!important;overflow:hidden!important}
+.copy{top:48px!important;left:54px!important;right:54px!important}
+.chip{font-size:23px!important;padding:8px 22px 8px 8px!important;gap:10px!important}
+.chip img{width:36px!important;height:36px!important;border-radius:10px!important}
+.h1{font-size:62px!important;line-height:1.04!important;margin-top:18px!important;letter-spacing:-1px!important}
+.sub{font-size:26px!important;line-height:1.25!important;margin-top:14px!important}
+.phone-wrap{top:360px!important;left:50%!important;transform:translateX(-50%)!important}
+.phone{width:776px!important;height:1024px!important;padding:16px!important;border-radius:36px!important}
+.screen{width:744px!important;height:992px!important;border-radius:22px!important}
+.phone:before,.phone:after{display:none!important}
+.punch,.island{display:none!important}
+.statusbar{height:30px!important;padding:0 22px!important;font-family:Arial,sans-serif!important}
+.statusbar>span:first-child{font-size:13px!important}
+.gesture{height:22px!important;padding-bottom:6px!important}
+.gesture span{width:180px!important;height:4px!important}
+.float-svc{display:none!important}
+</style></head><body>
+<div class="canvas">
+  <span class="blob" style="width:520px;height:520px;left:-200px;top:-180px"></span><span class="blob" style="width:420px;height:420px;right:-200px;top:900px"></span><span class="ring" style="width:760px;height:760px;right:-320px;top:1180px"></span><span class="ring" style="width:540px;height:540px;left:-280px;top:560px"></span>
+  <div class="copy">
+    <div class="chip"><img src="img/brand.png">Khidma Provider</div>
+    <div class="h1">Get paid,<br><em>withdraw anytime</em></div>
+    <div class="sub">Track your balance and payout requests</div>
+  </div>
+  <div class="phone-wrap"><div class="phone"><div class="screen" style="background:#F5F6F7">
+    
+<div class="appbar" style="box-shadow:0 2px 6px rgba(0,0,0,.10);">
+  <div class="statusbar ios" style="color:#00162E;background:#FFFFFF">
+  <span style="font-family:-apple-system,'SF Pro Text',Arial,sans-serif;font-size:17px;font-weight:600;width:54px;text-align:center">9:41</span><span class="grow"></span>
+  <span class="row center" style="gap:7px">
+    <svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1" fill="#00162E"/><rect x="5" y="5.5" width="3" height="6.5" rx="1" fill="#00162E"/><rect x="10" y="3" width="3" height="9" rx="1" fill="#00162E"/><rect x="15" y="0" width="3" height="12" rx="1" fill="#00162E"/></svg>
+    <svg width="17" height="12" viewBox="0 0 17 12"><path d="M8.5 2.3c2.4 0 4.6.9 6.2 2.5l1.2-1.2A10.4 10.4 0 0 0 8.5.6 10.4 10.4 0 0 0 1.1 3.6l1.2 1.2A8.7 8.7 0 0 1 8.5 2.3zm0 3.4c1.5 0 2.8.6 3.8 1.5l1.2-1.2A7 7 0 0 0 8.5 4a7 7 0 0 0-5 2l1.2 1.2c1-.9 2.3-1.5 3.8-1.5zm0 3.4c.6 0 1.1.2 1.5.6L8.5 11.2 7 9.7c.4-.4.9-.6 1.5-.6z" fill="#00162E"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.8" fill="none" stroke="#00162E" opacity=".35"/><rect x="2" y="2" width="20" height="9" rx="2.5" fill="#00162E"/><path d="M25 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" fill="#00162E" opacity=".4"/></svg>
+  </span></div>
+  <div class="row center" style="height:56px"><div style="width:56px;height:56px;display:flex;align-items:center;justify-content:center;flex:none"><i class="ic" style="width:11px;height:20px;background:#5465FF;-webkit-mask-image:url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTkiIHZpZXdCb3g9IjAgMCAxMCAxOSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik05LjE4NTcxIDE4LjI5MDRDOS41NjMxMSAxNy45NzczIDkuNjA2NzkgMTcuNDI3NCA5LjI4MzI3IDE3LjA2MjJMMi41ODUzNyA5LjQ5OTk5TDkuMjgzMjcgMS45Mzc4QzkuNjA2NzkgMS41NzI1OCA5LjU2MzExIDEuMDIyNzQgOS4xODU3MSAwLjcwOTY5NUM4LjgwODMxIDAuMzk2NjQ3IDguMjQwMTEgMC40Mzg5NTIgNy45MTY3MSAwLjgwNDE2NkwwLjcxNjY3NCA4LjkzMzE2QzAuNDI3Nzc1IDkuMjU5MzcgMC40Mjc3NzUgOS43NDA2MSAwLjcxNjY3NCAxMC4wNjY4TDcuOTE2NzEgMTguMTk1OEM4LjI0MDExIDE4LjU2MTEgOC44MDgzMSAxOC42MDMzIDkuMTg1NzEgMTguMjkwNFoiIGZpbGw9IiM1NDY1RkYiLz4KPC9zdmc+Cg==);mask-image:url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTkiIHZpZXdCb3g9IjAgMCAxMCAxOSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik05LjE4NTcxIDE4LjI5MDRDOS41NjMxMSAxNy45NzczIDkuNjA2NzkgMTcuNDI3NCA5LjI4MzI3IDE3LjA2MjJMMi41ODUzNyA5LjQ5OTk5TDkuMjgzMjcgMS45Mzc4QzkuNjA2NzkgMS41NzI1OCA5LjU2MzExIDEuMDIyNzQgOS4xODU3MSAwLjcwOTY5NUM4LjgwODMxIDAuMzk2NjQ3IDguMjQwMTEgMC40Mzg5NTIgNy45MTY3MSAwLjgwNDE2NkwwLjcxNjY3NCA4LjkzMzE2QzAuNDI3Nzc1IDkuMjU5MzcgMC40Mjc3NzUgOS43NDA2MSAwLjcxNjY3NCAxMC4wNjY4TDcuOTE2NzEgMTguMTk1OEM4LjI0MDExIDE4LjU2MTEgOC44MDgzMSAxOC42MDMzIDkuMTg1NzEgMTguMjkwNFoiIGZpbGw9IiM1NDY1RkYiLz4KPC9zdmc+Cg==);"></i></div>
+    <span class="t16 w500 grow">Withdrawal Requests</span><div style="padding:12px 22px 12px 12px"><svg width="24" height="24" viewBox="0 0 24 24" style="flex:none;display:block"><path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z" fill="#00162E"/></svg></div></div></div>
+<div class="col center" style="position:absolute;left:5px;right:5px;top:115px;height:125px;padding:5px">
+  <span class="t13">Your Balance</span><div style="height:5px"></div><span class="t18 w600">AED4,860</span>
+  <div style="height:15px"></div><div class="row center" style="align-self:flex-start;gap:4px;padding-left:4px"><span class="t14" style="padding:6px 18px;border-radius:6px;background:#5465FF;color:#fff">All</span><span class="t14" style="padding:6px 18px;border-radius:6px;">Pending</span><span class="t14" style="padding:6px 18px;border-radius:6px;">Approved</span><span class="t14" style="padding:6px 18px;border-radius:6px;">Rejected</span><span class="t14" style="padding:6px 18px;border-radius:6px;">Settled</span></div></div>
+<div style="position:absolute;left:10px;right:10px;top:245px" class="hr"></div>
+<div class="col" style="position:absolute;left:15px;right:15px;top:256px;gap:10px"><div class="card" style="padding:12px;box-shadow:0 1px 2px rgba(0,22,46,.08)">
+  <div class="row"><span class="t16 w500 grow">AED2,000</span><span class="t12" style="color:rgba(0,22,46,.5)">30/10/2026</span></div>
+  <div style="height:5px"></div>
+  <div class="row"><span class="t12 grow" style="color:rgba(0,22,46,.5)">AC/ 0412 7781 4821</span><span class="t14" style="color:#FF9900">Pending</span></div></div><div class="card" style="padding:12px;box-shadow:0 1px 2px rgba(0,22,46,.08)">
+  <div class="row"><span class="t16 w500 grow">AED1,500</span><span class="t12" style="color:rgba(0,22,46,.5)">22/10/2026</span></div>
+  <div style="height:5px"></div>
+  <div class="row"><span class="t12 grow" style="color:rgba(0,22,46,.5)">AC/ 0412 7781 4821</span><span class="t14" style="color:#009EA8">Approved</span></div></div><div class="card" style="padding:12px;box-shadow:0 1px 2px rgba(0,22,46,.08)">
+  <div class="row"><span class="t16 w500 grow">AED3,200</span><span class="t12" style="color:rgba(0,22,46,.5)">12/10/2026</span></div>
+  <div style="height:5px"></div>
+  <div class="row"><span class="t12 grow" style="color:rgba(0,22,46,.5)">AC/ 0412 7781 4821</span><span class="t14" style="color:#FF9900">Settled</span></div></div><div class="card" style="padding:12px;box-shadow:0 1px 2px rgba(0,22,46,.08)">
+  <div class="row"><span class="t16 w500 grow">AED2,400</span><span class="t12" style="color:rgba(0,22,46,.5)">01/10/2026</span></div>
+  <div style="height:5px"></div>
+  <div class="row"><span class="t12 grow" style="color:rgba(0,22,46,.5)">AC/ 0412 7781 4821</span><span class="t14" style="color:#FF9900">Settled</span></div></div><div class="card" style="padding:12px;box-shadow:0 1px 2px rgba(0,22,46,.08)">
+  <div class="row"><span class="t16 w500 grow">AED1,850</span><span class="t12" style="color:rgba(0,22,46,.5)">18/09/2026</span></div>
+  <div style="height:5px"></div>
+  <div class="row"><span class="t12 grow" style="color:rgba(0,22,46,.5)">AC/ 0412 7781 4821</span><span class="t14" style="color:#FF9900">Settled</span></div></div><div class="card" style="padding:12px;box-shadow:0 1px 2px rgba(0,22,46,.08)">
+  <div class="row"><span class="t16 w500 grow">AED2,750</span><span class="t12" style="color:rgba(0,22,46,.5)">04/09/2026</span></div>
+  <div style="height:5px"></div>
+  <div class="row"><span class="t12 grow" style="color:rgba(0,22,46,.5)">AC/ 0412 7781 4821</span><span class="t14" style="color:#FF9900">Settled</span></div></div><div class="card" style="padding:12px;box-shadow:0 1px 2px rgba(0,22,46,.08)">
+  <div class="row"><span class="t16 w500 grow">AED1,200</span><span class="t12" style="color:rgba(0,22,46,.5)">21/08/2026</span></div>
+  <div style="height:5px"></div>
+  <div class="row"><span class="t12 grow" style="color:rgba(0,22,46,.5)">AC/ 0412 7781 4821</span><span class="t14" style="color:#FF9900">Settled</span></div></div></div>
+<div style="position:absolute;left:0;right:0;bottom:0;padding:10px 15px 44px;background:linear-gradient(rgba(245,246,247,0),#F5F6F7 30%);z-index:20">
+  <div class="row center" style="height:48px;border-radius:10px;background:#5465FF;justify-content:center;gap:10px">
+    <i class="ic" style="width:20px;height:20px;background:#fff;-webkit-mask-image:url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjUiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNSAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgaWQ9ImFkZC1jaXJjbGUtc3ZncmVwby1jb20gMiI+CjxwYXRoIGlkPSJTdWJ0cmFjdCIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMi41IDEuMjVDNi41NjI5NCAxLjI1IDEuNzUgNi4wNjI5NCAxLjc1IDEyQzEuNzUgMTcuOTM3MSA2LjU2Mjk0IDIyLjc1IDEyLjUgMjIuNzVDMTguNDM3MSAyMi43NSAyMy4yNSAxNy45MzcxIDIzLjI1IDEyQzIzLjI1IDYuMDYyOTQgMTguNDM3MSAxLjI1IDEyLjUgMS4yNVpNMTMuMjUwMSA5QzEzLjI1MDEgOC41ODU3OSAxMi45MTQzIDguMjUgMTIuNTAwMSA4LjI1QzEyLjA4NTggOC4yNSAxMS43NTAxIDguNTg1NzkgMTEuNzUwMSA5VjExLjI1SDkuNTAwMDZDOS4wODU4NSAxMS4yNSA4Ljc1MDA2IDExLjU4NTggOC43NTAwNiAxMkM4Ljc1MDA2IDEyLjQxNDIgOS4wODU4NSAxMi43NSA5LjUwMDA2IDEyLjc1SDExLjc1MDFWMTVDMTEuNzUwMSAxNS40MTQyIDEyLjA4NTggMTUuNzUgMTIuNTAwMSAxNS43NUMxMi45MTQzIDE1Ljc1IDEzLjI1MDEgMTUuNDE0MiAxMy4yNTAxIDE1VjEyLjc1SDE1LjUwMDFDMTUuOTE0MyAxMi43NSAxNi4yNTAxIDEyLjQxNDIgMTYuMjUwMSAxMkMxNi4yNTAxIDExLjU4NTggMTUuOTE0MyAxMS4yNSAxNS41MDAxIDExLjI1SDEzLjI1MDFWOVoiIGZpbGw9IndoaXRlIi8+CjwvZz4KPC9zdmc+Cg==);mask-image:url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjUiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNSAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgaWQ9ImFkZC1jaXJjbGUtc3ZncmVwby1jb20gMiI+CjxwYXRoIGlkPSJTdWJ0cmFjdCIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMi41IDEuMjVDNi41NjI5NCAxLjI1IDEuNzUgNi4wNjI5NCAxLjc1IDEyQzEuNzUgMTcuOTM3MSA2LjU2Mjk0IDIyLjc1IDEyLjUgMjIuNzVDMTguNDM3MSAyMi43NSAyMy4yNSAxNy45MzcxIDIzLjI1IDEyQzIzLjI1IDYuMDYyOTQgMTguNDM3MSAxLjI1IDEyLjUgMS4yNVpNMTMuMjUwMSA5QzEzLjI1MDEgOC41ODU3OSAxMi45MTQzIDguMjUgMTIuNTAwMSA4LjI1QzEyLjA4NTggOC4yNSAxMS43NTAxIDguNTg1NzkgMTEuNzUwMSA5VjExLjI1SDkuNTAwMDZDOS4wODU4NSAxMS4yNSA4Ljc1MDA2IDExLjU4NTggOC43NTAwNiAxMkM4Ljc1MDA2IDEyLjQxNDIgOS4wODU4NSAxMi43NSA5LjUwMDA2IDEyLjc1SDExLjc1MDFWMTVDMTEuNzUwMSAxNS40MTQyIDEyLjA4NTggMTUuNzUgMTIuNTAwMSAxNS43NUMxMi45MTQzIDE1Ljc1IDEzLjI1MDEgMTUuNDE0MiAxMy4yNTAxIDE1VjEyLjc1SDE1LjUwMDFDMTUuOTE0MyAxMi43NSAxNi4yNTAxIDEyLjQxNDIgMTYuMjUwMSAxMkMxNi4yNTAxIDExLjU4NTggMTUuOTE0MyAxMS4yNSAxNS41MDAxIDExLjI1SDEzLjI1MDFWOVoiIGZpbGw9IndoaXRlIi8+CjwvZz4KPC9zdmc+Cg==);"></i><span class="t16" style="color:#fff">Add New Request</span></div></div>
+<div class="gesture ios" style="background:transparent"><span></span></div>
+    <div class="island"></div>
+  </div></div></div>
+  
+</div></body></html>

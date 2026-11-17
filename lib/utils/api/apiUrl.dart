@@ -122,6 +122,11 @@ class ApiUrl {
   static String updateHandyman = '${baseUrl}update_handyman';
   static String deleteHandyman = '${baseUrl}delete_handyman';
   static String toggleHandymanStatus = '${baseUrl}toggle_handyman_status';
+  static String setHandymanOnline = '${baseUrl}set_handyman_online';
+  static String getProviderOnlineStatus =
+      '${baseUrl}get_provider_online_status';
+  static String setProviderOnlineStatus =
+      '${baseUrl}set_provider_online_status';
   static String toggleHandymanAvailability =
       '${baseUrl}toggle_handyman_availability';
 

@@ -14,6 +14,9 @@ class HandymanModel {
   final String image;
   final int active;
   final int isAvailable;
+
+  /// 1 when the handyman is on a job right now (on the way / arrived / started).
+  final int isBusy;
   final String address;
   final String salary;
   final String averageRating;
@@ -30,6 +33,7 @@ class HandymanModel {
     required this.image,
     required this.active,
     required this.isAvailable,
+    this.isBusy = 0,
     required this.address,
     this.salary = '',
     this.averageRating = '0',
@@ -40,6 +44,7 @@ class HandymanModel {
 
   bool get isActive => active == 1;
   bool get available => isAvailable == 1;
+  bool get busy => isBusy == 1;
 
   factory HandymanModel.fromJson(Map<String, dynamic> json) {
     return HandymanModel(
@@ -50,7 +55,8 @@ class HandymanModel {
       email: json['email']?.toString() ?? '',
       image: json['image']?.toString() ?? '',
       active: int.tryParse(json['active']?.toString() ?? '0') ?? 0,
-      isAvailable: int.tryParse(json['is_available']?.toString() ?? '0') ?? 0,
+      isAvailable: int.tryParse(json['is_available']?.toString() ?? '1') ?? 1,
+      isBusy: int.tryParse(json['is_busy']?.toString() ?? '0') ?? 0,
       address: json['address']?.toString() ?? '',
       salary: json['salary']?.toString() ?? '',
       averageRating: json['average_rating']?.toString() ?? '0',
@@ -85,6 +91,7 @@ class HandymanModel {
       'image': image,
       'active': active,
       'is_available': isAvailable,
+      'is_busy': isBusy,
       'address': address,
       'salary': salary,
       'average_rating': averageRating,
@@ -103,6 +110,7 @@ class HandymanModel {
     String? image,
     int? active,
     int? isAvailable,
+    int? isBusy,
     String? address,
     String? salary,
     String? averageRating,
@@ -119,6 +127,7 @@ class HandymanModel {
       image: image ?? this.image,
       active: active ?? this.active,
       isAvailable: isAvailable ?? this.isAvailable,
+      isBusy: isBusy ?? this.isBusy,
       address: address ?? this.address,
       salary: salary ?? this.salary,
       averageRating: averageRating ?? this.averageRating,

@@ -7,6 +7,7 @@ import 'package:edemand_partner/ui/screens/booking/widgets/bookingDateAndTimeWid
 import 'package:edemand_partner/ui/screens/booking/widgets/uploadedProofWidget.dart';
 import 'package:edemand_partner/ui/screens/booking/widgets/serviceDetailsWidget.dart';
 import 'package:edemand_partner/ui/screens/booking/widgets/notesWidget.dart';
+import 'package:edemand_partner/ui/widgets/carPlateWidget.dart';
 import 'package:edemand_partner/ui/screens/booking/widgets/cancelReasonWidget.dart';
 import 'package:edemand_partner/ui/screens/booking/widgets/priceSectionWidget.dart';
 import 'package:edemand_partner/ui/screens/booking/widgets/bookingDetailsShimmer.dart';
@@ -1052,6 +1053,7 @@ class BookingDetailsState extends State<BookingDetails> {
               proofData: model.workCompletedProof!,
             ),
           ),
+          CarPlateWidget(plateNumber: model.carPlateNumber ?? ''),
           NotesWidget(remarks: model.remarks ?? ''),
           ServiceDetailsWidget(bookingsModel: model),
           PriceSectionWidget(

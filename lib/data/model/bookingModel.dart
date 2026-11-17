@@ -105,6 +105,7 @@ class BookingsModel {
         : (json['status']?.toString() ?? '');
     otp = json['otp']?.toString() ?? '';
     remarks = json['remarks']?.toString() ?? '';
+    carPlateNumber = json['car_plate_number']?.toString() ?? '';
     createdAt = json['created_at']?.toString() ?? '';
     companyName = json['company_name']?.toString() ?? '';
     advanceBookingDays = json['advance_booking_days']?.toString() ?? '';
@@ -207,6 +208,7 @@ class BookingsModel {
   String? status;
   String? otp;
   String? remarks;
+  String? carPlateNumber;
   String? createdAt;
   String? companyName;
   String? visitingCharges;
@@ -281,6 +283,7 @@ class BookingsModel {
     data['translated_status'] = translatedStatus;
     data['otp'] = otp;
     data['remarks'] = remarks;
+    data['car_plate_number'] = carPlateNumber;
     data['created_at'] = createdAt;
     data['company_name'] = companyName;
     data['visiting_charges'] = visitingCharges;

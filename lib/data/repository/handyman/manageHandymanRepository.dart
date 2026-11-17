@@ -117,6 +117,19 @@ class ManageHandymanRepository {
     return 1 - currentValue;
   }
 
+  /// Provider sets a handyman online/offline (overrides the handyman's own
+  /// switch). Going online also re-activates a deactivated account.
+  Future<void> setHandymanOnline(String handymanId, {required bool online}) async {
+    final Map<String, dynamic> response = await ApiClient.post(
+      url: ApiUrl.setHandymanOnline,
+      parameter: {ApiParam.handymanId: handymanId, 'is_online': online ? 1 : 0},
+      useAuthToken: true,
+    );
+    if (response['error'] == true) {
+      throw ApiException(response['message'].toString());
+    }
+  }
+
   /// Returns the new `is_available` flag (0/1).
   Future<int> toggleAvailability(
     String handymanId, {

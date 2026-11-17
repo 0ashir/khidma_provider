@@ -6,6 +6,7 @@ import '../taxBreakdownModel.dart';
 
 class HandymanBookingDetail extends HandymanBookingListItem {
   final String remarks;
+  final String carPlateNumber;
   final String otp;
   final String total;
   final String taxAmount;
@@ -50,6 +51,7 @@ class HandymanBookingDetail extends HandymanBookingListItem {
     super.latitude,
     super.longitude,
     required this.remarks,
+    this.carPlateNumber = '',
     required this.otp,
     required this.total,
     required this.taxAmount,
@@ -112,6 +114,7 @@ class HandymanBookingDetail extends HandymanBookingListItem {
       latitude: double.tryParse(json['latitude']?.toString() ?? ''),
       longitude: double.tryParse(json['longitude']?.toString() ?? ''),
       remarks: json['remarks']?.toString() ?? '',
+      carPlateNumber: json['car_plate_number']?.toString() ?? '',
       otp: json['otp']?.toString() ?? '',
       total: json['total']?.toString() ?? '',
       taxAmount: json['tax_amount']?.toString() ?? '',

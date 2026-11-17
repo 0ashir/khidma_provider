@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../app/generalImports.dart';
+import '../../../data/repository/handyman/handymanProfileRepository.dart';
+import '../home/widgets/providerTeamStatusSection.dart' show StatusPillSwitch;
 
 class HandymanDashboardScreen extends StatefulWidget {
   const HandymanDashboardScreen({super.key, required this.scrollController});
@@ -14,7 +16,9 @@ class HandymanDashboardScreen extends StatefulWidget {
 
 class HandymanDashboardScreenState extends State<HandymanDashboardScreen>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
-  late bool _isAvailable;
+  /// Null until the profile tells us (older login data has no flag).
+  bool? _isAvailable;
+  bool _updatingAvailability = false;
   HandymanLoginModel? _loginData;
 
   late final AnimationController _animationController = AnimationController(
@@ -62,7 +66,6 @@ class HandymanDashboardScreenState extends State<HandymanDashboardScreen>
   void initState() {
     super.initState();
     _loginData = HiveRepository.getHandymanData();
-    _isAvailable = _loginData?.available ?? true;
     widget.scrollController.addListener(scrollListener);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<HandymanProfileCubit>().fetchProfile();
@@ -102,10 +105,8 @@ class HandymanDashboardScreenState extends State<HandymanDashboardScreen>
 
     return BlocListener<HandymanProfileCubit, HandymanProfileState>(
       listener: (context, state) {
-        if (state is HandymanProfileSuccess) {
+        if (state is HandymanProfileSuccess && !_updatingAvailability) {
           setState(() => _isAvailable = state.profile.available);
-        } else if (state is HandymanProfileFailure) {
-          setState(() => _isAvailable = !_isAvailable);
         }
       },
       child: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -316,12 +317,123 @@ class HandymanDashboardScreenState extends State<HandymanDashboardScreen>
     );
   }
 
+  String _t(String key, String fallback) {
+    final String value = key.translate(context: context);
+    return (value.isEmpty || value == key) ? fallback : value;
+  }
+
+  Future<void> _setAvailability(bool available) async {
+    if (_updatingAvailability) return;
+    final bool? previous = _isAvailable;
+    setState(() {
+      _isAvailable = available;
+      _updatingAvailability = true;
+    });
+    try {
+      final int value = await HandymanProfileRepository().updateAvailability(
+        available: available,
+      );
+      if (!mounted) return;
+      setState(() => _isAvailable = value == 1);
+      UiUtils.showMessage(
+        context,
+        value == 1
+            ? _t('handymanNowOnline', 'You are online and ready to receive bookings')
+            : _t('handymanNowOffline', 'You are offline. You will not be assigned new bookings'),
+        value == 1 ? ToastificationType.success : ToastificationType.warning,
+      );
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isAvailable = previous);
+      UiUtils.showMessage(context, e.toString(), ToastificationType.error);
+    } finally {
+      if (mounted) setState(() => _updatingAvailability = false);
+    }
+  }
+
+  /// "You are online / Ready to receive bookings" card with an ON/OFF switch.
+  /// Offline handymen are not offered for new booking assignments.
+  Widget _buildAvailabilityCard() {
+    final bool? online = _isAvailable;
+    const Color green = Color(0xFF22A447);
+    const Color grey = Color(0xFF9CA3AF);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: CustomContainer(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        color: context.colorScheme.secondaryColor,
+        borderRadius: UiUtils.borderRadiusOf10,
+        border: Border.all(
+          color: context.colorScheme.lightGreyColor.withValues(alpha: 0.2),
+          width: 0.5,
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: online == false ? grey : green,
+                shape: BoxShape.circle,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomText(
+                    online == false
+                        ? _t('youAreOfflineLbl', 'You are offline')
+                        : _t('youAreOnlineLbl', 'You are online'),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: context.colorScheme.blackColor,
+                    maxLines: 1,
+                  ),
+                  const SizedBox(height: 2),
+                  CustomText(
+                    online == false
+                        ? _t('notReceivingBookingsLbl', 'Not receiving new bookings')
+                        : _t('readyToReceiveBookingsLbl', 'Ready to receive bookings'),
+                    fontSize: 12,
+                    color: context.colorScheme.lightGreyColor,
+                    maxLines: 1,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 10),
+            if (online == null)
+              const SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            else
+              StatusPillSwitch(
+                value: online,
+                width: 52,
+                height: 28,
+                onText: _t('onToggleLbl', 'ON'),
+                offText: _t('offToggleLbl', 'OFF'),
+                isBusy: _updatingAvailability,
+                onTap: () => _setAvailability(!online),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildDashboardContent(HandymanDashboardModel data) {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          _buildAvailabilityCard(),
+          const SizedBox(height: 14),
           _buildSalaryCard(data),
           const SizedBox(height: 16),
           _buildSectionTitle('bookingTab'.translate(context: context)),

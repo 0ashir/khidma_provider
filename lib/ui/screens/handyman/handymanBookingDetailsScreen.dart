@@ -6,6 +6,7 @@ import '../../../ui/widgets/dialog/layouts/verifyOTPDialog.dart';
 import '../../../utils/checkURLType.dart';
 import '../booking/widgets/expandableChargeRow.dart';
 import '../booking/widgets/notesWidget.dart';
+import '../../widgets/carPlateWidget.dart';
 import '../booking/widgets/taxBreakdownRows.dart';
 
 class HandymanBookingDetailsScreen extends StatefulWidget {
@@ -459,6 +460,7 @@ class _HandymanBookingDetailsScreenState
             'workCompletedProof',
             detail.workCompletedProof,
           ),
+          CarPlateWidget(plateNumber: detail.carPlateNumber),
           NotesWidget(remarks: detail.remarks),
           _buildPriceSectionWidget(detail),
           if (detail.isPaymentPending) ...[
@@ -1671,9 +1673,15 @@ class _HandymanBookingDetailsScreenState
                         ),
                       ),
                       CustomText(
-                        UiUtils.getPaymentStatus(
-                          detail.paymentStatus,
-                        ).translate(context: context),
+                        // "pending" here means the payment is pending; the
+                        // generic "pending" key is shared with other screens.
+                        (UiUtils.getPaymentStatus(detail.paymentStatus) ==
+                                    'pending'
+                                ? 'paymentPending'
+                                : UiUtils.getPaymentStatus(
+                                    detail.paymentStatus,
+                                  ))
+                            .translate(context: context),
                         color: UiUtils.getPaymentStatusColor(
                           paymentStatus: detail.paymentStatus.toLowerCase(),
                         ),
