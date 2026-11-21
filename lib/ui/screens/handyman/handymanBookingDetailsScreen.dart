@@ -817,7 +817,7 @@ class _HandymanBookingDetailsScreenState
           if (detail.address.isNotEmpty)
             CustomInkWellContainer(
               showSplashEffect: false,
-              onTap: () => _handleAddressTap(detail.address),
+              onTap: () => _handleAddressTap(detail),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -907,8 +907,21 @@ class _HandymanBookingDetailsScreenState
     );
   }
 
-  Future<void> _handleAddressTap(String address) async {
-    final String query = Uri.encodeComponent(address);
+  Future<void> _handleAddressTap(HandymanBookingDetail detail) async {
+    final latitude = detail.latitude;
+    final longitude = detail.longitude;
+    if (latitude != null &&
+        longitude != null &&
+        latitude.isFinite &&
+        longitude.isFinite &&
+        latitude.abs() <= 90 &&
+        longitude.abs() <= 180 &&
+        (latitude != 0 || longitude != 0)) {
+      await UiUtils.openMap(context, latitude: latitude, longitude: longitude);
+      return;
+    }
+
+    final String query = Uri.encodeComponent(detail.address);
     final Uri googleMapsUrl = Uri.parse(
       "https://www.google.com/maps/search/?api=1&query=$query",
     );

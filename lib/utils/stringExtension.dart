@@ -238,7 +238,13 @@ extension StringExtension on String {
   }) {
     final settings = context.read<FetchSystemSettingsCubit>();
     final formatter = NumberFormat.currency(
-      locale: Platform.localeName,
+      // Device locales such as "ars_US" (Najdi Arabic) are unknown to intl and
+      // throw "Invalid locale"; fall back to the base language, then English.
+      locale: Intl.verifiedLocale(
+        Platform.localeName,
+        NumberFormat.localeExists,
+        onFailure: (_) => 'en',
+      ),
       name: (currencyCode ?? '').isNotEmpty
           ? currencyCode
           : settings.SystemCurrencyCountryCode,
